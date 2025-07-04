@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Upload, Plus, Heart, Search, Image as ImageIcon, Sparkles } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { Upload, Plus, Heart, Search, Image as ImageIcon, Sparkles, Scissors } from 'lucide-react';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useDeepseek } from '../../hooks/useDeepseek';
 import PhotoUploadModal from './PhotoUploadModal';
 import ImageAnalyzer from './ImageAnalyzer';
+import BackgroundRemovalModal from './BackgroundRemovalModal';
 
 interface Board {
   id: string;
@@ -30,6 +30,7 @@ export default function PinterestBoard({ onNavigateBack }: PinterestBoardProps) 
   const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showAnalyzer, setShowAnalyzer] = useState(false);
+  const [showBackgroundRemoval, setShowBackgroundRemoval] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -315,6 +316,16 @@ export default function PinterestBoard({ onNavigateBack }: PinterestBoardProps) 
                           <Sparkles className="h-4 w-4 text-purple-600" />
                         </button>
                         <button
+                          onClick={() => {
+                            setSelectedImage(image.url);
+                            setShowBackgroundRemoval(true);
+                          }}
+                          className="p-2 bg-white/90 rounded-full hover:bg-white transition-colors"
+                          title="Remove Background"
+                        >
+                          <Scissors className="h-4 w-4 text-blue-600" />
+                        </button>
+                        <button
                           className="p-2 bg-white/90 rounded-full hover:bg-white transition-colors"
                           title="Add to favorites"
                         >
@@ -421,6 +432,41 @@ export default function PinterestBoard({ onNavigateBack }: PinterestBoardProps) 
           imageUrl={selectedImage}
           onAnalysisComplete={handleAnalysisComplete}
           onClose={() => setShowAnalyzer(false)}
+        />
+      )}
+
+      {/* Background Removal Modal */}
+      {showBackgroundRemoval && selectedImage && (
+        <BackgroundRemovalModal
+          isOpen={showBackgroundRemoval}
+          onClose={() => {
+            setShowBackgroundRemoval(false);
+            setSelectedImage('');
+          }}
+          imageUrl={selectedImage}
+          onImageProcessed={(processedUrl) => {
+            // Add the processed image to the current board
+            if (selectedBoard) {
+              const processedImage = {
+                id: Date.now().toString(),
+                url: processedUrl,
+                thumbnail: processedUrl,
+                filename: 'Background Removed Image',
+                size: 0,
+                category: selectedBoard.category,
+                tags: ['background-removed'],
+                isFavorite: false,
+                uploadDate: new Date(),
+                source: 'processed' as const
+              };
+              
+              setBoards(prev => prev.map(board => 
+                board.id === selectedBoard.id 
+                  ? { ...board, images: [...board.images, processedImage] }
+                  : board
+              ));
+            }
+          }}
         />
       )}
     </div>

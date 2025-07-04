@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { X, Sparkles } from 'lucide-react';
 
 interface VisionBoardCustomizerProps {
-  onGenerate: (preferences: any) => void;
-  onClose: () => void;
+  onComplete?: (preferences: any) => void;
+  onGenerate?: (preferences: any) => void;
+  onClose?: () => void;
 }
 
-export default function VisionBoardCustomizer({ onGenerate, onClose }: VisionBoardCustomizerProps) {
+export default function VisionBoardCustomizer({ onComplete, onGenerate, onClose }: VisionBoardCustomizerProps) {
   const [preferences, setPreferences] = useState({
     aesthetic: '',
     venue: '',
@@ -54,7 +55,11 @@ export default function VisionBoardCustomizer({ onGenerate, onClose }: VisionBoa
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (preferences.aesthetic && preferences.venue && preferences.colors.length > 0 && preferences.season) {
-      onGenerate(preferences);
+      if (onGenerate) {
+        onGenerate(preferences);
+      } else if (onComplete) {
+        onComplete(preferences);
+      }
     }
   };
 
