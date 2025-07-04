@@ -39,3 +39,31 @@ export interface Task {
   completed: boolean;
   notes?: string;
 }
+
+export interface Budget {
+  id: string;
+  user_id: string;
+  name: string;
+  total_amount: number;
+  spent_amount: number;
+  currency: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Expense {
+  id: string;
+  budget_id: string;
+  user_id: string;
+  title: string;
+  amount: number;
+  due_date: string | null;
+  notes: string | null;
+  receipt_url: string | null;
+  task_id: string | null;
+  category: string | null;
+  is_recurring: boolean | null;
+  is_paid: boolean | null;
+  created_at: string;
+  updated_at: string;
+}

@@ -9,6 +9,98 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      budgets: {
+        Row: {
+          created_at: string
+          currency: string | null
+          id: string
+          name: string
+          spent_amount: number
+          total_amount: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string | null
+          id?: string
+          name: string
+          spent_amount?: number
+          total_amount?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string | null
+          id?: string
+          name?: string
+          spent_amount?: number
+          total_amount?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      expenses: {
+        Row: {
+          amount: number
+          budget_id: string
+          category: string | null
+          created_at: string
+          due_date: string | null
+          id: string
+          is_paid: boolean | null
+          is_recurring: boolean | null
+          notes: string | null
+          receipt_url: string | null
+          task_id: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          budget_id: string
+          category?: string | null
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          is_paid?: boolean | null
+          is_recurring?: boolean | null
+          notes?: string | null
+          receipt_url?: string | null
+          task_id?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          budget_id?: string
+          category?: string | null
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          is_paid?: boolean | null
+          is_recurring?: boolean | null
+          notes?: string | null
+          receipt_url?: string | null
+          task_id?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expenses_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "budgets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
