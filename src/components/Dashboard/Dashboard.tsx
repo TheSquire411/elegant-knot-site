@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 export default function Dashboard() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-sage-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-background to-secondary-100 p-4">
       <div className="max-w-6xl mx-auto pt-8">
         <h1 className="text-4xl font-serif font-bold text-primary-700 mb-8 text-center">
           Wedding Dashboard
