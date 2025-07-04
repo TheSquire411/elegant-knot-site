@@ -70,23 +70,23 @@ export default function LoginForm() {
         )}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sage-700 mb-2">Email</label>
+            <label className="block text-foreground mb-2">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 border border-sage-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full p-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               required
               disabled={loading}
             />
           </div>
           <div>
-            <label className="block text-sage-700 mb-2">Password</label>
+            <label className="block text-foreground mb-2">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 border border-sage-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full p-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               required
               disabled={loading}
             />
@@ -99,7 +99,7 @@ export default function LoginForm() {
             {loading ? 'Signing in...' : 'Login'}
           </button>
         </form>
-        <p className="text-center text-sage-600 mt-4">
+        <p className="text-center text-muted-foreground mt-4">
           Don't have an account?{' '}
           <Link to="/signup" className="text-primary-600 hover:underline">
             Sign up
