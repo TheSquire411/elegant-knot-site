@@ -45,16 +45,19 @@ export default function TaskCard({ date, tasks, onTaskToggle, onTaskUpdate }: Ta
   };
   
   return (
-    <div className={`flex-shrink-0 w-72 p-4 rounded-lg ${isToday ? 'bg-primary-100 border-2 border-primary-300' : 'bg-white border border-sage-200'} shadow-sm`}>
-      <div className="mb-3">
-        <h3 className="font-semibold text-primary-700">{dayName} {dateStr}</h3>
+    <div className={`flex-shrink-0 w-80 p-6 rounded-xl border transition-all duration-normal hover:shadow-lg ${
+      isToday ? 'bg-gradient-primary/10 border-primary shadow-lg' : 'bg-background border-border'
+    }`}>
+      <div className="mb-4">
+        <h3 className="font-heading text-lg text-foreground">{dayName}</h3>
+        <p className="text-sm text-muted-foreground">{dateStr}</p>
       </div>
       
-      <div className="space-y-2">
+      <div className="space-y-3">
         {tasks.map((task) => (
-          <div key={task.id} className="bg-white/50 rounded overflow-hidden">
+          <div key={task.id} className="bg-muted/50 rounded-lg overflow-hidden border border-border/50">
             <div 
-              className="flex items-start gap-3 p-2 cursor-pointer hover:bg-white/70 transition-colors"
+              className="flex items-start gap-4 p-4 cursor-pointer hover:bg-muted/80 transition-all duration-fast"
               onClick={() => handleTaskClick(task.id, task.notes)}
             >
               <button
@@ -62,73 +65,73 @@ export default function TaskCard({ date, tasks, onTaskToggle, onTaskUpdate }: Ta
                   e.stopPropagation();
                   onTaskToggle(task.id);
                 }}
-                className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
+                className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-fast ${
                   task.completed 
-                    ? 'bg-primary-500 border-primary-500 text-white' 
-                    : 'border-sage-300 hover:border-primary-400'
+                    ? 'bg-accent border-accent text-white shadow-md' 
+                    : 'border-border hover:border-primary'
                 }`}
               >
-                {task.completed && <Check className="w-3 h-3" />}
+                {task.completed && <Check className="w-4 h-4" />}
               </button>
               
               <div className="flex-1 min-w-0">
-                <p className={`text-sm ${task.completed ? 'line-through text-sage-500' : 'text-primary-700'}`}>
+                <p className={`text-sm font-medium ${task.completed ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
                   {task.title}
                 </p>
                 {task.time && (
-                  <div className="flex items-center gap-1 mt-1">
-                    <Clock className="w-3 h-3 text-sage-400" />
-                    <span className="text-xs text-sage-500">{task.time}</span>
+                  <div className="flex items-center gap-2 mt-2">
+                    <Clock className="w-4 h-4 text-primary" />
+                    <span className="text-sm text-muted-foreground font-medium">{task.time}</span>
                   </div>
                 )}
               </div>
             </div>
 
             {expandedTask === task.id && (
-              <div className="px-2 pb-2 border-t border-sage-100">
-                <div className="mt-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-medium text-sage-600">Notes</span>
+              <div className="px-4 pb-4 border-t border-border/50 bg-background/50">
+                <div className="mt-3">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm font-medium text-foreground">Notes</span>
                     {editingNotes !== task.id && (
                       <button
                         onClick={() => handleNotesEdit(task.id, task.notes)}
-                        className="text-sage-500 hover:text-primary-500 transition-colors"
+                        className="text-muted-foreground hover:text-primary transition-colors p-1 hover:bg-muted rounded"
                       >
-                        <Edit3 className="w-3 h-3" />
+                        <Edit3 className="w-4 h-4" />
                       </button>
                     )}
                   </div>
                   
                   {editingNotes === task.id ? (
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       <textarea
                         value={notesValue}
                         onChange={(e) => setNotesValue(e.target.value)}
                         placeholder="Add notes for this task..."
-                        className="w-full p-2 text-xs border border-sage-200 rounded resize-none focus:ring-1 focus:ring-primary-500 focus:border-transparent"
+                        className="w-full p-3 text-sm border border-border rounded-lg resize-none focus:ring-2 focus:ring-primary focus:border-primary transition-all bg-background"
                         rows={3}
                       />
-                      <div className="flex gap-1">
+                      <div className="flex gap-2">
                         <button
                           onClick={() => handleNotesSave(task.id)}
-                          className="flex items-center gap-1 px-2 py-1 bg-primary-500 text-white text-xs rounded hover:bg-primary-600 transition-colors"
+                          className="flex items-center gap-2 px-3 py-2 bg-gradient-primary text-white text-sm rounded-lg hover:shadow-md transition-all hover:scale-105 font-medium"
                         >
-                          <Save className="w-3 h-3" />
+                          <Save className="w-4 h-4" />
                           Save
                         </button>
                         <button
                           onClick={handleNotesCancel}
-                          className="flex items-center gap-1 px-2 py-1 bg-sage-200 text-sage-700 text-xs rounded hover:bg-sage-300 transition-colors"
+                          className="flex items-center gap-2 px-3 py-2 bg-muted text-muted-foreground text-sm rounded-lg hover:bg-secondary-200 hover:text-foreground transition-all font-medium"
                         >
-                          <X className="w-3 h-3" />
+                          <X className="w-4 h-4" />
                           Cancel
                         </button>
                       </div>
                     </div>
                   ) : (
-                    <p className="text-xs text-sage-600 bg-sage-50 p-2 rounded min-h-[2rem]">
-                      {task.notes || 'No notes added yet...'}
-                    </p>
+                    <div className="bg-background border border-border rounded-lg p-3 min-h-[3rem] text-sm text-foreground">
+                      {task.notes || <span className="text-muted-foreground italic">No notes added yet...</span>}
+                    </div>
                   )}
                 </div>
               </div>

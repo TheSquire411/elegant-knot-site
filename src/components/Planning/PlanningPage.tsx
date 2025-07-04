@@ -65,28 +65,28 @@ export default function PlanningPage() {
   const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-sage-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-muted to-secondary-50 p-4 lg:p-8">
       <div className="max-w-7xl mx-auto pt-8">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-serif font-bold text-primary-700 mb-4">
+        <div className="text-center mb-12 animate-fade-in">
+          <h1 className="font-heading text-foreground mb-6">
             Wedding Planning
           </h1>
-          <div className="text-sage-600">
-            <p className="text-lg">Welcome to Your Wedding Journey</p>
-            <p className="text-sm mt-1">You've completed {completionPercentage}% of your tasks</p>
+          <div className="text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-xl font-medium mb-2">Welcome to Your Wedding Journey</p>
+            <p className="text-base">You've completed {completionPercentage}% of your tasks</p>
           </div>
         </div>
 
         {/* Countdown Checklist */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-semibold text-primary-700">Countdown Checklist</h2>
+        <div className="bg-background rounded-xl shadow-lg p-8 mb-8 animate-slide-up border border-border">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-3xl font-heading text-foreground">Countdown Checklist</h2>
             <button
               onClick={() => setIsAddModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-primary text-white rounded-lg hover:shadow-lg transition-all duration-normal hover:scale-105 font-medium"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-5 h-5" />
               Add Task
             </button>
           </div>
