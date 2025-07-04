@@ -1,4 +1,7 @@
-import { Download, Share2, Heart, Camera, Palette } from 'lucide-react';
+import { Download, Share2, Heart, Camera, Palette, Search, Upload } from 'lucide-react';
+import { useState } from 'react';
+import UnsplashSearchModal from './UnsplashSearchModal';
+import PhotoUploadModal from './PhotoUploadModal';
 
 interface VisionBoardProps {
   board: {
@@ -18,6 +21,9 @@ interface VisionBoardProps {
 
 export default function VisionBoardGenerator({ board }: VisionBoardProps) {
   const { elements, preferences } = board;
+  const [showUnsplashModal, setShowUnsplashModal] = useState(false);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [boardElements, setBoardElements] = useState(elements);
 
   const handleDownload = () => {
     // In a real app, this would generate and download the vision board as an image
@@ -29,7 +35,38 @@ export default function VisionBoardGenerator({ board }: VisionBoardProps) {
     alert('Vision board sharing feature would be implemented here');
   };
 
-  const userPhotoCount = elements.userPhotos?.length || 0;
+  const handleAddUnsplashImages = (images: any[]) => {
+    const newImages = images.map(img => ({
+      id: img.id,
+      url: img.url,
+      thumbnail: img.thumbnail,
+      filename: img.description || 'Unsplash image',
+      size: 0,
+      category: 'Inspiration',
+      tags: img.tags,
+      isFavorite: false,
+      uploadDate: new Date(),
+      source: 'unsplash' as const,
+      author: img.author,
+      authorProfile: img.authorProfile
+    }));
+    
+    setBoardElements(prev => ({
+      ...prev,
+      userPhotos: [...(prev.userPhotos || []), ...newImages]
+    }));
+    setShowUnsplashModal(false);
+  };
+
+  const handleUploadPhotos = (photos: any[]) => {
+    setBoardElements(prev => ({
+      ...prev,
+      userPhotos: [...(prev.userPhotos || []), ...photos]
+    }));
+    setShowUploadModal(false);
+  };
+
+  const userPhotoCount = boardElements.userPhotos?.length || 0;
 
   return (
     <div className="space-y-8">
@@ -47,6 +84,20 @@ export default function VisionBoardGenerator({ board }: VisionBoardProps) {
               )}
             </div>
             <div className="flex items-center space-x-3">
+              <button
+                onClick={() => setShowUnsplashModal(true)}
+                className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors"
+                title="Search Unsplash"
+              >
+                <Search className="h-5 w-5 text-white" />
+              </button>
+              <button
+                onClick={() => setShowUploadModal(true)}
+                className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors"
+                title="Upload Photos"
+              >
+                <Upload className="h-5 w-5 text-white" />
+              </button>
               <button
                 onClick={handleShare}
                 className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors"
@@ -69,7 +120,7 @@ export default function VisionBoardGenerator({ board }: VisionBoardProps) {
             {/* Central Mood Image */}
             <div className="col-span-5 relative rounded-2xl overflow-hidden shadow-lg">
               <img
-                src={elements.moodImage}
+                src={boardElements.moodImage}
                 alt="Wedding mood"
                 className="w-full h-full object-cover"
               />
@@ -77,7 +128,7 @@ export default function VisionBoardGenerator({ board }: VisionBoardProps) {
               <div className="absolute bottom-4 left-4 text-white">
                 <h4 className="text-lg font-semibold">{preferences.aesthetic}</h4>
                 <p className="text-sm opacity-90">{preferences.season} Wedding</p>
-                {elements.userPhotos?.some(photo => photo.url === elements.moodImage) && (
+                {boardElements.userPhotos?.some(photo => photo.url === boardElements.moodImage) && (
                   <div className="flex items-center mt-1">
                     <Camera className="h-3 w-3 mr-1" />
                     <span className="text-xs">Your Photo</span>
@@ -94,7 +145,7 @@ export default function VisionBoardGenerator({ board }: VisionBoardProps) {
                   Color Palette
                 </h4>
                 <div className="space-y-2">
-                  {elements.colorPalette.map((color, index) => (
+                  {boardElements.colorPalette.map((color, index) => (
                     <div key={index} className="flex items-center space-x-3">
                       <div
                         className="w-8 h-8 rounded-full shadow-sm border-2 border-white"
@@ -111,14 +162,14 @@ export default function VisionBoardGenerator({ board }: VisionBoardProps) {
             <div className="col-span-4 space-y-3">
               <h4 className="text-sm font-semibold text-gray-800">Venue Inspiration</h4>
               <div className="grid grid-cols-2 gap-3 h-full">
-                {elements.venueImages.slice(0, 4).map((image, index) => (
+                {boardElements.venueImages.slice(0, 4).map((image, index) => (
                   <div key={index} className="rounded-lg overflow-hidden shadow-md relative">
                     <img
                       src={image}
                       alt={`Venue ${index + 1}`}
                       className="w-full h-full object-cover"
                     />
-                    {elements.userPhotos?.some(photo => photo.url === image) && (
+                    {boardElements.userPhotos?.some(photo => photo.url === image) && (
                       <div className="absolute top-2 right-2 bg-white/80 rounded-full p-1">
                         <Camera className="h-3 w-3 text-gray-600" />
                       </div>
@@ -135,7 +186,7 @@ export default function VisionBoardGenerator({ board }: VisionBoardProps) {
             <div className="bg-gray-50 rounded-2xl p-6">
               <h4 className="text-sm font-semibold text-gray-800 mb-4">Style Keywords</h4>
               <div className="flex flex-wrap gap-2">
-                {elements.keywords.map((keyword, index) => (
+                {boardElements.keywords.map((keyword, index) => (
                   <span
                     key={index}
                     className="px-3 py-1 bg-primary-100 text-primary-700 text-xs font-medium rounded-full"
@@ -150,14 +201,14 @@ export default function VisionBoardGenerator({ board }: VisionBoardProps) {
             <div className="col-span-3">
               <h4 className="text-sm font-semibold text-gray-800 mb-4">Design Elements</h4>
               <div className="grid grid-cols-3 gap-4">
-                {elements.decorElements.slice(0, 5).map((element, index) => (
+                {boardElements.decorElements.slice(0, 5).map((element, index) => (
                   <div key={index} className="rounded-lg overflow-hidden shadow-md h-24 relative">
                     <img
                       src={element}
                       alt={`Decor ${index + 1}`}
                       className="w-full h-full object-cover"
                     />
-                    {elements.userPhotos?.some(photo => photo.url === element) && (
+                    {boardElements.userPhotos?.some(photo => photo.url === element) && (
                       <div className="absolute top-1 right-1 bg-white/80 rounded-full p-1">
                         <Camera className="h-2 w-2 text-gray-600" />
                       </div>
@@ -179,7 +230,7 @@ export default function VisionBoardGenerator({ board }: VisionBoardProps) {
                 Your Personal Photos ({userPhotoCount})
               </h4>
               <div className="grid grid-cols-6 gap-3">
-                {elements.userPhotos?.slice(0, 6).map((photo, index) => (
+                {boardElements.userPhotos?.slice(0, 6).map((photo, index) => (
                   <div key={index} className="rounded-lg overflow-hidden shadow-md h-20 relative group">
                     <img
                       src={photo.thumbnail || photo.url}
@@ -188,8 +239,13 @@ export default function VisionBoardGenerator({ board }: VisionBoardProps) {
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors"></div>
                     <div className="absolute bottom-1 left-1 bg-white/80 rounded px-1">
-                      <span className="text-xs text-gray-600">{photo.category}</span>
+                      <span className="text-xs text-gray-600">{photo.source || photo.category}</span>
                     </div>
+                    {photo.source === 'unsplash' && (
+                      <div className="absolute top-1 right-1 bg-blue-500 text-white text-xs px-1 rounded">
+                        U
+                      </div>
+                    )}
                   </div>
                 ))}
                 {userPhotoCount > 6 && (
@@ -230,15 +286,29 @@ export default function VisionBoardGenerator({ board }: VisionBoardProps) {
                 <p className="text-gray-600">{userPhotoCount} photos integrated</p>
               </div>
               <div>
-                <h4 className="font-medium text-gray-700 mb-2">Photo Categories</h4>
+                <h4 className="font-medium text-gray-700 mb-2">Photo Sources</h4>
                 <p className="text-gray-600">
-                  {[...new Set(elements.userPhotos?.map(photo => photo.category))].join(', ')}
+                  {[...new Set(boardElements.userPhotos?.map(photo => photo.source || photo.category))].join(', ')}
                 </p>
               </div>
             </>
           )}
         </div>
       </div>
+
+      {/* Modals */}
+      <UnsplashSearchModal
+        isOpen={showUnsplashModal}
+        onClose={() => setShowUnsplashModal(false)}
+        onAddImages={handleAddUnsplashImages}
+      />
+      
+      <PhotoUploadModal
+        isOpen={showUploadModal}
+        onClose={() => setShowUploadModal(false)}
+        onPhotosUploaded={handleUploadPhotos}
+        existingPhotos={boardElements.userPhotos || []}
+      />
     </div>
   );
 }
