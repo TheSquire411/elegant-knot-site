@@ -1,16 +1,133 @@
+import { useState, useRef } from 'react';
+import { format, addDays } from 'date-fns';
+import { Plus, ChevronLeft, ChevronRight } from 'lucide-react';
+import TaskCard from './TaskCard';
+import AddTaskModal from './AddTaskModal';
+
+interface Task {
+  id: string;
+  title: string;
+  date: string;
+  time?: string;
+  completed: boolean;
+}
+
 export default function PlanningPage() {
+  const [tasks, setTasks] = useState<Task[]>([
+    { id: '1', title: 'Confirm all vendor details', date: '2025-07-07', time: '10:00', completed: false },
+    { id: '2', title: 'Pick wedding day survival kit', date: '2025-07-08', completed: false },
+    { id: '3', title: 'Send details to wedding party', date: '2025-07-09', time: '14:30', completed: false },
+    { id: '4', title: 'Pick up tux', date: '2025-07-10', completed: true },
+    { id: '5', title: 'Finish visiting venues', date: '2025-07-09', completed: false },
+  ]);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Generate 14 days starting from today
+  const days = Array.from({ length: 14 }, (_, i) => addDays(new Date(), i));
+
+  const getTasksForDate = (date: Date) => {
+    const dateStr = format(date, 'yyyy-MM-dd');
+    return tasks.filter(task => task.date === dateStr);
+  };
+
+  const handleTaskToggle = (taskId: string) => {
+    setTasks(tasks.map(task => 
+      task.id === taskId ? { ...task, completed: !task.completed } : task
+    ));
+  };
+
+  const handleAddTask = (newTask: { title: string; date: string; time?: string }) => {
+    const task: Task = {
+      id: Date.now().toString(),
+      ...newTask,
+      completed: false
+    };
+    setTasks([...tasks, task]);
+  };
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+    }
+  };
+
+  const completedTasks = tasks.filter(task => task.completed).length;
+  const totalTasks = tasks.length;
+  const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-sage-50 p-4">
-      <div className="max-w-4xl mx-auto pt-8">
-        <h1 className="text-4xl font-serif font-bold text-primary-700 mb-8 text-center">
-          Wedding Planning
-        </h1>
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <p className="text-sage-700 text-center">
-            Your wedding planning tools will appear here
-          </p>
+      <div className="max-w-7xl mx-auto pt-8">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-serif font-bold text-primary-700 mb-4">
+            Wedding Planning
+          </h1>
+          <div className="text-sage-600">
+            <p className="text-lg">Welcome to Your Wedding Journey</p>
+            <p className="text-sm mt-1">You've completed {completionPercentage}% of your tasks</p>
+          </div>
+        </div>
+
+        {/* Countdown Checklist */}
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-semibold text-primary-700">Countdown Checklist</h2>
+            <button
+              onClick={() => setIsAddModalOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              Add Task
+            </button>
+          </div>
+
+          {/* Scrollable Task Cards */}
+          <div className="relative">
+            <button
+              onClick={scrollLeft}
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2 hover:bg-sage-50 transition-colors"
+            >
+              <ChevronLeft className="w-5 h-5 text-sage-600" />
+            </button>
+
+            <div
+              ref={scrollContainerRef}
+              className="flex gap-4 overflow-x-auto scrollbar-hide px-12 py-2"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              {days.map((day) => (
+                <TaskCard
+                  key={format(day, 'yyyy-MM-dd')}
+                  date={day}
+                  tasks={getTasksForDate(day)}
+                  onTaskToggle={handleTaskToggle}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={scrollRight}
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2 hover:bg-sage-50 transition-colors"
+            >
+              <ChevronRight className="w-5 h-5 text-sage-600" />
+            </button>
+          </div>
         </div>
       </div>
+
+      <AddTaskModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onAddTask={handleAddTask}
+      />
     </div>
   );
 }
