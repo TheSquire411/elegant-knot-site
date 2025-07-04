@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Plus, Edit3, Trash2, Move, Copy, Eye, Settings, Image, Type, Layout, Users, Calendar, Gift, MapPin, Heart, Star, Camera, Music, Flower } from 'lucide-react';
+import { useState } from 'react';
+import { Plus, Edit3, Trash2, Move, Copy, Eye, Layout, Users, Calendar, Gift, MapPin, Heart, Star, Camera } from 'lucide-react';
 
 interface Section {
   id: string;
@@ -27,7 +27,7 @@ interface SectionBuilderProps {
 export default function SectionBuilder({ sections, onUpdateSections, inspirationImages }: SectionBuilderProps) {
   const [editingSection, setEditingSection] = useState<string | null>(null);
   const [showSectionLibrary, setShowSectionLibrary] = useState(false);
-  const [draggedSection, setDraggedSection] = useState<string | null>(null);
+  // const [draggedSection, setDraggedSection] = useState<string | null>(null);
 
   const sectionTypes = [
     { type: 'hero', name: 'Hero Section', icon: Star, description: 'Main banner with names and date' },
@@ -145,20 +145,20 @@ export default function SectionBuilder({ sections, onUpdateSections, inspiration
     }
   };
 
-  const reorderSections = (dragIndex: number, hoverIndex: number) => {
-    const draggedSection = sections[dragIndex];
-    const newSections = [...sections];
-    newSections.splice(dragIndex, 1);
-    newSections.splice(hoverIndex, 0, draggedSection);
+  // const reorderSections = (dragIndex: number, hoverIndex: number) => {
+  //   const draggedSection = sections[dragIndex];
+  //   const newSections = [...sections];
+  //   newSections.splice(dragIndex, 1);
+  //   newSections.splice(hoverIndex, 0, draggedSection);
     
-    // Update order values
-    const reorderedSections = newSections.map((section, index) => ({
-      ...section,
-      order: index
-    }));
+  //   // Update order values
+  //   const reorderedSections = newSections.map((section, index) => ({
+  //     ...section,
+  //     order: index
+  //   }));
     
-    onUpdateSections(reorderedSections);
-  };
+  //   onUpdateSections(reorderedSections);
+  // };
 
   const getSectionIcon = (type: Section['type']) => {
     const sectionType = sectionTypes.find(s => s.type === type);
@@ -186,7 +186,7 @@ export default function SectionBuilder({ sections, onUpdateSections, inspiration
       <div className="space-y-4">
         {sections
           .sort((a, b) => a.order - b.order)
-          .map((section, index) => {
+          .map((section) => {
             const SectionIcon = getSectionIcon(section.type);
             return (
               <div
@@ -295,7 +295,7 @@ export default function SectionBuilder({ sections, onUpdateSections, inspiration
                   return (
                     <button
                       key={sectionType.type}
-                      onClick={() => addSection(sectionType.type)}
+                      onClick={() => addSection(sectionType.type as Section['type'])}
                       className="p-6 border border-gray-200 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-all text-left"
                     >
                       <Icon className="h-8 w-8 text-primary-500 mb-3" />
@@ -431,7 +431,7 @@ function HeroEditor({ content, onUpdate }: { content: any; onUpdate: (updates: a
   );
 }
 
-function StoryEditor({ content, onUpdate, inspirationImages }: { content: any; onUpdate: (updates: any) => void; inspirationImages: any[] }) {
+function StoryEditor({ content, onUpdate }: { content: any; onUpdate: (updates: any) => void; inspirationImages: any[] }) {
   return (
     <div className="space-y-4">
       <div>

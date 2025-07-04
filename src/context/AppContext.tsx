@@ -8,6 +8,7 @@ interface User {
   styleProfile?: StyleProfile;
   weddingDate?: string;
   isPro?: boolean;
+  role?: 'admin' | 'user';
 }
 
 interface AppState {

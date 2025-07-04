@@ -1,5 +1,4 @@
-import React from 'react';
-import { Crown, Sparkles } from 'lucide-react';
+import { Crown } from 'lucide-react';
 
 interface ProBadgeProps {
   size?: 'sm' | 'md' | 'lg';

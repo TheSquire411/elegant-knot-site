@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Palette, Type, Layout, Image, Code, Smartphone, Monitor, Tablet, Save, Download, Upload, Layers, Grid, AlignLeft, AlignCenter, AlignRight, Bold, Italic, Underline, RotateCcw, Eye, Settings } from 'lucide-react';
+import { Palette, Type, Layout, Code, Smartphone, Monitor, Tablet, Save, Download, Upload, Layers, RotateCcw, Eye } from 'lucide-react';
 
 interface CustomizationOptions {
   colors: {
@@ -42,7 +42,7 @@ interface AdvancedCustomizerProps {
   selectedTemplate: any;
 }
 
-export default function AdvancedCustomizer({ websiteData, onUpdate, selectedTemplate }: AdvancedCustomizerProps) {
+export default function AdvancedCustomizer({ onUpdate, selectedTemplate }: AdvancedCustomizerProps) {
   const [activeTab, setActiveTab] = useState<'colors' | 'typography' | 'layout' | 'animations' | 'responsive' | 'custom-css'>('colors');
   const [previewDevice, setPreviewDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [customizations, setCustomizations] = useState<CustomizationOptions>({

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Users, Plus, Trash2, Edit3, Download, Mail, Calendar, CheckCircle, XCircle, Clock, Filter, Search } from 'lucide-react';
+import { useState } from 'react';
+import { Users, Plus, Trash2, Edit3, Download, Mail, CheckCircle, XCircle, Clock, Search } from 'lucide-react';
 
 interface RSVPResponse {
   id: string;
@@ -22,7 +22,7 @@ interface RSVPManagerProps {
 
 export default function RSVPManager({ websiteData, onUpdate }: RSVPManagerProps) {
   const [activeTab, setActiveTab] = useState<'settings' | 'responses' | 'guests'>('settings');
-  const [rsvpResponses, setRsvpResponses] = useState<RSVPResponse[]>([
+  const [rsvpResponses] = useState<RSVPResponse[]>([
     {
       id: '1',
       guestName: 'Sarah Johnson',
@@ -244,7 +244,7 @@ export default function RSVPManager({ websiteData, onUpdate }: RSVPManagerProps)
             </div>
 
             <div className="space-y-4">
-              {websiteData.rsvp.questions.map((question: any, index: number) => (
+              {websiteData.rsvp.questions.map((question: any) => (
                 <div key={question.id} className="p-4 border border-gray-200 rounded-lg">
                   <div className="grid md:grid-cols-3 gap-4 mb-4">
                     <div className="md:col-span-2">

@@ -1,6 +1,5 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, X, Crown, Zap } from 'lucide-react';
+import { Crown, Zap, Sparkles } from 'lucide-react';
 import Modal from './Modal';
 
 interface UpgradeModalProps {

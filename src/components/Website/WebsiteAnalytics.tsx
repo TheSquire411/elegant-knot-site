@@ -1,5 +1,4 @@
-import React from 'react';
-import { TrendingUp, Users, Globe, Calendar, Eye, MousePointer, Smartphone, Monitor } from 'lucide-react';
+import { TrendingUp, Users, Globe, Eye, MousePointer, Smartphone, Monitor } from 'lucide-react';
 
 interface WebsiteAnalyticsProps {
   websiteData: any;
@@ -146,7 +145,7 @@ export default function WebsiteAnalytics({ websiteData }: WebsiteAnalyticsProps)
         <div className="bg-white rounded-lg p-6 shadow">
           <h3 className="text-lg font-semibold text-gray-800 mb-6">Weekly Traffic</h3>
           <div className="space-y-4">
-            {analyticsData.weeklyData.map((day, index) => (
+            {analyticsData.weeklyData.map((day) => (
               <div key={day.day} className="flex items-center space-x-4">
                 <div className="w-12 text-sm text-gray-600 font-medium">{day.day}</div>
                 <div className="flex-1">

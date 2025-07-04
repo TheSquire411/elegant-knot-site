@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Palette, Type, Image, MapPin, Calendar, Gift, Plane, Sparkles, Save, Upload, Plus, Trash2, Edit3 } from 'lucide-react';
+import { useState } from 'react';
+import { Palette, Image, Calendar, Sparkles, Save, Upload, Plus, Trash2, Edit3 } from 'lucide-react';
 import { useDeepseek } from '../../hooks/useDeepseek';
 
 interface WebsiteBuilderProps {
@@ -55,7 +55,7 @@ export default function WebsiteBuilder({ websiteData, onUpdate, onGenerateStory,
         additionalInfo: 'A beautiful love story'
       };
 
-      await generateStory(coupleInfo);
+      await generateStory(JSON.stringify(coupleInfo));
     } catch (error) {
       console.error('Failed to generate story:', error);
       // Fallback to the original method

@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { Search, Filter, Eye, Heart, Download, Palette, Layout, Sparkles, Star, Crown } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { Search, Eye, Heart, Download, Layout, Star, Crown } from 'lucide-react';
 
 interface Template {
   id: string;

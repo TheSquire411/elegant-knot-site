@@ -20,3 +20,13 @@ export interface StyleProfile {
 export interface WeddingData {
   weddingDate?: string;
 }
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  avatar?: string;
+  role?: 'admin' | 'user';
+  styleProfile?: StyleProfile;
+  weddingDate?: string;
+}
