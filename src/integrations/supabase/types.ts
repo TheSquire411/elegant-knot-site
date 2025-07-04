@@ -101,6 +101,36 @@ export type Database = {
           },
         ]
       }
+      feature_usage: {
+        Row: {
+          created_at: string
+          feature_type: string
+          id: string
+          reset_date: string
+          updated_at: string
+          usage_count: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          feature_type: string
+          id?: string
+          reset_date: string
+          updated_at?: string
+          usage_count?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          feature_type?: string
+          id?: string
+          reset_date?: string
+          updated_at?: string
+          usage_count?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -108,6 +138,11 @@ export type Database = {
           full_name: string | null
           id: string
           role: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          subscription_end_date: string | null
+          subscription_status: Database["public"]["Enums"]["subscription_status"]
+          subscription_tier: Database["public"]["Enums"]["subscription_tier"]
           updated_at: string
           user_id: string
           username: string | null
@@ -118,6 +153,11 @@ export type Database = {
           full_name?: string | null
           id?: string
           role?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_end_date?: string | null
+          subscription_status?: Database["public"]["Enums"]["subscription_status"]
+          subscription_tier?: Database["public"]["Enums"]["subscription_tier"]
           updated_at?: string
           user_id: string
           username?: string | null
@@ -128,9 +168,107 @@ export type Database = {
           full_name?: string | null
           id?: string
           role?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_end_date?: string | null
+          subscription_status?: Database["public"]["Enums"]["subscription_status"]
+          subscription_tier?: Database["public"]["Enums"]["subscription_tier"]
           updated_at?: string
           user_id?: string
           username?: string | null
+        }
+        Relationships: []
+      }
+      subscription_tiers: {
+        Row: {
+          advanced_analytics: boolean
+          ai_conversations_limit: number | null
+          budget_trackers_limit: number | null
+          collaboration_tools: boolean
+          created_at: string
+          custom_domain: boolean
+          id: string
+          name: string
+          photo_uploads_limit: number | null
+          price_monthly: number
+          price_yearly: number
+          priority_support: boolean
+          tier: Database["public"]["Enums"]["subscription_tier"]
+          updated_at: string
+          vision_boards_limit: number | null
+        }
+        Insert: {
+          advanced_analytics?: boolean
+          ai_conversations_limit?: number | null
+          budget_trackers_limit?: number | null
+          collaboration_tools?: boolean
+          created_at?: string
+          custom_domain?: boolean
+          id?: string
+          name: string
+          photo_uploads_limit?: number | null
+          price_monthly?: number
+          price_yearly?: number
+          priority_support?: boolean
+          tier: Database["public"]["Enums"]["subscription_tier"]
+          updated_at?: string
+          vision_boards_limit?: number | null
+        }
+        Update: {
+          advanced_analytics?: boolean
+          ai_conversations_limit?: number | null
+          budget_trackers_limit?: number | null
+          collaboration_tools?: boolean
+          created_at?: string
+          custom_domain?: boolean
+          id?: string
+          name?: string
+          photo_uploads_limit?: number | null
+          price_monthly?: number
+          price_yearly?: number
+          priority_support?: boolean
+          tier?: Database["public"]["Enums"]["subscription_tier"]
+          updated_at?: string
+          vision_boards_limit?: number | null
+        }
+        Relationships: []
+      }
+      user_subscriptions: {
+        Row: {
+          canceled_at: string | null
+          created_at: string
+          end_date: string | null
+          id: string
+          start_date: string
+          status: Database["public"]["Enums"]["subscription_status"]
+          stripe_subscription_id: string | null
+          tier: Database["public"]["Enums"]["subscription_tier"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          canceled_at?: string | null
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          start_date?: string
+          status: Database["public"]["Enums"]["subscription_status"]
+          stripe_subscription_id?: string | null
+          tier: Database["public"]["Enums"]["subscription_tier"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          canceled_at?: string | null
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          start_date?: string
+          status?: Database["public"]["Enums"]["subscription_status"]
+          stripe_subscription_id?: string | null
+          tier?: Database["public"]["Enums"]["subscription_tier"]
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -231,10 +369,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      can_use_feature: {
+        Args: { p_user_id: string; p_feature_type: string }
+        Returns: boolean
+      }
+      get_current_usage: {
+        Args: { p_user_id: string; p_feature_type: string }
+        Returns: number
+      }
+      increment_usage: {
+        Args: { p_user_id: string; p_feature_type: string }
+        Returns: number
+      }
     }
     Enums: {
-      [_ in never]: never
+      subscription_status: "active" | "canceled" | "expired" | "trialing"
+      subscription_tier: "free" | "basic" | "premium" | "enterprise"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -349,6 +499,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      subscription_status: ["active", "canceled", "expired", "trialing"],
+      subscription_tier: ["free", "basic", "premium", "enterprise"],
+    },
   },
 } as const
