@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { X, Sparkles } from 'lucide-react';
+import { X, Sparkles, Loader2 } from 'lucide-react';
+import { supabase } from '../../integrations/supabase/client';
 
 interface VisionBoardCustomizerProps {
   onComplete?: (preferences: any) => void;
@@ -52,47 +53,70 @@ export default function VisionBoardCustomizer({ onComplete, onGenerate, onClose 
 
   const seasonOptions = ['Spring', 'Summer', 'Fall', 'Winter'];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (preferences.aesthetic && preferences.venue && preferences.colors.length > 0 && preferences.season) {
-      // Create mock elements data based on preferences
-      const mockElements = {
-        colorPalette: preferences.colors,
-        venueImages: [
-          'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=300&fit=crop',
-          'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400&h=300&fit=crop',
-          'https://images.unsplash.com/photo-1549417229-aa67ffaaab29?w=400&h=300&fit=crop',
-          'https://images.unsplash.com/photo-1464207687429-7505649dae38?w=400&h=300&fit=crop'
-        ],
-        moodImage: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=500&h=400&fit=crop',
-        decorElements: [
-          'https://images.unsplash.com/photo-1478146896981-b80fe463b330?w=300&h=200&fit=crop',
-          'https://images.unsplash.com/photo-1464207687429-7505649dae38?w=300&h=200&fit=crop',
-          'https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=300&h=200&fit=crop',
-          'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=300&h=200&fit=crop',
-          'https://images.unsplash.com/photo-1549417229-aa67ffaaab29?w=300&h=200&fit=crop'
-        ],
-        keywords: [
-          preferences.aesthetic.split(' ')[0],
-          preferences.season.toLowerCase(),
-          preferences.venue.split('/')[0].toLowerCase(),
-          'romantic',
-          'elegant',
-          'timeless'
-        ],
-        userPhotos: []
-      };
+      setIsGenerating(true);
+      
+      try {
+        const { data, error } = await supabase.functions.invoke('generate-vision-board', {
+          body: preferences
+        });
 
-      const boardData = {
-        id: crypto.randomUUID(),
-        preferences,
-        elements: mockElements
-      };
+        if (error) {
+          throw error;
+        }
 
-      if (onGenerate) {
-        onGenerate(boardData);
-      } else if (onComplete) {
-        onComplete(boardData);
+        if (onGenerate) {
+          onGenerate(data);
+        } else if (onComplete) {
+          onComplete(data);
+        }
+      } catch (error) {
+        console.error('Error generating vision board:', error);
+        // Fallback to mock data if API fails
+        const mockElements = {
+          colorPalette: preferences.colors,
+          venueImages: [
+            'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1549417229-aa67ffaaab29?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1464207687429-7505649dae38?w=400&h=300&fit=crop'
+          ],
+          moodImage: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=500&h=400&fit=crop',
+          decorElements: [
+            'https://images.unsplash.com/photo-1478146896981-b80fe463b330?w=300&h=200&fit=crop',
+            'https://images.unsplash.com/photo-1464207687429-7505649dae38?w=300&h=200&fit=crop',
+            'https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=300&h=200&fit=crop',
+            'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=300&h=200&fit=crop',
+            'https://images.unsplash.com/photo-1549417229-aa67ffaaab29?w=300&h=200&fit=crop'
+          ],
+          keywords: [
+            preferences.aesthetic.split(' ')[0],
+            preferences.season.toLowerCase(),
+            preferences.venue.split('/')[0].toLowerCase(),
+            'romantic',
+            'elegant',
+            'timeless'
+          ],
+          userPhotos: []
+        };
+
+        const boardData = {
+          id: crypto.randomUUID(),
+          preferences,
+          elements: mockElements
+        };
+
+        if (onGenerate) {
+          onGenerate(boardData);
+        } else if (onComplete) {
+          onComplete(boardData);
+        }
+      } finally {
+        setIsGenerating(false);
       }
     }
   };
@@ -244,10 +268,17 @@ export default function VisionBoardCustomizer({ onComplete, onGenerate, onClose 
           <div className="flex space-x-4 pt-4">
             <button
               type="submit"
-              disabled={!preferences.aesthetic || !preferences.venue || preferences.colors.length === 0 || !preferences.season}
-              className="flex-1 bg-primary-500 text-white py-3 rounded-lg font-semibold hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              disabled={!preferences.aesthetic || !preferences.venue || preferences.colors.length === 0 || !preferences.season || isGenerating}
+              className="flex-1 bg-primary-500 text-white py-3 rounded-lg font-semibold hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
             >
-              Generate Vision Board
+              {isGenerating ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                'Generate Vision Board'
+              )}
             </button>
             <button
               type="button"
