@@ -2,6 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    /* Primary Colors */
+    --primary-50: 253 242 248;
+    --primary-100: 252 231 243;
+    --primary-200: 251 207 232;
+    --primary-300: 249 168 212;
+    --primary-400: 244 114 182;
+    --primary-500: 248 187 217;
+    --primary-600: 219 39 119;
+    --primary-700: 190 24 93;
+    --primary-800: 157 23 77;
+    --primary-900: 131 24 67;
+
+    /* Sage Colors */
+    --sage-50: 246 247 246;
+    --sage-100: 227 232 227;
+    --sage-200: 199 210 199;
+    --sage-300: 156 175 136;
+    --sage-400: 122 145 102;
+    --sage-500: 95 122 79;
+    --sage-600: 74 97 63;
+    --sage-700: 61 79 52;
+    --sage-800: 51 66 44;
+    --sage-900: 44 56 39;
+
+    /* Gold Colors */
+    --gold-50: 254 253 248;
+    --gold-100: 254 250 235;
+    --gold-200: 253 242 199;
+    --gold-300: 252 229 136;
+    --gold-400: 212 175 55;
+    --gold-500: 234 179 8;
+    --gold-600: 202 138 4;
+    --gold-700: 161 98 7;
+    --gold-800: 133 77 14;
+    --gold-900: 113 63 18;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+  }
+}
+
 /* Custom slider styles */
 .slider::-webkit-slider-thumb {
   appearance: none;
