@@ -1,24 +1,30 @@
-import React, { createContext, useContext, useReducer, ReactNode } from 'react';
-import { GalleryImage, StyleProfile } from '../types';
+import React, { createContext, useContext, useReducer, ReactNode, useEffect } from 'react';
+import { User as AuthUser, Session } from '@supabase/supabase-js';
+import { supabase } from '../integrations/supabase/client';
+import { GalleryImage } from '../types';
 
-interface User {
+interface Profile {
   id: string;
-  email: string;
-  name: string;
-  styleProfile?: StyleProfile;
-  weddingDate?: string;
-  isPro?: boolean;
-  role?: 'admin' | 'user';
+  user_id: string;
+  username: string | null;
+  full_name: string | null;
+  avatar_url: string | null;
+  role: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 interface AppState {
-  user: User | null;
+  user: AuthUser | null;
+  profile: Profile | null;
+  session: Session | null;
   isLoading: boolean;
   inspirationImages: GalleryImage[];
 }
 
 type AppAction = 
-  | { type: 'SET_USER'; payload: User }
+  | { type: 'SET_AUTH'; payload: { user: AuthUser | null; session: Session | null } }
+  | { type: 'SET_PROFILE'; payload: Profile | null }
   | { type: 'LOGOUT' }
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'ADD_INSPIRATION_IMAGE'; payload: GalleryImage }
@@ -28,16 +34,31 @@ type AppAction =
 
 const initialState: AppState = {
   user: null,
-  isLoading: false,
+  profile: null,
+  session: null,
+  isLoading: true,
   inspirationImages: [],
 };
 
 function appReducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
-    case 'SET_USER':
-      return { ...state, user: action.payload };
+    case 'SET_AUTH':
+      return { 
+        ...state, 
+        user: action.payload.user, 
+        session: action.payload.session,
+        isLoading: false 
+      };
+    case 'SET_PROFILE':
+      return { ...state, profile: action.payload };
     case 'LOGOUT':
-      return { ...state, user: null };
+      return { 
+        ...state, 
+        user: null, 
+        profile: null, 
+        session: null, 
+        inspirationImages: [] 
+      };
     case 'SET_LOADING':
       return { ...state, isLoading: action.payload };
     case 'ADD_INSPIRATION_IMAGE':
@@ -55,7 +76,10 @@ function appReducer(state: AppState, action: AppAction): AppState {
         inspirationImages: state.inspirationImages.filter(img => img.id !== action.payload)
       };
     case 'UPGRADE_USER_TIER':
-      return { ...state, user: state.user ? { ...state.user, isPro: true } : null };
+      return { 
+        ...state, 
+        profile: state.profile ? { ...state.profile, role: 'admin' } : state.profile 
+      };
     default:
       return state;
   }
@@ -64,6 +88,7 @@ function appReducer(state: AppState, action: AppAction): AppState {
 interface AppContextType {
   state: AppState;
   dispatch: React.Dispatch<AppAction>;
+  signOut: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -75,8 +100,83 @@ interface AppProviderProps {
 export function AppProvider({ children }: AppProviderProps) {
   const [state, dispatch] = useReducer(appReducer, initialState);
 
+  const signOut = async () => {
+    try {
+      // Clean up any auth state
+      const cleanupAuthState = () => {
+        Object.keys(localStorage).forEach((key) => {
+          if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
+            localStorage.removeItem(key);
+          }
+        });
+      };
+
+      cleanupAuthState();
+      await supabase.auth.signOut({ scope: 'global' });
+      dispatch({ type: 'LOGOUT' });
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
+  useEffect(() => {
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        dispatch({ 
+          type: 'SET_AUTH', 
+          payload: { user: session?.user ?? null, session } 
+        });
+
+        // Defer profile fetching to prevent deadlocks
+        if (session?.user) {
+          setTimeout(() => {
+            fetchUserProfile(session.user.id);
+          }, 0);
+        } else {
+          dispatch({ type: 'SET_PROFILE', payload: null });
+        }
+      }
+    );
+
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      dispatch({ 
+        type: 'SET_AUTH', 
+        payload: { user: session?.user ?? null, session } 
+      });
+
+      if (session?.user) {
+        setTimeout(() => {
+          fetchUserProfile(session.user.id);
+        }, 0);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching profile:', error);
+      } else {
+        dispatch({ type: 'SET_PROFILE', payload: profile });
+      }
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+    }
+  };
+
   return (
-    <AppContext.Provider value={{ state, dispatch }}>
+    <AppContext.Provider value={{ state, dispatch, signOut }}>
       {children}
     </AppContext.Provider>
   );

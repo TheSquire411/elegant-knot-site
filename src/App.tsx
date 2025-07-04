@@ -23,6 +23,18 @@ function ProtectedRoute() {
   const { state } = useApp();
   const location = useLocation();
 
+  // Show loading spinner while checking auth
+  if (state.isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-500"></div>
+          <p className="mt-4 text-sage-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!state.user) {
     // Redirect them to the /login page, but save the current location they were
     // trying to go to. This allows us to send them along to that page after they

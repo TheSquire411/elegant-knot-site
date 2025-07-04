@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Calculator, DollarSign, Users, MapPin, Sparkles, TrendingUp, AlertCircle, Download, Save } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
 
 interface BudgetBreakdown {
   category: string;
@@ -16,12 +15,11 @@ interface BudgetCalculatorProps {
 }
 
 export default function BudgetCalculator({ onSaveBudget }: BudgetCalculatorProps) {
-  const { state } = useApp();
   const [formData, setFormData] = useState({
-    style: state.user?.styleProfile?.style || '',
-    guestCount: state.user?.styleProfile?.guestCount || 100,
+    style: '',
+    guestCount: 100,
     location: '',
-    totalBudget: state.user?.styleProfile?.budget || 25000,
+    totalBudget: 25000,
     mustHaves: '',
     constraints: ''
   });

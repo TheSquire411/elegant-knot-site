@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Calendar, Clock, AlertTriangle, CheckCircle, Users, MapPin, Camera, Music, Flower, ChefHat, Car, Gift, Download, Save, Plus } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
 
 interface Vendor {
   id: string;
@@ -43,8 +42,7 @@ interface TimelineGeneratorProps {
 }
 
 export default function TimelineGenerator({ onSaveTimeline }: TimelineGeneratorProps) {
-  const { state } = useApp();
-  const [weddingDate, setWeddingDate] = useState(state.user?.weddingDate || '');
+  const [weddingDate, setWeddingDate] = useState('');
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [timeline, setTimeline] = useState<TimelineTask[]>([]);
   const [conflicts, setConflicts] = useState<TimelineConflict[]>([]);
