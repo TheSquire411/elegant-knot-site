@@ -5,7 +5,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-sage-50 flex flex-col items-center justify-center p-4">
       <div className="text-center max-w-2xl">
         <h1 className="text-5xl font-serif font-bold text-primary-700 mb-6">
-          Blissful
+          Wedly
         </h1>
         <p className="text-lg text-sage-700 mb-8">
           Your perfect wedding planner - turning dreams into reality

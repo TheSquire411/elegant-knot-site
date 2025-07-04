@@ -53,7 +53,7 @@ export default function UpgradeModal({ isOpen, onClose, featureName, description
         
         <p className="text-lg text-gray-700 mb-4">
           This premium feature is available exclusively for{' '}
-          <span className="font-semibold text-primary-600">Blissful Pro</span> members.
+          <span className="font-semibold text-primary-600">Wedly Pro</span> members.
         </p>
         
         {description && (

@@ -11,7 +11,7 @@ export default function UpgradePage() {
     // In a real app, this would trigger a payment flow (e.g., with Stripe)
     // For this demo, we'll just update the user's state.
     dispatch({ type: 'UPGRADE_USER_TIER' });
-    alert('Congratulations! You are now a Blissful Pro member.');
+    alert('Congratulations! You are now a Wedly Pro member.');
     navigate('/dashboard');
   };
 
@@ -63,7 +63,7 @@ export default function UpgradePage() {
             <Sparkles className="h-12 w-12 text-primary-500" />
           </div>
           <h1 className="text-5xl md:text-6xl font-serif font-bold text-gray-800 mb-6">
-            Unlock <span className="text-primary-500">Blissful Pro</span>
+            Unlock <span className="text-primary-500">Wedly Pro</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Get unlimited access to all our premium features and plan the perfect wedding with ease. 
@@ -101,7 +101,7 @@ export default function UpgradePage() {
               </span>
             </div>
             <div className="text-center mb-8">
-              <h3 className="text-2xl font-semibold mb-2">Blissful Pro</h3>
+              <h3 className="text-2xl font-semibold mb-2">Wedly Pro</h3>
               <div className="text-5xl font-bold mb-2">$99</div>
               <p className="text-primary-100">One-time payment, lifetime access</p>
             </div>
@@ -138,7 +138,7 @@ export default function UpgradePage() {
         {/* Feature Highlights */}
         <div className="bg-white rounded-2xl shadow-lg p-8">
           <h2 className="text-3xl font-serif font-bold text-gray-800 text-center mb-12">
-            Why Couples Love Blissful Pro
+            Why Couples Love Wedly Pro
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
@@ -202,7 +202,7 @@ export default function UpgradePage() {
           <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
           <h3 className="text-2xl font-semibold text-gray-800 mb-4">30-Day Money Back Guarantee</h3>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            We're confident you'll love Blissful Pro. If you're not completely satisfied within 30 days, 
+            We're confident you'll love Wedly Pro. If you're not completely satisfied within 30 days, 
             we'll refund your money, no questions asked.
           </p>
         </div>
