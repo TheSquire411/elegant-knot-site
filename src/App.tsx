@@ -5,7 +5,7 @@ function App() {
         <h1 className="text-4xl font-serif font-bold text-center text-primary-600 mb-8">
           Blissful - Your Perfect Wedding Planner
         </h1>
-        <p className="text-center text-sage-700 text-lg">
+        <p className="text-center text-primary-700 text-lg">
           Create your dream wedding with our beautiful planning tools
         </p>
       </div>
