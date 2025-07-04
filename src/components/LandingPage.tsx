@@ -6,7 +6,7 @@ export default function LandingPage() {
   const { state } = useApp();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-muted to-secondary-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-background via-secondary-50 to-secondary-100 flex flex-col">
       {/* Header with Auth Status */}
       <header className="flex justify-between items-center p-6">
         <h2 className="text-2xl font-heading font-bold text-foreground">Wedly</h2>
