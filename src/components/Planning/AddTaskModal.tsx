@@ -5,13 +5,14 @@ import { X, Calendar, Clock, Plus } from 'lucide-react';
 interface AddTaskModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddTask: (task: { title: string; date: string; time?: string }) => void;
+  onAddTask: (task: { title: string; date: string; time?: string; notes?: string }) => void;
 }
 
 export default function AddTaskModal({ isOpen, onClose, onAddTask }: AddTaskModalProps) {
   const [title, setTitle] = useState('');
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [time, setTime] = useState('');
+  const [notes, setNotes] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,10 +20,12 @@ export default function AddTaskModal({ isOpen, onClose, onAddTask }: AddTaskModa
       onAddTask({
         title: title.trim(),
         date,
-        time: time || undefined
+        time: time || undefined,
+        notes: notes.trim() || undefined
       });
       setTitle('');
       setTime('');
+      setNotes('');
       onClose();
     }
   };
@@ -84,6 +87,19 @@ export default function AddTaskModal({ isOpen, onClose, onAddTask }: AddTaskModa
                 className="w-full p-3 border border-sage-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-sage-700 mb-1">
+              Notes (Optional)
+            </label>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Any additional notes or details..."
+              className="w-full p-3 border border-sage-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+              rows={3}
+            />
           </div>
 
           <div className="flex gap-3 pt-4">

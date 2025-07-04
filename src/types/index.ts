@@ -30,3 +30,12 @@ export interface User {
   styleProfile?: StyleProfile;
   weddingDate?: string;
 }
+
+export interface Task {
+  id: string;
+  title: string;
+  date: string;
+  time?: string;
+  completed: boolean;
+  notes?: string;
+}

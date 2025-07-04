@@ -1,30 +1,26 @@
 import { useState, useRef } from 'react';
-import { format, addDays } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import TaskCard from './TaskCard';
 import AddTaskModal from './AddTaskModal';
-
-interface Task {
-  id: string;
-  title: string;
-  date: string;
-  time?: string;
-  completed: boolean;
-}
+import { Task } from '../../types';
 
 export default function PlanningPage() {
   const [tasks, setTasks] = useState<Task[]>([
-    { id: '1', title: 'Confirm all vendor details', date: '2025-07-07', time: '10:00', completed: false },
+    { id: '1', title: 'Confirm all vendor details', date: '2025-07-07', time: '10:00', completed: false, notes: 'Call caterer and photographer to confirm final details' },
     { id: '2', title: 'Pick wedding day survival kit', date: '2025-07-08', completed: false },
-    { id: '3', title: 'Send details to wedding party', date: '2025-07-09', time: '14:30', completed: false },
+    { id: '3', title: 'Send details to wedding party', date: '2025-07-09', time: '14:30', completed: false, notes: 'Include timeline, addresses, and contact numbers' },
     { id: '4', title: 'Pick up tux', date: '2025-07-10', completed: true },
     { id: '5', title: 'Finish visiting venues', date: '2025-07-09', completed: false },
   ]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // Generate 14 days starting from today
-  const days = Array.from({ length: 14 }, (_, i) => addDays(new Date(), i));
+  // Get unique dates from tasks and sort them chronologically
+  const getTaskDates = () => {
+    const taskDates = [...new Set(tasks.map(task => task.date))];
+    return taskDates.sort().map(dateStr => parseISO(dateStr));
+  };
 
   const getTasksForDate = (date: Date) => {
     const dateStr = format(date, 'yyyy-MM-dd');
@@ -37,13 +33,19 @@ export default function PlanningPage() {
     ));
   };
 
-  const handleAddTask = (newTask: { title: string; date: string; time?: string }) => {
+  const handleAddTask = (newTask: { title: string; date: string; time?: string; notes?: string }) => {
     const task: Task = {
       id: Date.now().toString(),
       ...newTask,
       completed: false
     };
     setTasks([...tasks, task]);
+  };
+
+  const handleTaskUpdate = (taskId: string, updates: Partial<Task>) => {
+    setTasks(tasks.map(task => 
+      task.id === taskId ? { ...task, ...updates } : task
+    ));
   };
 
   const scrollLeft = () => {
@@ -103,12 +105,13 @@ export default function PlanningPage() {
               className="flex gap-4 overflow-x-auto scrollbar-hide px-12 py-2"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-              {days.map((day) => (
+              {getTaskDates().map((day) => (
                 <TaskCard
                   key={format(day, 'yyyy-MM-dd')}
                   date={day}
                   tasks={getTasksForDate(day)}
                   onTaskToggle={handleTaskToggle}
+                  onTaskUpdate={handleTaskUpdate}
                 />
               ))}
             </div>
