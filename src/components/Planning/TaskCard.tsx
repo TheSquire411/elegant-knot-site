@@ -45,8 +45,10 @@ export default function TaskCard({ date, tasks, onTaskToggle, onTaskUpdate }: Ta
   };
   
   return (
-    <div className={`flex-shrink-0 w-80 p-6 rounded-xl border transition-all duration-normal hover:shadow-lg ${
-      isToday ? 'bg-gradient-primary/10 border-primary shadow-lg' : 'bg-background border-border'
+    <div className={`flex-shrink-0 w-80 p-6 rounded-xl border transition-all duration-normal hover:shadow-xl hover:-translate-y-1 hover:scale-[1.02] ${
+      isToday 
+        ? 'bg-gradient-to-br from-primary-50 to-primary-100 border-primary shadow-glow backdrop-blur-sm' 
+        : 'bg-glass backdrop-blur-glass border-white/20 shadow-glass hover:bg-white/30'
     }`}>
       <div className="mb-4">
         <h3 className="font-heading text-lg text-foreground">{dayName}</h3>
@@ -55,9 +57,9 @@ export default function TaskCard({ date, tasks, onTaskToggle, onTaskUpdate }: Ta
       
       <div className="space-y-3">
         {tasks.map((task) => (
-          <div key={task.id} className="bg-muted/50 rounded-lg overflow-hidden border border-border/50">
+          <div key={task.id} className="bg-white/60 backdrop-blur-sm rounded-lg overflow-hidden border border-white/20 shadow-sm hover:shadow-md hover:bg-white/80 transition-all duration-normal">
             <div 
-              className="flex items-start gap-4 p-4 cursor-pointer hover:bg-muted/80 transition-all duration-fast"
+              className="flex items-start gap-4 p-4 cursor-pointer hover:bg-white/20 transition-all duration-fast"
               onClick={() => handleTaskClick(task.id, task.notes)}
             >
               <button
@@ -88,7 +90,7 @@ export default function TaskCard({ date, tasks, onTaskToggle, onTaskUpdate }: Ta
             </div>
 
             {expandedTask === task.id && (
-              <div className="px-4 pb-4 border-t border-border/50 bg-background/50">
+              <div className="px-4 pb-4 border-t border-white/30 bg-white/30 backdrop-blur-sm">
                 <div className="mt-3">
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-sm font-medium text-foreground">Notes</span>
@@ -129,7 +131,7 @@ export default function TaskCard({ date, tasks, onTaskToggle, onTaskUpdate }: Ta
                       </div>
                     </div>
                   ) : (
-                    <div className="bg-background border border-border rounded-lg p-3 min-h-[3rem] text-sm text-foreground">
+                    <div className="bg-white/40 backdrop-blur-sm border border-white/30 rounded-lg p-3 min-h-[3rem] text-sm text-foreground shadow-sm">
                       {task.notes || <span className="text-muted-foreground italic">No notes added yet...</span>}
                     </div>
                   )}

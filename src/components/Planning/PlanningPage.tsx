@@ -95,14 +95,14 @@ export default function PlanningPage() {
           <div className="relative">
             <button
               onClick={scrollLeft}
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2 hover:bg-sage-50 transition-colors"
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-glass backdrop-blur-glass border border-white/20 shadow-glass rounded-full p-3 hover:bg-white/30 hover:shadow-glass-lg hover:scale-105 transition-all duration-normal"
             >
-              <ChevronLeft className="w-5 h-5 text-sage-600" />
+              <ChevronLeft className="w-5 h-5 text-primary" />
             </button>
 
             <div
               ref={scrollContainerRef}
-              className="flex gap-4 overflow-x-auto scrollbar-hide px-12 py-2"
+              className="flex gap-6 overflow-x-auto scrollbar-hide px-16 py-4 bg-gradient-to-r from-primary-50/50 via-secondary-50/30 to-accent-50/50 rounded-xl backdrop-blur-sm border border-white/20 shadow-glass"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {getTaskDates().map((day) => (
@@ -118,9 +118,9 @@ export default function PlanningPage() {
 
             <button
               onClick={scrollRight}
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2 hover:bg-sage-50 transition-colors"
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-glass backdrop-blur-glass border border-white/20 shadow-glass rounded-full p-3 hover:bg-white/30 hover:shadow-glass-lg hover:scale-105 transition-all duration-normal"
             >
-              <ChevronRight className="w-5 h-5 text-sage-600" />
+              <ChevronRight className="w-5 h-5 text-primary" />
             </button>
           </div>
         </div>
