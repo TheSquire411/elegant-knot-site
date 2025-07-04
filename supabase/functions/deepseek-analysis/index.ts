@@ -5,6 +5,26 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+// Simple in-memory rate limiting
+const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+
+function checkRateLimit(ip: string, maxRequests: number = 10, windowMs: number = 60000): boolean {
+  const now = Date.now();
+  const record = rateLimitStore.get(ip);
+  
+  if (!record || now > record.resetTime) {
+    rateLimitStore.set(ip, { count: 1, resetTime: now + windowMs });
+    return true;
+  }
+  
+  if (record.count >= maxRequests) {
+    return false;
+  }
+  
+  record.count++;
+  return true;
+}
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -12,7 +32,43 @@ serve(async (req) => {
   }
 
   try {
-    const { type, imageUrl, style } = await req.json()
+    // Rate limiting
+    const clientIP = req.headers.get('x-forwarded-for') || 'unknown';
+    if (!checkRateLimit(clientIP, 10, 60000)) { // 10 requests per minute
+      return new Response(
+        JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }),
+        {
+          status: 429,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    const requestBody = await req.json();
+    const { type, imageUrl, style } = requestBody;
+    
+    // Input validation
+    if (!type || (type !== 'analyzeImage' && type !== 'generateStory')) {
+      throw new Error('Invalid request type');
+    }
+    
+    if (type === 'analyzeImage' && !imageUrl) {
+      throw new Error('Image URL is required for image analysis');
+    }
+    
+    if (type === 'generateStory' && !style) {
+      throw new Error('Style is required for story generation');
+    }
+    
+    // Validate URL format for image analysis
+    if (type === 'analyzeImage') {
+      try {
+        new URL(imageUrl);
+      } catch {
+        throw new Error('Invalid image URL format');
+      }
+    }
+
     const deepseekApiKey = Deno.env.get('DEEPSEEK_API_KEY')
 
     if (!deepseekApiKey) {
@@ -21,6 +77,8 @@ serve(async (req) => {
 
     let prompt = ''
     if (type === 'analyzeImage') {
+      // Sanitize imageUrl to prevent injection
+      const sanitizedImageUrl = imageUrl.replace(/[<>"']/g, '');
       prompt = `Analyze this wedding inspiration image and provide a detailed analysis in the following JSON format:
       {
         "style": "Brief style description",
@@ -32,9 +90,11 @@ serve(async (req) => {
       
       Focus on wedding planning aspects like style, color palette, mood, design elements, and practical suggestions for couples planning their wedding.
       
-      Image URL: ${imageUrl}`
+      Image URL: ${sanitizedImageUrl}`
     } else if (type === 'generateStory') {
-      prompt = `Create a beautiful, romantic wedding story based on the style: "${style}". 
+      // Sanitize style input and limit length
+      const sanitizedStyle = style.substring(0, 100).replace(/[<>"']/g, '');
+      prompt = `Create a beautiful, romantic wedding story based on the style: "${sanitizedStyle}". 
       The story should be 2-3 paragraphs long and capture the essence of this wedding style, 
       including details about the venue, decorations, atmosphere, and the couple's experience.
       Make it inspiring and emotional for couples planning their wedding.`

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../integrations/supabase/client';
+import { sanitizeInput, validateEmail, validateInputLength, checkRateLimit } from '../../utils/security';
 
 export default function SignupForm() {
   const [email, setEmail] = useState('');
@@ -17,17 +18,65 @@ export default function SignupForm() {
     setError('');
     setMessage('');
 
+    // Rate limiting check
+    if (!checkRateLimit('signup', 3, 600000)) { // 3 attempts per 10 minutes
+      setError('Too many signup attempts. Please wait 10 minutes before trying again.');
+      setLoading(false);
+      return;
+    }
+
+    // Input validation and sanitization
+    const sanitizedEmail = sanitizeInput(email);
+    const sanitizedFullName = sanitizeInput(fullName);
+    const sanitizedUsername = sanitizeInput(username);
+
+    const emailValidation = validateInputLength(sanitizedEmail, 255, 1);
+    const fullNameValidation = validateInputLength(sanitizedFullName, 100, 1);
+    const usernameValidation = validateInputLength(sanitizedUsername, 50, 1);
+    const passwordValidation = validateInputLength(password, 128, 6);
+
+    if (!emailValidation.isValid || !validateEmail(sanitizedEmail)) {
+      setError('Please enter a valid email address.');
+      setLoading(false);
+      return;
+    }
+
+    if (!fullNameValidation.isValid) {
+      setError('Full name must be between 1 and 100 characters.');
+      setLoading(false);
+      return;
+    }
+
+    if (!usernameValidation.isValid) {
+      setError('Username must be between 1 and 50 characters.');
+      setLoading(false);
+      return;
+    }
+
+    if (!passwordValidation.isValid) {
+      setError('Password must be at least 6 characters long.');
+      setLoading(false);
+      return;
+    }
+
+    // Check for potentially unsafe characters in username
+    if (!/^[a-zA-Z0-9_-]+$/.test(sanitizedUsername)) {
+      setError('Username can only contain letters, numbers, underscores, and hyphens.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const redirectUrl = `${window.location.origin}/`;
 
       const { data, error } = await supabase.auth.signUp({
-        email,
+        email: sanitizedEmail,
         password,
         options: {
           emailRedirectTo: redirectUrl,
           data: {
-            full_name: fullName,
-            username: username
+            full_name: sanitizedFullName,
+            username: sanitizedUsername
           }
         }
       });
@@ -47,7 +96,7 @@ export default function SignupForm() {
       if (error.message === 'User already registered') {
         setError('An account with this email already exists. Please try logging in instead.');
       } else {
-        setError(error.message || 'An error occurred during signup');
+        setError('An error occurred during signup. Please try again.');
       }
     } finally {
       setLoading(false);
@@ -80,6 +129,7 @@ export default function SignupForm() {
               className="w-full p-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               required
               disabled={loading}
+              maxLength={100}
             />
           </div>
           <div>
@@ -91,6 +141,9 @@ export default function SignupForm() {
               className="w-full p-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               required
               disabled={loading}
+              maxLength={50}
+              pattern="[a-zA-Z0-9_-]+"
+              title="Username can only contain letters, numbers, underscores, and hyphens"
             />
           </div>
           <div>
@@ -102,6 +155,7 @@ export default function SignupForm() {
               className="w-full p-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               required
               disabled={loading}
+              maxLength={255}
             />
           </div>
           <div>
@@ -114,6 +168,7 @@ export default function SignupForm() {
               required
               disabled={loading}
               minLength={6}
+              maxLength={128}
             />
           </div>
           <button

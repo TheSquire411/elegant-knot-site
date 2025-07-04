@@ -5,6 +5,26 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+// Simple in-memory rate limiting
+const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+
+function checkRateLimit(ip: string, maxRequests: number = 5, windowMs: number = 60000): boolean {
+  const now = Date.now();
+  const record = rateLimitStore.get(ip);
+  
+  if (!record || now > record.resetTime) {
+    rateLimitStore.set(ip, { count: 1, resetTime: now + windowMs });
+    return true;
+  }
+  
+  if (record.count >= maxRequests) {
+    return false;
+  }
+  
+  record.count++;
+  return true;
+}
+
 interface VisionBoardRequest {
   aesthetic: string;
   venue: string;
@@ -21,19 +41,48 @@ serve(async (req) => {
   }
 
   try {
-    const { aesthetic, venue, colors, season, mustHave, avoid }: VisionBoardRequest = await req.json();
+    // Rate limiting
+    const clientIP = req.headers.get('x-forwarded-for') || 'unknown';
+    if (!checkRateLimit(clientIP, 5, 60000)) { // 5 requests per minute
+      return new Response(
+        JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }),
+        {
+          status: 429,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    const requestBody = await req.json();
+    const { aesthetic, venue, colors, season, mustHave, avoid }: VisionBoardRequest = requestBody;
+    
+    // Input validation
+    if (!aesthetic || !venue || !colors || !season) {
+      throw new Error('Missing required parameters: aesthetic, venue, colors, and season are required');
+    }
+    
+    if (!Array.isArray(colors) || colors.length === 0) {
+      throw new Error('Colors must be a non-empty array');
+    }
+    
+    // Sanitize inputs
+    const sanitizedAesthetic = aesthetic.substring(0, 50).replace(/[<>"']/g, '');
+    const sanitizedVenue = venue.substring(0, 50).replace(/[<>"']/g, '');
+    const sanitizedSeason = season.substring(0, 20).replace(/[<>"']/g, '');
+    const sanitizedMustHave = mustHave?.substring(0, 100).replace(/[<>"']/g, '') || '';
+    const sanitizedAvoid = avoid?.substring(0, 100).replace(/[<>"']/g, '') || '';
     
     const unsplashApiKey = Deno.env.get('UNSPLASH_ACCESS_KEY');
     if (!unsplashApiKey) {
       throw new Error('Unsplash API key not configured');
     }
 
-    console.log('Generating vision board for:', { aesthetic, venue, season });
+    console.log('Generating vision board for:', { aesthetic: sanitizedAesthetic, venue: sanitizedVenue, season: sanitizedSeason });
 
     // Create search queries based on preferences
-    const venueQuery = venue.toLowerCase().replace('/', ' ');
-    const aestheticQuery = aesthetic.toLowerCase().replace('&', '').replace(' ', ' ');
-    const seasonQuery = season.toLowerCase();
+    const venueQuery = sanitizedVenue.toLowerCase().replace('/', ' ');
+    const aestheticQuery = sanitizedAesthetic.toLowerCase().replace('&', '').replace(' ', ' ');
+    const seasonQuery = sanitizedSeason.toLowerCase();
 
     // Fetch different types of images
     const [venueImages, decorImages, moodImages] = await Promise.all([
@@ -46,12 +95,12 @@ serve(async (req) => {
     const visionBoardData = {
       id: crypto.randomUUID(),
       preferences: {
-        aesthetic,
-        venue,
+        aesthetic: sanitizedAesthetic,
+        venue: sanitizedVenue,
         colors,
-        season,
-        mustHave,
-        avoid
+        season: sanitizedSeason,
+        mustHave: sanitizedMustHave,
+        avoid: sanitizedAvoid
       },
       elements: {
         colorPalette: colors,
@@ -59,9 +108,9 @@ serve(async (req) => {
         moodImage: moodImages[0]?.urls.regular || venueImages[0]?.urls.regular,
         decorElements: decorImages.map(img => img.urls.small),
         keywords: [
-          aesthetic.split(' ')[0],
-          season.toLowerCase(),
-          venue.split('/')[0].toLowerCase(),
+          sanitizedAesthetic.split(' ')[0],
+          sanitizedSeason.toLowerCase(),
+          sanitizedVenue.split('/')[0].toLowerCase(),
           'romantic',
           'elegant',
           'timeless'

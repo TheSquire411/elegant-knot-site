@@ -1,18 +1,48 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../integrations/supabase/client';
+import { sanitizeInput, validateEmail, validateInputLength, checkRateLimit } from '../../utils/security';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+
+    // Rate limiting check
+    if (!checkRateLimit('login', 5, 300000)) { // 5 attempts per 5 minutes
+      setError('Too many login attempts. Please wait 5 minutes before trying again.');
+      setLoading(false);
+      return;
+    }
+
+    // Input validation
+    const sanitizedEmail = sanitizeInput(email);
+    const emailValidation = validateInputLength(sanitizedEmail, 255, 1);
+    const passwordValidation = validateInputLength(password, 128, 6);
+
+    if (!emailValidation.isValid) {
+      setError('Please enter a valid email address.');
+      setLoading(false);
+      return;
+    }
+
+    if (!passwordValidation.isValid) {
+      setError('Password must be at least 6 characters long.');
+      setLoading(false);
+      return;
+    }
+
+    if (!validateEmail(sanitizedEmail)) {
+      setError('Please enter a valid email address.');
+      setLoading(false);
+      return;
+    }
 
     try {
       // Clean up existing state before login
@@ -34,7 +64,7 @@ export default function LoginForm() {
       }
 
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
+        email: sanitizedEmail,
         password,
       });
 
@@ -50,7 +80,7 @@ export default function LoginForm() {
       } else if (error.message === 'Email not confirmed') {
         setError('Please check your email and click the confirmation link.');
       } else {
-        setError(error.message || 'An error occurred during login');
+        setError('An error occurred during login. Please try again.');
       }
     } finally {
       setLoading(false);
@@ -78,6 +108,7 @@ export default function LoginForm() {
               className="w-full p-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               required
               disabled={loading}
+              maxLength={255}
             />
           </div>
           <div>
@@ -89,6 +120,8 @@ export default function LoginForm() {
               className="w-full p-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               required
               disabled={loading}
+              maxLength={128}
+              minLength={6}
             />
           </div>
           <button
