@@ -27,9 +27,9 @@ export default function DashboardCard({
       case 'glass':
         return 'bg-glass backdrop-blur-glass border border-white/20 shadow-glass hover:shadow-glass-lg hover:bg-white/30';
       case 'gradient':
-        return 'bg-gradient-to-br from-white to-gray-50 shadow-lg hover:shadow-xl border border-gray-200 hover:border-primary/30';
+        return 'bg-gradient-to-br from-background to-muted shadow-lg hover:shadow-xl border border-border hover:border-primary/30';
       default:
-        return 'bg-white shadow-lg hover:shadow-xl border border-gray-200 hover:border-primary/50';
+        return 'bg-background shadow-lg hover:shadow-xl border border-border hover:border-primary/50';
     }
   };
 
@@ -89,15 +89,15 @@ export default function DashboardCard({
         <div className="flex-1 min-w-0">
           <h2 className={`
             text-xl font-semibold mb-2 transition-colors duration-300
-            ${variant === 'glass' ? 'text-gray-800' : 'text-primary-700'}
+            ${variant === 'glass' ? 'text-foreground' : 'text-primary-700'}
             group-hover:text-primary-800
           `}>
             {title}
           </h2>
           <p className={`
             text-sm leading-relaxed transition-colors duration-300
-            ${variant === 'glass' ? 'text-gray-600' : 'text-muted-foreground'}
-            group-hover:text-gray-700
+            ${variant === 'glass' ? 'text-muted-foreground' : 'text-muted-foreground'}
+            group-hover:text-foreground
           `}>
             {description}
           </p>

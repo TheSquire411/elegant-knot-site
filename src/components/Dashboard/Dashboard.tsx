@@ -46,14 +46,14 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-primary-50/30 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted to-primary-50/20 p-4">
       <div className="max-w-6xl mx-auto pt-8">
         {/* Header with subtle animation */}
         <div className="text-center mb-12 animate-fade-in">
           <h1 className="text-5xl font-serif font-bold text-primary-700 mb-4 bg-gradient-to-r from-primary-700 via-primary-600 to-primary-800 bg-clip-text text-transparent">
             Wedding Dashboard
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Everything you need to plan your perfect wedding, organized and accessible in one beautiful space
           </p>
           <div className="mt-6 h-1 w-24 bg-gradient-to-r from-primary-500 to-primary-300 mx-auto rounded-full"></div>
@@ -82,15 +82,15 @@ export default function Dashboard() {
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in" style={{ animationDelay: '600ms' }}>
           <div className="text-center p-6 bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 shadow-glass">
             <div className="text-3xl font-bold text-primary-600 mb-2">5</div>
-            <div className="text-gray-600">Planning Tools</div>
+            <div className="text-muted-foreground">Planning Tools</div>
           </div>
           <div className="text-center p-6 bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 shadow-glass">
             <div className="text-3xl font-bold text-primary-600 mb-2">∞</div>
-            <div className="text-gray-600">Possibilities</div>
+            <div className="text-muted-foreground">Possibilities</div>
           </div>
           <div className="text-center p-6 bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 shadow-glass">
             <div className="text-3xl font-bold text-primary-600 mb-2">1</div>
-            <div className="text-gray-600">Perfect Day</div>
+            <div className="text-muted-foreground">Perfect Day</div>
           </div>
         </div>
       </div>
