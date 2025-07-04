@@ -55,10 +55,44 @@ export default function VisionBoardCustomizer({ onComplete, onGenerate, onClose 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (preferences.aesthetic && preferences.venue && preferences.colors.length > 0 && preferences.season) {
+      // Create mock elements data based on preferences
+      const mockElements = {
+        colorPalette: preferences.colors,
+        venueImages: [
+          'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=300&fit=crop',
+          'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400&h=300&fit=crop',
+          'https://images.unsplash.com/photo-1549417229-aa67ffaaab29?w=400&h=300&fit=crop',
+          'https://images.unsplash.com/photo-1464207687429-7505649dae38?w=400&h=300&fit=crop'
+        ],
+        moodImage: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=500&h=400&fit=crop',
+        decorElements: [
+          'https://images.unsplash.com/photo-1478146896981-b80fe463b330?w=300&h=200&fit=crop',
+          'https://images.unsplash.com/photo-1464207687429-7505649dae38?w=300&h=200&fit=crop',
+          'https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=300&h=200&fit=crop',
+          'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=300&h=200&fit=crop',
+          'https://images.unsplash.com/photo-1549417229-aa67ffaaab29?w=300&h=200&fit=crop'
+        ],
+        keywords: [
+          preferences.aesthetic.split(' ')[0],
+          preferences.season.toLowerCase(),
+          preferences.venue.split('/')[0].toLowerCase(),
+          'romantic',
+          'elegant',
+          'timeless'
+        ],
+        userPhotos: []
+      };
+
+      const boardData = {
+        id: crypto.randomUUID(),
+        preferences,
+        elements: mockElements
+      };
+
       if (onGenerate) {
-        onGenerate(preferences);
+        onGenerate(boardData);
       } else if (onComplete) {
-        onComplete(preferences);
+        onComplete(boardData);
       }
     }
   };
