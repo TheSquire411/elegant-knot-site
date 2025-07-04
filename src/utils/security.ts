@@ -123,23 +123,39 @@ export function validateUrl(url: string): { isValid: boolean; error?: string } {
 }
 
 /**
- * Enhanced Content Security Policy headers
+ * Get Content Security Policy headers based on environment
  */
-export const CSP_HEADERS = {
-  'Content-Security-Policy': [
-    "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // Needed for Vite dev
-    "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: https:",
-    "font-src 'self' data:",
-    "connect-src 'self' https://rpcnysgxybcffnprttar.supabase.co wss://rpcnysgxybcffnprttar.supabase.co https://api.deepseek.com",
-    "frame-ancestors 'none'",
-    "base-uri 'self'",
-    "object-src 'none'",
-    "upgrade-insecure-requests"
-  ].join('; '),
-  'X-Content-Type-Options': 'nosniff',
-  'X-Frame-Options': 'DENY',
-  'X-XSS-Protection': '1; mode=block',
-  'Referrer-Policy': 'strict-origin-when-cross-origin'
-};
+export function getCSPHeaders(isDevelopment: boolean = import.meta.env?.DEV ?? false) {
+  const scriptSrc = isDevelopment 
+    ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'" // Only allow unsafe directives in development
+    : "script-src 'self'";
+  
+  const styleSrc = isDevelopment
+    ? "style-src 'self' 'unsafe-inline'"
+    : "style-src 'self'";
+
+  return {
+    'Content-Security-Policy': [
+      "default-src 'self'",
+      scriptSrc,
+      styleSrc,
+      "img-src 'self' data: https:",
+      "font-src 'self' data:",
+      "connect-src 'self' https://rpcnysgxybcffnprttar.supabase.co wss://rpcnysgxybcffnprttar.supabase.co https://api.deepseek.com",
+      "frame-ancestors 'none'",
+      "base-uri 'self'",
+      "object-src 'none'",
+      ...(isDevelopment ? [] : ["upgrade-insecure-requests"]) // Only enforce HTTPS upgrade in production
+    ].join('; '),
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'X-XSS-Protection': '1; mode=block',
+    'Referrer-Policy': 'strict-origin-when-cross-origin'
+  };
+}
+
+/**
+ * Enhanced Content Security Policy headers (legacy export for backwards compatibility)
+ * @deprecated Use getCSPHeaders() instead for environment-aware headers
+ */
+export const CSP_HEADERS = getCSPHeaders();
