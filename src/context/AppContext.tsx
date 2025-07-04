@@ -1,24 +1,33 @@
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+import { GalleryImage, StyleProfile } from '../types';
 
 interface User {
   id: string;
   email: string;
   name: string;
+  styleProfile?: StyleProfile;
+  weddingDate?: string;
 }
 
 interface AppState {
   user: User | null;
   isLoading: boolean;
+  inspirationImages: GalleryImage[];
 }
 
 type AppAction = 
   | { type: 'SET_USER'; payload: User }
   | { type: 'LOGOUT' }
-  | { type: 'SET_LOADING'; payload: boolean };
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'ADD_INSPIRATION_IMAGE'; payload: GalleryImage }
+  | { type: 'UPDATE_INSPIRATION_IMAGE'; payload: { id: string; updates: Partial<GalleryImage> } }
+  | { type: 'DELETE_INSPIRATION_IMAGE'; payload: string }
+  | { type: 'UPGRADE_USER_TIER' };
 
 const initialState: AppState = {
   user: null,
   isLoading: false,
+  inspirationImages: [],
 };
 
 function appReducer(state: AppState, action: AppAction): AppState {
@@ -29,6 +38,22 @@ function appReducer(state: AppState, action: AppAction): AppState {
       return { ...state, user: null };
     case 'SET_LOADING':
       return { ...state, isLoading: action.payload };
+    case 'ADD_INSPIRATION_IMAGE':
+      return { ...state, inspirationImages: [...state.inspirationImages, action.payload] };
+    case 'UPDATE_INSPIRATION_IMAGE':
+      return {
+        ...state,
+        inspirationImages: state.inspirationImages.map(img =>
+          img.id === action.payload.id ? { ...img, ...action.payload.updates } : img
+        )
+      };
+    case 'DELETE_INSPIRATION_IMAGE':
+      return {
+        ...state,
+        inspirationImages: state.inspirationImages.filter(img => img.id !== action.payload)
+      };
+    case 'UPGRADE_USER_TIER':
+      return { ...state, user: state.user ? { ...state.user, isPro: true } : null };
     default:
       return state;
   }

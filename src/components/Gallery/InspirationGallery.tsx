@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { Upload, X, Heart, Search, Filter, Grid, List, Plus, Camera, Trash2, Eye } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { Upload, X, Heart, Search, Grid, List, Plus, Camera, Trash2, Eye } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { GalleryImage } from '../../types';
 import { formatFileSize } from '../../utils/formatters';

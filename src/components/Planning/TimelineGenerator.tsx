@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, AlertTriangle, CheckCircle, Users, MapPin, Camera, Music, Flower, ChefHat, Car, Gift, Bell, Download, Save, Plus, Edit3, Trash2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Calendar, Clock, AlertTriangle, CheckCircle, Users, MapPin, Camera, Music, Flower, ChefHat, Car, Gift, Download, Save, Plus } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 
 interface Vendor {
@@ -50,8 +50,6 @@ export default function TimelineGenerator({ onSaveTimeline }: TimelineGeneratorP
   const [conflicts, setConflicts] = useState<TimelineConflict[]>([]);
   const [showVendorForm, setShowVendorForm] = useState(false);
   const [showTaskForm, setShowTaskForm] = useState(false);
-  const [editingVendor, setEditingVendor] = useState<Vendor | null>(null);
-  const [editingTask, setEditingTask] = useState<TimelineTask | null>(null);
   const [activeView, setActiveView] = useState<'monthly' | 'weekly' | 'day-of'>('monthly');
   const [selectedMonth, setSelectedMonth] = useState(0); // months before wedding
 
@@ -212,7 +210,7 @@ export default function TimelineGenerator({ onSaveTimeline }: TimelineGeneratorP
     });
 
     // Wedding day tasks
-    const weddingDayTasks = [
+    const weddingDayTasks: TimelineTask[] = [
       {
         id: 'vendor-setup-start',
         title: 'Vendor Setup Begins',
@@ -269,35 +267,35 @@ export default function TimelineGenerator({ onSaveTimeline }: TimelineGeneratorP
     });
 
     // Check for vendor setup conflicts
-    const weddingDayTasks = timeline.filter(task => 
-      task.dueDate.toDateString() === new Date(weddingDate).toDateString()
-    );
+    // Check for vendor setup conflicts on wedding day 
+    if (weddingDate) {
+      const vendorSetupTimes = vendors.map(vendor => ({
 
-    const vendorSetupTimes = vendors.map(vendor => ({
-      vendor,
-      startTime: vendor.arrivalTime,
-      endTime: new Date(new Date(`2000-01-01 ${vendor.arrivalTime}`).getTime() + vendor.setupTime * 60 * 60 * 1000).toTimeString().slice(0, 5)
-    }));
+        vendor,
+        startTime: vendor.arrivalTime,
+        endTime: new Date(new Date(`2000-01-01 ${vendor.arrivalTime}`).getTime() + vendor.setupTime * 60 * 60 * 1000).toTimeString().slice(0, 5)
+      }));
 
-    // Check for overlapping vendor setup times
-    for (let i = 0; i < vendorSetupTimes.length; i++) {
-      for (let j = i + 1; j < vendorSetupTimes.length; j++) {
-        const vendor1 = vendorSetupTimes[i];
-        const vendor2 = vendorSetupTimes[j];
-        
-        if (vendor1.startTime < vendor2.endTime && vendor2.startTime < vendor1.endTime) {
-          detectedConflicts.push({
-            id: `vendor-overlap-${vendor1.vendor.id}-${vendor2.vendor.id}`,
-            type: 'vendor-overlap',
-            severity: 'warning',
-            description: `${vendor1.vendor.name} and ${vendor2.vendor.name} have overlapping setup times`,
-            affectedTasks: [],
-            suggestions: [
-              'Stagger vendor arrival times',
-              'Designate separate setup areas',
-              'Coordinate with venue for space allocation'
-            ]
-          });
+      // Check for overlapping vendor setup times
+      for (let i = 0; i < vendorSetupTimes.length; i++) {
+        for (let j = i + 1; j < vendorSetupTimes.length; j++) {
+          const vendor1 = vendorSetupTimes[i];
+          const vendor2 = vendorSetupTimes[j];
+          
+          if (vendor1.startTime < vendor2.endTime && vendor2.startTime < vendor1.endTime) {
+            detectedConflicts.push({
+              id: `vendor-overlap-${vendor1.vendor.id}-${vendor2.vendor.id}`,
+              type: 'vendor-overlap',
+              severity: 'warning',
+              description: `${vendor1.vendor.name} and ${vendor2.vendor.name} have overlapping setup times`,
+              affectedTasks: [],
+              suggestions: [
+                'Stagger vendor arrival times',
+                'Designate separate setup areas',
+                'Coordinate with venue for space allocation'
+              ]
+            });
+          }
         }
       }
     }
@@ -360,7 +358,6 @@ export default function TimelineGenerator({ onSaveTimeline }: TimelineGeneratorP
 
   const getTasksByTimeframe = (timeframe: 'monthly' | 'weekly' | 'day-of') => {
     const wedding = new Date(weddingDate);
-    const now = new Date();
 
     switch (timeframe) {
       case 'monthly':

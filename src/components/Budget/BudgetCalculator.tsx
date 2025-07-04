@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Calculator, DollarSign, Users, MapPin, Sparkles, TrendingUp, AlertCircle, Download, Save } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 

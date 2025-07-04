@@ -1,10 +1,9 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { Heart, CheckCircle, Sparkles, Globe, Users, ArrowLeft, Crown, Zap, Camera, Palette } from 'lucide-react';
 
 export default function UpgradePage() {
-  const { state, dispatch } = useApp();
+  const { dispatch } = useApp();
   const navigate = useNavigate();
 
   const handleUpgrade = () => {
