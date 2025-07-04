@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { supabase } from '../integrations/supabase/client';
 
 interface UseDeepseekProps {
   onSuccess: (data: any) => void;
@@ -8,24 +9,22 @@ interface UseDeepseekProps {
 export function useDeepseek({ onSuccess, onError }: UseDeepseekProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  const analyzeImage = async (_imageUrl: string) => {
+  const analyzeImage = async (imageUrl: string) => {
     setIsAnalyzing(true);
     
     try {
-      // Simulate API call to Deepseek
-      // In real implementation, this would call the Deepseek API
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const { data, error } = await supabase.functions.invoke('deepseek-analysis', {
+        body: {
+          type: 'analyzeImage',
+          imageUrl
+        }
+      });
+
+      if (error) throw error;
       
-      const mockAnalysis = {
-        style: 'Modern minimalist',
-        colors: ['#F8F9FA', '#212529', '#6C757D'],
-        mood: 'Elegant and sophisticated',
-        elements: ['Clean lines', 'Natural lighting', 'Neutral palette'],
-        suggestions: ['Consider adding warm accent colors', 'Include natural textures']
-      };
-      
-      onSuccess(mockAnalysis);
+      onSuccess(data);
     } catch (error) {
+      console.error('Failed to analyze image:', error);
       onError('Failed to analyze image');
     } finally {
       setIsAnalyzing(false);
@@ -36,14 +35,18 @@ export function useDeepseek({ onSuccess, onError }: UseDeepseekProps) {
     setIsAnalyzing(true);
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const { data, error } = await supabase.functions.invoke('deepseek-analysis', {
+        body: {
+          type: 'generateStory',
+          style
+        }
+      });
+
+      if (error) throw error;
       
-      const mockStory = {
-        story: `A ${style} wedding story would be crafted here by the AI...`
-      };
-      
-      onSuccess(mockStory);
+      onSuccess(data);
     } catch (error) {
+      console.error('Failed to generate story:', error);
       onError('Failed to generate story');
     } finally {
       setIsAnalyzing(false);
