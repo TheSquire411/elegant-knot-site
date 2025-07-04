@@ -27,9 +27,9 @@ export default function DashboardCard({
       case 'glass':
         return 'bg-glass backdrop-blur-glass border border-white/20 shadow-glass hover:shadow-glass-lg hover:bg-white/30';
       case 'gradient':
-        return 'bg-gradient-to-br from-background to-muted shadow-lg hover:shadow-xl border border-border hover:border-primary/30';
+        return 'shadow-lg hover:shadow-xl border hover:border-primary/30';
       default:
-        return 'bg-background shadow-lg hover:shadow-xl border border-border hover:border-primary/50';
+        return 'shadow-lg hover:shadow-xl border hover:border-primary/50';
     }
   };
 
@@ -55,7 +55,11 @@ export default function DashboardCard({
         ${getVariantClasses()}
         ${className}
       `}
-      style={{ animationDelay: `${animationDelay}ms` }}
+      style={{ 
+        animationDelay: `${animationDelay}ms`,
+        backgroundColor: variant === 'gradient' ? 'hsl(var(--background))' : variant === 'default' ? 'hsl(var(--background))' : undefined,
+        borderColor: 'hsl(var(--border))'
+      }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -87,18 +91,18 @@ export default function DashboardCard({
 
         {/* Text Content */}
         <div className="flex-1 min-w-0">
-          <h2 className={`
-            text-xl font-semibold mb-2 transition-colors duration-300
-            ${variant === 'glass' ? 'text-foreground' : 'text-primary-700'}
-            group-hover:text-primary-800
-          `}>
+          <h2 
+            className="text-xl font-semibold mb-2 transition-colors duration-300 group-hover:text-primary-800"
+            style={{ 
+              color: variant === 'glass' ? 'hsl(var(--foreground))' : 'hsl(var(--primary-700))'
+            }}
+          >
             {title}
           </h2>
-          <p className={`
-            text-sm leading-relaxed transition-colors duration-300
-            ${variant === 'glass' ? 'text-muted-foreground' : 'text-muted-foreground'}
-            group-hover:text-foreground
-          `}>
+          <p 
+            className="text-sm leading-relaxed transition-colors duration-300 group-hover:text-foreground"
+            style={{ color: 'hsl(var(--muted-foreground))' }}
+          >
             {description}
           </p>
         </div>

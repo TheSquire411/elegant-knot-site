@@ -2,6 +2,15 @@ import { Calendar, DollarSign, MessageCircle, Palette, Globe } from 'lucide-reac
 import DashboardCard from '../common/DashboardCard';
 
 export default function Dashboard() {
+  // Debug CSS variables
+  console.log('Dashboard component loaded');
+  console.log('CSS Variables check:', {
+    background: getComputedStyle(document.documentElement).getPropertyValue('--background'),
+    primary: getComputedStyle(document.documentElement).getPropertyValue('--primary'),
+    secondary: getComputedStyle(document.documentElement).getPropertyValue('--secondary'),
+    accent: getComputedStyle(document.documentElement).getPropertyValue('--accent')
+  });
+
   const dashboardItems = [
     {
       to: '/planning',
@@ -46,17 +55,34 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted to-primary-50/20 p-4">
+    <div 
+      className="min-h-screen p-4"
+      style={{ 
+        background: 'linear-gradient(135deg, hsl(var(--background)), hsl(var(--muted)), hsl(var(--primary-50)))',
+        minHeight: '100vh'
+      }}
+    >
       <div className="max-w-6xl mx-auto pt-8">
         {/* Header with subtle animation */}
         <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-5xl font-serif font-bold text-primary-700 mb-4 bg-gradient-to-r from-primary-700 via-primary-600 to-primary-800 bg-clip-text text-transparent">
+          <h1 
+            className="text-5xl font-serif font-bold mb-4"
+            style={{ color: 'hsl(var(--primary-700))' }}
+          >
             Wedding Dashboard
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          <p 
+            className="text-xl max-w-2xl mx-auto leading-relaxed"
+            style={{ color: 'hsl(var(--muted-foreground))' }}
+          >
             Everything you need to plan your perfect wedding, organized and accessible in one beautiful space
           </p>
-          <div className="mt-6 h-1 w-24 bg-gradient-to-r from-primary-500 to-primary-300 mx-auto rounded-full"></div>
+          <div 
+            className="mt-6 h-1 w-24 mx-auto rounded-full"
+            style={{ 
+              background: 'linear-gradient(90deg, hsl(var(--primary-500)), hsl(var(--primary-300)))' 
+            }}
+          ></div>
         </div>
 
         {/* Enhanced Grid Layout */}
