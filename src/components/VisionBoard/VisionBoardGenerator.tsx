@@ -1,5 +1,4 @@
-import React from 'react';
-import { Download, Share2, Heart, Sparkles, Camera, Palette } from 'lucide-react';
+import { Download, Share2, Heart, Camera, Palette } from 'lucide-react';
 
 interface VisionBoardProps {
   board: {
@@ -14,10 +13,10 @@ interface VisionBoardProps {
       userPhotos?: any[];
     };
   };
-  onRegenerate: () => void;
+  
 }
 
-export default function VisionBoardGenerator({ board, onRegenerate }: VisionBoardProps) {
+export default function VisionBoardGenerator({ board }: VisionBoardProps) {
   const { elements, preferences } = board;
 
   const handleDownload = () => {

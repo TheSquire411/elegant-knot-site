@@ -7,6 +7,7 @@ interface User {
   name: string;
   styleProfile?: StyleProfile;
   weddingDate?: string;
+  isPro?: boolean;
 }
 
 interface AppState {

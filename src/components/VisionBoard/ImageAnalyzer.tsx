@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Camera, Sparkles, Eye, Download, Share2, X, Palette, Flower, MapPin, Calendar, Tag, Star } from 'lucide-react';
+import { Sparkles, Eye, Download, Share2, X, Palette, Flower, MapPin, Calendar, Tag, Star } from 'lucide-react';
 
 interface ImageAnalysisResult {
   id: string;

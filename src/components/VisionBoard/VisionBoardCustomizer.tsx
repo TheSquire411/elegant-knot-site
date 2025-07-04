@@ -10,7 +10,7 @@ export default function VisionBoardCustomizer({ onGenerate, onClose }: VisionBoa
   const [preferences, setPreferences] = useState({
     aesthetic: '',
     venue: '',
-    colors: [],
+    colors: [] as string[],
     season: '',
     mustHave: '',
     avoid: ''

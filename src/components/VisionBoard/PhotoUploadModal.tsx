@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { Upload, X, Camera, Instagram, Facebook, Folder, Edit3, Trash2, RotateCcw, Crop, Sliders, Filter, Download, Plus, Search, Grid, List, Heart, Tag, Sparkles } from 'lucide-react';
+import { Upload, X, Camera, Instagram, Facebook, Folder, Edit3, Trash2, RotateCcw, Sliders, Filter, Search, Grid, List, Heart, Sparkles } from 'lucide-react';
 import ImageAnalyzer from './ImageAnalyzer';
 
 interface PhotoUploadModalProps {
@@ -49,7 +49,6 @@ export default function PhotoUploadModal({ isOpen, onClose, onPhotosUploaded, ex
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
   const ACCEPTED_FORMATS = ['image/jpeg', 'image/png', 'image/heic'];
   const PHOTO_CATEGORIES = ['Wedding Dress', 'Venue', 'Flowers', 'Decorations', 'Colors', 'Cake', 'Invitations', 'Inspiration'];
-  const FILTERS = ['None', 'Vintage', 'Bright', 'Warm', 'Cool', 'Dramatic', 'Soft', 'Black & White'];
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -173,7 +172,7 @@ export default function PhotoUploadModal({ isOpen, onClose, onPhotosUploaded, ex
   const updatePhotoEdits = (photoId: string, edits: Partial<UploadedPhoto['edits']>) => {
     setPhotos(prev => prev.map(photo => 
       photo.id === photoId 
-        ? { ...photo, edits: { ...photo.edits, ...edits } }
+        ? { ...photo, edits: { ...photo.edits!, ...edits } as UploadedPhoto['edits'] }
         : photo
     ));
   };
