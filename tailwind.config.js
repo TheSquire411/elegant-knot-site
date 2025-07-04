@@ -67,12 +67,28 @@ export default {
         DEFAULT: 'var(--shadow)',
         'lg': 'var(--shadow-lg)',
         'xl': 'var(--shadow-xl)',
+        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+        'glass-lg': '0 12px 40px 0 rgba(31, 38, 135, 0.5)',
+        'glow': '0 0 20px hsl(var(--primary) / 0.4)',
+        'glow-lg': '0 0 40px hsl(var(--primary) / 0.6)',
       },
       backgroundImage: {
         'gradient-primary': 'var(--gradient-primary)',
         'gradient-secondary': 'var(--gradient-secondary)',
         'gradient-accent': 'var(--gradient-accent)',
         'gradient-neutral': 'var(--gradient-neutral)',
+        'glass-gradient': 'linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))',
+      },
+      backdropBlur: {
+        'glass': '10px',
+        'glass-lg': '16px',
+        'glass-xl': '24px',
+      },
+      backgroundColor: {
+        'glass': 'rgba(255, 255, 255, 0.25)',
+        'glass-dark': 'rgba(255, 255, 255, 0.1)',
+        'glass-primary': 'rgba(var(--primary-rgb), 0.15)',
+        'glass-secondary': 'rgba(var(--secondary-rgb), 0.15)',
       },
       transitionDuration: {
         'fast': 'var(--transition-fast)',
@@ -86,6 +102,9 @@ export default {
         'scale-in': 'scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
         'bounce-subtle': 'bounceSubtle 2s ease-in-out infinite',
         'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+        'hover-lift': 'hoverLift 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        'card-entrance': 'cardEntrance 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
+        'glass-shimmer': 'glassShimmer 2s ease-in-out infinite',
       },
       keyframes: {
         fadeIn: {
@@ -111,6 +130,26 @@ export default {
         pulseGlow: {
           '0%, 100%': { boxShadow: '0 0 20px hsl(var(--primary) / 0.3)' },
           '50%': { boxShadow: '0 0 40px hsl(var(--primary) / 0.6)' },
+        },
+        hoverLift: {
+          '0%': { transform: 'translateY(0) scale(1)' },
+          '100%': { transform: 'translateY(-8px) scale(1.02)' },
+        },
+        cardEntrance: {
+          '0%': { 
+            opacity: '0', 
+            transform: 'translateY(20px) scale(0.95)',
+            backdropFilter: 'blur(0px)'
+          },
+          '100%': { 
+            opacity: '1', 
+            transform: 'translateY(0) scale(1)',
+            backdropFilter: 'blur(10px)'
+          },
+        },
+        glassShimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
         },
       },
     },
