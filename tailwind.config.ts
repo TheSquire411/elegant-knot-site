@@ -63,6 +63,22 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				}
 			},
+			fontFamily: {
+				heading: ['var(--font-heading)'],
+				body: ['var(--font-body)'],
+			},
+			backgroundImage: {
+				'romantic-gradient': 'var(--romantic-gradient)',
+				'soft-gradient': 'var(--soft-gradient)',
+				'gold-gradient': 'var(--gold-gradient)',
+			},
+			boxShadow: {
+				'romantic': 'var(--shadow-romantic)',
+				'soft': 'var(--shadow-soft)',
+			},
+			transitionTimingFunction: {
+				'romantic': 'var(--transition-romantic)',
+			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
