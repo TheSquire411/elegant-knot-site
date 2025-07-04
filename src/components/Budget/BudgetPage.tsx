@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import { supabase } from '../../integrations/supabase/client';
 import { Budget } from '../../types';
-import { useApp } from '../../context/AppContext';
 import BudgetTracker from './BudgetTracker';
 import CreateBudgetModal from './CreateBudgetModal';
 import BackButton from '../common/BackButton';

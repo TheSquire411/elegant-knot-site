@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Calendar, Receipt, Edit, Trash2, ChevronDown, ChevronRight, ExternalLink } from 'lucide-react';
 import { Expense } from '../../types';
-import { formatCurrency } from '../../utils/formatters';
 import { supabase } from '../../integrations/supabase/client';
 import EditExpenseModal from './EditExpenseModal';
 
@@ -143,9 +142,9 @@ export default function ExpenseList({
                     
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       {expense.category && (
-                        <span className="px-2 py-1 bg-secondary-100 rounded text-xs">
-                          {expense.category}
-                        </span>
+                      <span className="px-2 py-1 bg-secondary-100 rounded text-xs">
+                        {expense.category}
+                      </span>
                       )}
                       {expense.due_date && (
                         <div className="flex items-center gap-1">
@@ -167,7 +166,7 @@ export default function ExpenseList({
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
-                      checked={expense.is_paid}
+                      checked={expense.is_paid || false}
                       onChange={() => handleTogglePaid(expense)}
                       className="rounded border-border text-primary focus:ring-primary"
                     />

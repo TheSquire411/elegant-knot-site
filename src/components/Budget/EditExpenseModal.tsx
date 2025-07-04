@@ -280,7 +280,7 @@ export default function EditExpenseModal({
             <input
               type="checkbox"
               id="recurring"
-              checked={formData.is_recurring}
+              checked={formData.is_recurring || false}
               onChange={(e) => setFormData(prev => ({ ...prev, is_recurring: e.target.checked }))}
               className="rounded border-border text-primary focus:ring-primary"
             />

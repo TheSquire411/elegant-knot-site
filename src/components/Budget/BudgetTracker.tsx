@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Plus, TrendingUp, TrendingDown, DollarSign, PieChart } from 'lucide-react';
 import { supabase } from '../../integrations/supabase/client';
 import { Budget, Expense } from '../../types';
-import { useApp } from '../../context/AppContext';
 import ExpenseList from './ExpenseList';
 import AddExpenseModal from './AddExpenseModal';
 import BudgetAnalysis from './BudgetAnalysis';
@@ -118,19 +117,19 @@ export default function BudgetTracker({ budget, onBudgetChange }: BudgetTrackerP
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <div className="text-center">
             <div className="text-2xl font-bold text-foreground">
-              {formatCurrency(budget.total_amount, budget.currency)}
+              {formatCurrency(budget.total_amount, budget.currency || 'USD')}
             </div>
             <div className="text-sm text-muted-foreground">Total Budget</div>
           </div>
           <div className="text-center">
             <div className={`text-2xl font-bold ${isOverBudget ? 'text-red-600' : 'text-accent'}`}>
-              {formatCurrency(budget.spent_amount, budget.currency)}
+              {formatCurrency(budget.spent_amount, budget.currency || 'USD')}
             </div>
             <div className="text-sm text-muted-foreground">Spent</div>
           </div>
           <div className="text-center">
             <div className={`text-2xl font-bold ${isOverBudget ? 'text-red-600' : 'text-foreground'}`}>
-              {formatCurrency(remainingAmount, budget.currency)}
+              {formatCurrency(remainingAmount, budget.currency || 'USD')}
             </div>
             <div className="text-sm text-muted-foreground">
               {isOverBudget ? 'Over Budget' : 'Remaining'}

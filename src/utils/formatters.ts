@@ -19,3 +19,10 @@ export function formatTime(date: Date): string {
     minute: '2-digit'
   });
 }
+
+export function formatCurrency(amount: number, currency: string = 'USD'): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency
+  }).format(amount);
+}

@@ -135,23 +135,23 @@ export default function BudgetAnalysis({ isOpen, onClose, budget, expenses }: Bu
         <div className="p-6 border-b border-border bg-secondary-50">
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
-              <div className="text-lg font-semibold text-foreground">
-                {formatCurrency(budget.total_amount, budget.currency)}
-              </div>
+            <div className="text-lg font-semibold text-foreground">
+              {formatCurrency(budget.total_amount, budget.currency || 'USD')}
+            </div>
               <div className="text-xs text-muted-foreground">Total Budget</div>
             </div>
             <div>
-              <div className="text-lg font-semibold text-accent">
-                {formatCurrency(budget.spent_amount, budget.currency)}
-              </div>
+            <div className="text-lg font-semibold text-accent">
+              {formatCurrency(budget.spent_amount, budget.currency || 'USD')}
+            </div>
               <div className="text-xs text-muted-foreground">Spent</div>
             </div>
             <div>
-              <div className={`text-lg font-semibold ${
-                budget.spent_amount > budget.total_amount ? 'text-red-500' : 'text-foreground'
-              }`}>
-                {formatCurrency(budget.total_amount - budget.spent_amount, budget.currency)}
-              </div>
+            <div className={`text-lg font-semibold ${
+              budget.spent_amount > budget.total_amount ? 'text-red-500' : 'text-foreground'
+            }`}>
+              {formatCurrency(budget.total_amount - budget.spent_amount, budget.currency || 'USD')}
+            </div>
               <div className="text-xs text-muted-foreground">Remaining</div>
             </div>
           </div>
