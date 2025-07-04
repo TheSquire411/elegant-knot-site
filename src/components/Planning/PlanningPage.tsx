@@ -3,6 +3,7 @@ import { format, parseISO } from 'date-fns';
 import { Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import TaskCard from './TaskCard';
 import AddTaskModal from './AddTaskModal';
+import BackButton from '../common/BackButton';
 import { Task } from '../../types';
 
 export default function PlanningPage() {
@@ -67,6 +68,11 @@ export default function PlanningPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-muted to-secondary-50 p-4 lg:p-8">
       <div className="max-w-7xl mx-auto pt-8">
+        {/* Back Button */}
+        <div className="mb-8">
+          <BackButton />
+        </div>
+        
         {/* Header */}
         <div className="text-center mb-12 animate-fade-in">
           <h1 className="font-heading text-foreground mb-6">

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import BackButton from '../common/BackButton';
 import VisionBoardCustomizer from './VisionBoardCustomizer';
 import VisionBoardGenerator from './VisionBoardGenerator';
 import PinterestBoard from './PinterestBoard';
@@ -13,6 +14,9 @@ export default function VisionBoardPage() {
       <div className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto">
           <div className="px-6 py-4">
+            <div className="mb-4">
+              <BackButton />
+            </div>
             <h1 className="text-3xl font-serif font-bold text-primary-700">Vision Board Studio</h1>
             <p className="text-muted-foreground mt-1">Create your perfect wedding vision</p>
           </div>

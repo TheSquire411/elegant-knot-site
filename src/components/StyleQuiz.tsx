@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import BackButton from './common/BackButton';
 
 export default function StyleQuiz() {
   const navigate = useNavigate();
@@ -6,6 +7,9 @@ export default function StyleQuiz() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary-100 p-4">
       <div className="max-w-2xl mx-auto pt-8">
+        <div className="mb-8">
+          <BackButton />
+        </div>
         <h1 className="text-4xl font-serif font-bold text-primary-700 mb-8 text-center">
           Style Quiz
         </h1>

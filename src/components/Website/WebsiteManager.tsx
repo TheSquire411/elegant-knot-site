@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Save, Eye, Globe, Settings, Layers, Palette, FileText } from 'lucide-react';
 import { supabase } from '../../integrations/supabase/client';
 import { WeddingWebsite, WebsiteTheme } from '../../types';
+import BackButton from '../common/BackButton';
 import WebsiteBuilder from './WebsiteBuilder';
 import WebsitePreview from './WebsitePreview';
 import SectionBuilder from './SectionBuilder';
@@ -249,6 +250,7 @@ export default function WebsiteManager() {
       <div className="bg-white border-b border-sage-200 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
+            <BackButton className="mr-4" />
             <div className="flex items-center space-x-4">
               <Globe className="h-8 w-8 text-primary-500" />
               <div>
