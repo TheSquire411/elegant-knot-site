@@ -8,13 +8,13 @@ export default function VisionBoardPage() {
   const [boardData, setBoardData] = useState<any>(null);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-sage-50">
+    <div className="min-h-screen bg-gradient-to-br from-background to-secondary-100">
       {/* Header */}
       <div className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto">
           <div className="px-6 py-4">
             <h1 className="text-3xl font-serif font-bold text-primary-700">Vision Board Studio</h1>
-            <p className="text-sage-600 mt-1">Create your perfect wedding vision</p>
+            <p className="text-muted-foreground mt-1">Create your perfect wedding vision</p>
           </div>
           
           {/* Navigation Tabs */}
