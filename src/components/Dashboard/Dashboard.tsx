@@ -8,23 +8,23 @@ export default function Dashboard() {
           Wedding Dashboard
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Link to="/planning" className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+          <Link to="/planning" className="bg-white rounded-lg shadow-xl border border-gray-200 p-6 hover:shadow-2xl transition-shadow">
             <h2 className="text-xl font-semibold text-primary-700 mb-2">Planning</h2>
             <p className="text-muted-foreground">Organize your wedding timeline</p>
           </Link>
-          <Link to="/budget" className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+          <Link to="/budget" className="bg-white rounded-lg shadow-xl border border-gray-200 p-6 hover:shadow-2xl transition-shadow">
             <h2 className="text-xl font-semibold text-primary-700 mb-2">Budget</h2>
             <p className="text-muted-foreground">Track your wedding expenses</p>
           </Link>
-          <Link to="/chat" className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+          <Link to="/chat" className="bg-white rounded-lg shadow-xl border border-gray-200 p-6 hover:shadow-2xl transition-shadow">
             <h2 className="text-xl font-semibold text-primary-700 mb-2">AI Assistant</h2>
             <p className="text-muted-foreground">Get wedding planning advice</p>
           </Link>
-          <Link to="/vision-board" className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+          <Link to="/vision-board" className="bg-white rounded-lg shadow-xl border border-gray-200 p-6 hover:shadow-2xl transition-shadow">
             <h2 className="text-xl font-semibold text-primary-700 mb-2">Vision Board</h2>
             <p className="text-muted-foreground">Visualize your dream wedding</p>
           </Link>
-          <Link to="/website" className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+          <Link to="/website" className="bg-white rounded-lg shadow-xl border border-gray-200 p-6 hover:shadow-2xl transition-shadow">
             <h2 className="text-xl font-semibold text-primary-700 mb-2">Wedding Website</h2>
             <p className="text-muted-foreground">Create your wedding website</p>
           </Link>

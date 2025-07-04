@@ -56,7 +56,7 @@ export default function SignupForm() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
+      <div className="bg-white rounded-lg shadow-xl border border-gray-200 p-8 w-full max-w-md">
         <h2 className="text-3xl font-serif font-bold text-primary-700 mb-6 text-center">
           Create Account
         </h2>
