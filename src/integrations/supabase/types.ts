@@ -134,6 +134,98 @@ export type Database = {
         }
         Relationships: []
       }
+      website_sections: {
+        Row: {
+          content: Json
+          created_at: string
+          id: string
+          is_visible: boolean
+          order_index: number
+          section_type: string
+          settings: Json
+          title: string | null
+          updated_at: string
+          website_id: string
+        }
+        Insert: {
+          content?: Json
+          created_at?: string
+          id?: string
+          is_visible?: boolean
+          order_index?: number
+          section_type: string
+          settings?: Json
+          title?: string | null
+          updated_at?: string
+          website_id: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          id?: string
+          is_visible?: boolean
+          order_index?: number
+          section_type?: string
+          settings?: Json
+          title?: string | null
+          updated_at?: string
+          website_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "website_sections_website_id_fkey"
+            columns: ["website_id"]
+            isOneToOne: false
+            referencedRelation: "wedding_websites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wedding_websites: {
+        Row: {
+          content: Json
+          created_at: string
+          domain: string | null
+          id: string
+          published_at: string | null
+          settings: Json
+          slug: string | null
+          status: string
+          theme: Json
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content?: Json
+          created_at?: string
+          domain?: string | null
+          id?: string
+          published_at?: string | null
+          settings?: Json
+          slug?: string | null
+          status?: string
+          theme?: Json
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          domain?: string | null
+          id?: string
+          published_at?: string | null
+          settings?: Json
+          slug?: string | null
+          status?: string
+          theme?: Json
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

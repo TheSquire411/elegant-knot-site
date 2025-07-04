@@ -67,3 +67,99 @@ export interface Expense {
   created_at: string;
   updated_at: string;
 }
+
+// Wedding Website Types
+export interface WeddingWebsite {
+  id: string;
+  user_id: string;
+  title: string;
+  slug?: string;
+  domain?: string;
+  status: 'draft' | 'published' | 'archived';
+  content: WebsiteContent;
+  theme: WebsiteTheme;
+  settings: WebsiteSettings;
+  published_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WebsiteSection {
+  id: string;
+  website_id: string;
+  section_type: string;
+  title?: string;
+  content: any;
+  settings: any;
+  order_index: number;
+  is_visible: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WebsiteContent {
+  coupleNames?: string;
+  weddingDate?: string;
+  venue?: {
+    name: string;
+    address: string;
+  };
+  ourStory?: {
+    content: string;
+    style: 'romantic' | 'casual' | 'formal';
+    photos: string[];
+  };
+  schedule?: {
+    ceremony: {
+      time: string;
+      location: string;
+    };
+    reception: {
+      time: string;
+      location: string;
+    };
+  };
+  registry?: {
+    message: string;
+    stores: Array<{
+      name: string;
+      url: string;
+    }>;
+  };
+  accommodations?: Array<{
+    name: string;
+    address: string;
+    phone: string;
+    website?: string;
+    rate: string;
+  }>;
+  travel?: {
+    airport?: string;
+    directions?: string;
+    parking?: string;
+  };
+}
+
+export interface WebsiteTheme {
+  style?: string;
+  colors: string[];
+  fonts: {
+    heading: string;
+    body: string;
+  };
+}
+
+export interface WebsiteSettings {
+  customCSS?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  analytics?: {
+    googleAnalytics?: string;
+    facebookPixel?: string;
+  };
+  features?: {
+    rsvp: boolean;
+    guestBook: boolean;
+    photoSharing: boolean;
+  };
+}
