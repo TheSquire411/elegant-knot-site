@@ -21,13 +21,13 @@ export default function ProBadge({ size = 'md', variant = 'badge', className = '
 
   if (variant === 'icon') {
     return (
-      <Crown className={`${iconSizes[size]} text-gold-500 ${className}`} />
+      <Crown className={`${iconSizes[size]} text-primary ${className}`} />
     );
   }
 
   if (variant === 'banner') {
     return (
-      <div className={`bg-gradient-to-r from-gold-400 to-primary-500 text-white rounded-lg ${sizeClasses[size]} font-semibold flex items-center space-x-1 ${className}`}>
+      <div className={`bg-gradient-primary text-white rounded-lg ${sizeClasses[size]} font-semibold flex items-center space-x-1 ${className}`}>
         <Crown className={iconSizes[size]} />
         <span>PRO</span>
       </div>
@@ -35,7 +35,7 @@ export default function ProBadge({ size = 'md', variant = 'badge', className = '
   }
 
   return (
-    <span className={`bg-gradient-to-r from-gold-400 to-primary-500 text-white rounded-full ${sizeClasses[size]} font-semibold inline-flex items-center space-x-1 ${className}`}>
+    <span className={`bg-gradient-primary text-white rounded-full ${sizeClasses[size]} font-semibold inline-flex items-center space-x-1 ${className}`}>
       <Crown className={iconSizes[size]} />
       <span>PRO</span>
     </span>
