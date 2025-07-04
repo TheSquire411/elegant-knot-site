@@ -1,16 +1,29 @@
 // Security utilities for input validation and sanitization
+import DOMPurify from 'dompurify';
 
 /**
- * Sanitizes string input to prevent XSS attacks
+ * Comprehensive sanitization using DOMPurify
  */
 export function sanitizeInput(input: string): string {
   if (!input) return '';
   
-  return input
-    .replace(/<[^>]*>/g, '') // Remove HTML tags
-    .replace(/javascript:/gi, '') // Remove javascript: protocols
-    .replace(/on\w+\s*=/gi, '') // Remove event handlers
-    .trim();
+  // Use DOMPurify for comprehensive XSS protection
+  return DOMPurify.sanitize(input, { 
+    ALLOWED_TAGS: [], // Strip all HTML tags
+    ALLOWED_ATTR: [] // Strip all attributes
+  }).trim();
+}
+
+/**
+ * Sanitize HTML content while allowing safe tags
+ */
+export function sanitizeHtml(html: string): string {
+  if (!html) return '';
+
+  return DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'ul', 'ol', 'li'],
+    ALLOWED_ATTR: []
+  });
 }
 
 /**
@@ -78,7 +91,39 @@ export function checkRateLimit(
 }
 
 /**
- * Content Security Policy helpers
+ * Validates URLs to ensure they're safe and properly formatted
+ */
+export function validateUrl(url: string): { isValid: boolean; error?: string } {
+  if (!url) {
+    return { isValid: false, error: 'URL is required' };
+  }
+
+  try {
+    const urlObj = new URL(url);
+    
+    // Only allow HTTP and HTTPS protocols
+    if (!['http:', 'https:'].includes(urlObj.protocol)) {
+      return { isValid: false, error: 'Only HTTP and HTTPS URLs are allowed' };
+    }
+
+    // Block localhost and private IPs in production
+    const hostname = urlObj.hostname.toLowerCase();
+    if (hostname === 'localhost' || 
+        hostname.startsWith('127.') || 
+        hostname.startsWith('192.168.') ||
+        hostname.startsWith('10.') ||
+        hostname.match(/^172\.(1[6-9]|2[0-9]|3[0-1])\./)) {
+      return { isValid: false, error: 'Private network URLs are not allowed' };
+    }
+
+    return { isValid: true };
+  } catch {
+    return { isValid: false, error: 'Invalid URL format' };
+  }
+}
+
+/**
+ * Enhanced Content Security Policy headers
  */
 export const CSP_HEADERS = {
   'Content-Security-Policy': [
@@ -87,9 +132,14 @@ export const CSP_HEADERS = {
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: https:",
     "font-src 'self' data:",
-    "connect-src 'self' https://rpcnysgxybcffnprttar.supabase.co wss://rpcnysgxybcffnprttar.supabase.co",
+    "connect-src 'self' https://rpcnysgxybcffnprttar.supabase.co wss://rpcnysgxybcffnprttar.supabase.co https://api.deepseek.com",
     "frame-ancestors 'none'",
     "base-uri 'self'",
-    "object-src 'none'"
-  ].join('; ')
+    "object-src 'none'",
+    "upgrade-insecure-requests"
+  ].join('; '),
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'X-XSS-Protection': '1; mode=block',
+  'Referrer-Policy': 'strict-origin-when-cross-origin'
 };

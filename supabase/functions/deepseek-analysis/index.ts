@@ -60,12 +60,38 @@ serve(async (req) => {
       throw new Error('Style is required for story generation');
     }
     
-    // Validate URL format for image analysis
+    // Enhanced URL validation for image analysis
     if (type === 'analyzeImage') {
       try {
-        new URL(imageUrl);
-      } catch {
-        throw new Error('Invalid image URL format');
+        const urlObj = new URL(imageUrl);
+        
+        // Only allow HTTP and HTTPS protocols
+        if (!['http:', 'https:'].includes(urlObj.protocol)) {
+          throw new Error('Only HTTP and HTTPS URLs are allowed');
+        }
+
+        // Block localhost and private IPs for security
+        const hostname = urlObj.hostname.toLowerCase();
+        if (hostname === 'localhost' || 
+            hostname.startsWith('127.') || 
+            hostname.startsWith('192.168.') ||
+            hostname.startsWith('10.') ||
+            hostname.match(/^172\.(1[6-9]|2[0-9]|3[0-1])\./)) {
+          throw new Error('Private network URLs are not allowed');
+        }
+
+        // Validate file extension for image URLs
+        const pathname = urlObj.pathname.toLowerCase();
+        const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'];
+        if (!imageExtensions.some(ext => pathname.endsWith(ext)) && !pathname.includes('unsplash')) {
+          throw new Error('URL must point to a valid image file');
+        }
+
+      } catch (error) {
+        if (error instanceof TypeError) {
+          throw new Error('Invalid image URL format');
+        }
+        throw error;
       }
     }
 

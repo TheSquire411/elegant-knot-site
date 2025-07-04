@@ -1,6 +1,40 @@
-import { Link } from 'react-router-dom';
+import { Calendar, DollarSign, MessageCircle, Palette, Globe } from 'lucide-react';
+import DashboardCard from '../common/DashboardCard';
 
 export default function Dashboard() {
+  const dashboardItems = [
+    {
+      to: '/planning',
+      title: 'Planning',
+      description: 'Organize your wedding timeline',
+      icon: <Calendar className="h-8 w-8 text-primary-500" />
+    },
+    {
+      to: '/budget',
+      title: 'Budget',
+      description: 'Track your wedding expenses',
+      icon: <DollarSign className="h-8 w-8 text-green-500" />
+    },
+    {
+      to: '/chat',
+      title: 'AI Assistant',
+      description: 'Get wedding planning advice',
+      icon: <MessageCircle className="h-8 w-8 text-blue-500" />
+    },
+    {
+      to: '/vision-board',
+      title: 'Vision Board',
+      description: 'Visualize your dream wedding',
+      icon: <Palette className="h-8 w-8 text-purple-500" />
+    },
+    {
+      to: '/website',
+      title: 'Wedding Website',
+      description: 'Create your wedding website',
+      icon: <Globe className="h-8 w-8 text-pink-500" />
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 p-4">
       <div className="max-w-6xl mx-auto pt-8">
@@ -8,26 +42,15 @@ export default function Dashboard() {
           Wedding Dashboard
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Link to="/planning" className="!bg-white !rounded-lg !shadow-2xl !border-2 !border-gray-300 p-6 hover:!shadow-2xl hover:!border-primary transition-all">
-            <h2 className="text-xl font-semibold text-primary-700 mb-2">Planning</h2>
-            <p className="text-muted-foreground">Organize your wedding timeline</p>
-          </Link>
-          <Link to="/budget" className="!bg-white !rounded-lg !shadow-2xl !border-2 !border-gray-300 p-6 hover:!shadow-2xl hover:!border-primary transition-all">
-            <h2 className="text-xl font-semibold text-primary-700 mb-2">Budget</h2>
-            <p className="text-muted-foreground">Track your wedding expenses</p>
-          </Link>
-          <Link to="/chat" className="!bg-white !rounded-lg !shadow-2xl !border-2 !border-gray-300 p-6 hover:!shadow-2xl hover:!border-primary transition-all">
-            <h2 className="text-xl font-semibold text-primary-700 mb-2">AI Assistant</h2>
-            <p className="text-muted-foreground">Get wedding planning advice</p>
-          </Link>
-          <Link to="/vision-board" className="!bg-white !rounded-lg !shadow-2xl !border-2 !border-gray-300 p-6 hover:!shadow-2xl hover:!border-primary transition-all">
-            <h2 className="text-xl font-semibold text-primary-700 mb-2">Vision Board</h2>
-            <p className="text-muted-foreground">Visualize your dream wedding</p>
-          </Link>
-          <Link to="/website" className="!bg-white !rounded-lg !shadow-2xl !border-2 !border-gray-300 p-6 hover:!shadow-2xl hover:!border-primary transition-all">
-            <h2 className="text-xl font-semibold text-primary-700 mb-2">Wedding Website</h2>
-            <p className="text-muted-foreground">Create your wedding website</p>
-          </Link>
+          {dashboardItems.map((item) => (
+            <DashboardCard
+              key={item.to}
+              to={item.to}
+              title={item.title}
+              description={item.description}
+              icon={item.icon}
+            />
+          ))}
         </div>
       </div>
     </div>

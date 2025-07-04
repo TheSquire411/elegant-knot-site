@@ -1,41 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Calendar, Clock, AlertTriangle, CheckCircle, Users, MapPin, Camera, Music, Flower, ChefHat, Car, Gift, Download, Save, Plus } from 'lucide-react';
+import { TimelineTask, Vendor, TimelineConflict } from '../../types/planning';
+import { createEarlyPlanningTasks, createMidPlanningTasks, createFinalPlanningTasks, createWeddingDayTasks } from '../../utils/timelineHelpers';
 
-interface Vendor {
-  id: string;
-  name: string;
-  type: 'photographer' | 'videographer' | 'florist' | 'caterer' | 'dj' | 'band' | 'venue' | 'planner' | 'transportation' | 'other';
-  contact: string;
-  setupTime: number; // hours needed for setup
-  arrivalTime: string; // when they need to arrive
-  requirements: string[];
-  isConfirmed: boolean;
-}
-
-interface TimelineTask {
-  id: string;
-  title: string;
-  description: string;
-  category: 'planning' | 'vendor' | 'personal' | 'ceremony' | 'reception' | 'logistics';
-  dueDate: Date;
-  isFlexible: boolean;
-  priority: 'critical' | 'high' | 'medium' | 'low';
-  estimatedHours: number;
-  dependencies: string[];
-  vendorId?: string;
-  status: 'pending' | 'in-progress' | 'completed' | 'overdue';
-  bufferDays: number;
-  notes: string;
-}
-
-interface TimelineConflict {
-  id: string;
-  type: 'vendor-overlap' | 'tight-deadline' | 'dependency-issue' | 'resource-conflict';
-  severity: 'critical' | 'warning' | 'info';
-  description: string;
-  affectedTasks: string[];
-  suggestions: string[];
-}
 
 interface TimelineGeneratorProps {
   onSaveTimeline?: (timeline: TimelineTask[]) => void;
@@ -76,170 +43,12 @@ export default function TimelineGenerator({ onSaveTimeline }: TimelineGeneratorP
   const generateBaseTimeline = (): TimelineTask[] => {
     if (!weddingDate) return [];
 
-    const wedding = new Date(weddingDate);
-    const tasks: TimelineTask[] = [];
+    const earlyTasks = createEarlyPlanningTasks(weddingDate);
+    const midTasks = createMidPlanningTasks(weddingDate);
+    const finalTasks = createFinalPlanningTasks(weddingDate);
+    const weddingDayTasks = createWeddingDayTasks(weddingDate);
 
-    // 12+ months before
-    tasks.push({
-      id: 'set-date-venue',
-      title: 'Set Wedding Date & Book Venue',
-      description: 'Confirm your wedding date and secure your ceremony and reception venues',
-      category: 'planning',
-      dueDate: new Date(wedding.getTime() - 365 * 24 * 60 * 60 * 1000),
-      isFlexible: false,
-      priority: 'critical',
-      estimatedHours: 20,
-      dependencies: [],
-      status: 'pending',
-      bufferDays: 0,
-      notes: 'This is the foundation of all other planning'
-    });
-
-    // 10-12 months before
-    tasks.push({
-      id: 'book-photographer',
-      title: 'Book Photographer & Videographer',
-      description: 'Research and book your wedding photographer and videographer',
-      category: 'vendor',
-      dueDate: new Date(wedding.getTime() - 330 * 24 * 60 * 60 * 1000),
-      isFlexible: true,
-      priority: 'critical',
-      estimatedHours: 15,
-      dependencies: ['set-date-venue'],
-      status: 'pending',
-      bufferDays: 30,
-      notes: 'Popular photographers book up quickly'
-    });
-
-    // 8-10 months before
-    tasks.push({
-      id: 'choose-wedding-party',
-      title: 'Choose Wedding Party',
-      description: 'Select your bridesmaids, groomsmen, and other wedding party members',
-      category: 'personal',
-      dueDate: new Date(wedding.getTime() - 270 * 24 * 60 * 60 * 1000),
-      isFlexible: true,
-      priority: 'high',
-      estimatedHours: 5,
-      dependencies: [],
-      status: 'pending',
-      bufferDays: 14,
-      notes: 'Consider their availability and commitment level'
-    });
-
-    // 6-8 months before
-    tasks.push({
-      id: 'book-caterer-music',
-      title: 'Book Caterer & Music',
-      description: 'Secure your catering service and entertainment (DJ/band)',
-      category: 'vendor',
-      dueDate: new Date(wedding.getTime() - 210 * 24 * 60 * 60 * 1000),
-      isFlexible: true,
-      priority: 'critical',
-      estimatedHours: 12,
-      dependencies: ['set-date-venue'],
-      status: 'pending',
-      bufferDays: 21,
-      notes: 'Coordinate with venue for setup requirements'
-    });
-
-    // 4-6 months before
-    tasks.push({
-      id: 'order-invitations',
-      title: 'Order Wedding Invitations',
-      description: 'Design and order your wedding invitations and save the dates',
-      category: 'planning',
-      dueDate: new Date(wedding.getTime() - 150 * 24 * 60 * 60 * 1000),
-      isFlexible: true,
-      priority: 'high',
-      estimatedHours: 8,
-      dependencies: ['choose-wedding-party'],
-      status: 'pending',
-      bufferDays: 14,
-      notes: 'Allow time for proofing and printing'
-    });
-
-    // 2-3 months before
-    tasks.push({
-      id: 'final-venue-walkthrough',
-      title: 'Final Venue Walkthrough',
-      description: 'Conduct final walkthrough with venue coordinator and key vendors',
-      category: 'logistics',
-      dueDate: new Date(wedding.getTime() - 75 * 24 * 60 * 60 * 1000),
-      isFlexible: false,
-      priority: 'critical',
-      estimatedHours: 3,
-      dependencies: ['book-caterer-music', 'book-photographer'],
-      status: 'pending',
-      bufferDays: 7,
-      notes: 'Coordinate timing with all vendors'
-    });
-
-    // 1 month before
-    tasks.push({
-      id: 'confirm-final-details',
-      title: 'Confirm All Final Details',
-      description: 'Confirm headcount, timeline, and special requirements with all vendors',
-      category: 'vendor',
-      dueDate: new Date(wedding.getTime() - 30 * 24 * 60 * 60 * 1000),
-      isFlexible: false,
-      priority: 'critical',
-      estimatedHours: 6,
-      dependencies: ['final-venue-walkthrough'],
-      status: 'pending',
-      bufferDays: 3,
-      notes: 'Create detailed timeline for wedding day'
-    });
-
-    // 1 week before
-    tasks.push({
-      id: 'rehearsal-dinner',
-      title: 'Wedding Rehearsal & Dinner',
-      description: 'Conduct ceremony rehearsal and host rehearsal dinner',
-      category: 'ceremony',
-      dueDate: new Date(wedding.getTime() - 1 * 24 * 60 * 60 * 1000),
-      isFlexible: false,
-      priority: 'critical',
-      estimatedHours: 4,
-      dependencies: ['confirm-final-details'],
-      status: 'pending',
-      bufferDays: 0,
-      notes: 'Usually held the night before the wedding'
-    });
-
-    // Wedding day tasks
-    const weddingDayTasks: TimelineTask[] = [
-      {
-        id: 'vendor-setup-start',
-        title: 'Vendor Setup Begins',
-        description: 'Florist, caterer, and other vendors begin setup',
-        category: 'logistics',
-        dueDate: new Date(wedding.getTime()),
-        isFlexible: false,
-        priority: 'critical',
-        estimatedHours: 4,
-        dependencies: [],
-        status: 'pending',
-        bufferDays: 0,
-        notes: 'Coordinate arrival times to avoid conflicts'
-      },
-      {
-        id: 'bridal-prep',
-        title: 'Bridal Party Preparation',
-        description: 'Hair, makeup, and getting dressed',
-        category: 'personal',
-        dueDate: new Date(wedding.getTime()),
-        isFlexible: false,
-        priority: 'critical',
-        estimatedHours: 4,
-        dependencies: [],
-        status: 'pending',
-        bufferDays: 0,
-        notes: 'Start early to allow buffer time'
-      }
-    ];
-
-    return [...tasks, ...weddingDayTasks];
+    return [...earlyTasks, ...midTasks, ...finalTasks, ...weddingDayTasks];
   };
 
   const detectConflicts = (): TimelineConflict[] => {
