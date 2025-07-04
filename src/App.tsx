@@ -13,7 +13,7 @@ import BudgetPage from './components/Budget/BudgetPage';
 import ChatPage from './components/Chat/ChatPage';
 import VisionBoardPage from './components/VisionBoard/VisionBoardPage';
 import WebsitePage from './components/Website/WebsitePage';
-import DeepseekTest from './components/DeepseekTest';
+
 
 /**
  * A component to protect routes that require authentication.
@@ -66,7 +66,7 @@ function AppRoutes() {
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/vision-board" element={<VisionBoardPage />} />
           <Route path="/website" element={<WebsitePage />} />
-          <Route path="/deepseek-test" element={<DeepseekTest />} />
+          
         </Route>
 
         {/* Fallback Route */}
