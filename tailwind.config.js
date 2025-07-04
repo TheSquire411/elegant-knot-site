@@ -72,6 +72,7 @@ export default {
         'gradient-primary': 'var(--gradient-primary)',
         'gradient-secondary': 'var(--gradient-secondary)',
         'gradient-accent': 'var(--gradient-accent)',
+        'gradient-neutral': 'var(--gradient-neutral)',
       },
       transitionDuration: {
         'fast': 'var(--transition-fast)',
