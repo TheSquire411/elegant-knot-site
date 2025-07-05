@@ -268,6 +268,104 @@ export type Database = {
         }
         Relationships: []
       }
+      registries: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_public: boolean
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      registry_items: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          is_purchased: boolean
+          price: number | null
+          priority: string | null
+          purchased_at: string | null
+          purchased_by: string | null
+          quantity_purchased: number
+          quantity_wanted: number
+          registry_id: string
+          store_name: string | null
+          store_url: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_purchased?: boolean
+          price?: number | null
+          priority?: string | null
+          purchased_at?: string | null
+          purchased_by?: string | null
+          quantity_purchased?: number
+          quantity_wanted?: number
+          registry_id: string
+          store_name?: string | null
+          store_url?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_purchased?: boolean
+          price?: number | null
+          priority?: string | null
+          purchased_at?: string | null
+          purchased_by?: string | null
+          quantity_purchased?: number
+          quantity_wanted?: number
+          registry_id?: string
+          store_name?: string | null
+          store_url?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "registry_items_registry_id_fkey"
+            columns: ["registry_id"]
+            isOneToOne: false
+            referencedRelation: "registries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       rsvp_responses: {
         Row: {
           additional_notes: string | null
