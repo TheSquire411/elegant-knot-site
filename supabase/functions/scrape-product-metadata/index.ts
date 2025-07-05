@@ -56,7 +56,7 @@ function extractPrice(html: string, storeName: string): string | null {
     ] : []),
     
     ...(storeName.toLowerCase().includes('target') ? [
-      /\$[\d,]+\.?\d*(?=\s*</)/g
+      /\$[\d,]+\.?\d*(?=\s*<\/)/g
     ] : [])
   ];
   
