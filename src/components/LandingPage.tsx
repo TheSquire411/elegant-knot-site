@@ -1,50 +1,54 @@
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import AuthStatus from './Auth/AuthStatus';
+import heroImage from '../assets/wedding-hero-bg.jpg';
 
 export default function LandingPage() {
   const { state } = useApp();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary-50 to-secondary-100 flex flex-col">
-      {/* Header with Auth Status */}
-      <header className="flex justify-between items-center p-6">
-        <h2 className="text-2xl font-heading font-bold text-foreground">Wedly</h2>
-        <AuthStatus />
-      </header>
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center justify-center p-4">
-        <div className="text-center max-w-2xl animate-fade-in">
-          <h1 className="text-5xl lg:text-6xl font-heading font-bold text-foreground mb-6">
-            Your Perfect Wedding Planner
+    <div>
+      {/* Hero Section */}
+      <div className="relative h-screen flex items-center justify-center text-center">
+        {/* Background Image with dark overlay for text readability */}
+        <div className="absolute inset-0 bg-foreground/40 z-10"></div>
+        <img 
+          src={heroImage} 
+          alt="Elegant wedding ceremony setup"
+          className="absolute inset-0 w-full h-full object-cover" 
+        />
+        
+        {/* Header with Auth Status - positioned over hero */}
+        <header className="absolute top-0 left-0 right-0 flex justify-between items-center p-6 z-30">
+          <h2 className="text-2xl font-heading font-bold text-white">Wedly</h2>
+          <div className="text-white">
+            <AuthStatus />
+          </div>
+        </header>
+        
+        {/* Centered Hero Content */}
+        <div className="relative z-20 px-4 text-white animate-fade-in">
+          <h1 className="text-4xl md:text-6xl font-heading font-bold mb-4">
+            Your Dream Wedding, Perfectly Planned.
           </h1>
-          <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-            Turning dreams into reality with AI-powered planning tools
+          <p className="text-lg md:text-xl max-w-2xl mx-auto mb-8 leading-relaxed">
+            From your vision board to your final vows, we bring all your planning tools together in one beautiful place.
           </p>
           
           {state.user ? (
             <Link 
               to="/dashboard" 
-              className="bg-gradient-primary text-white px-8 py-4 rounded-lg hover:shadow-lg transition-all hover:scale-105 inline-block font-medium text-lg"
+              className="bg-gradient-primary hover:bg-primary/90 text-white font-bold py-4 px-8 rounded-full text-lg transition-all hover:scale-105 inline-block"
             >
               Go to Dashboard
             </Link>
           ) : (
-            <div className="flex gap-4 justify-center">
-              <Link 
-                to="/signup" 
-                className="bg-gradient-primary text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all hover:scale-105 font-medium"
-              >
-                Get Started
-              </Link>
-              <Link 
-                to="/login" 
-                className="border-2 border-primary text-foreground px-6 py-3 rounded-lg hover:bg-primary hover:text-white transition-all font-medium"
-              >
-                Login
-              </Link>
-            </div>
+            <Link 
+              to="/signup" 
+              className="bg-gradient-primary hover:bg-primary/90 text-white font-bold py-4 px-8 rounded-full text-lg transition-all hover:scale-105 inline-block"
+            >
+              Start Planning for Free
+            </Link>
           )}
         </div>
       </div>
