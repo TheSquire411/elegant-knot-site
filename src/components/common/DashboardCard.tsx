@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ReactNode, useState } from 'react';
+import { motion } from 'framer-motion';
 
 interface DashboardCardProps {
   to: string;
@@ -8,7 +9,6 @@ interface DashboardCardProps {
   icon?: ReactNode;
   className?: string;
   variant?: 'default' | 'glass' | 'gradient';
-  animationDelay?: number;
 }
 
 export default function DashboardCard({ 
@@ -17,8 +17,7 @@ export default function DashboardCard({
   description, 
   icon, 
   className = '',
-  variant = 'default',
-  animationDelay = 0
+  variant = 'default'
 }: DashboardCardProps) {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -45,75 +44,106 @@ export default function DashboardCard({
   };
 
   return (
-    <Link 
-      to={to} 
-      className={`
-        group relative overflow-hidden rounded-xl p-6
-        transform transition-all duration-500 ease-out
-        hover:-translate-y-2 hover:scale-[1.02]
-        animate-card-entrance
-        ${getVariantClasses()}
-        ${className}
-      `}
-      style={{ 
-        animationDelay: `${animationDelay}ms`,
-        backgroundColor: variant === 'gradient' ? 'hsl(var(--background))' : variant === 'default' ? 'hsl(var(--background))' : undefined,
-        borderColor: 'hsl(var(--border))'
-      }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {/* Glass shimmer effect */}
-      {variant === 'glass' && (
-        <div 
-          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out"
-          style={{
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
-            backgroundSize: '200% 100%',
-          }}
-        />
-      )}
-
-      {/* Content */}
-      <div className="relative z-10 flex items-start space-x-4">
-        {/* Icon Container */}
-        {icon && (
-          <div className={`
-            flex-shrink-0 p-3 rounded-xl transition-all duration-300
-            ${iconVariantClasses()}
-            ${isHovered ? 'scale-110 rotate-3' : ''}
-          `}>
-            <div className="text-primary-600 group-hover:text-primary-700 transition-colors duration-300">
-              {icon}
-            </div>
-          </div>
+    <Link to={to}>
+      <motion.div
+        className={`
+          group relative overflow-hidden rounded-xl p-6
+          ${getVariantClasses()}
+          ${className}
+        `}
+        style={{ 
+          backgroundColor: variant === 'gradient' ? 'hsl(var(--background))' : variant === 'default' ? 'hsl(var(--background))' : undefined,
+          borderColor: 'hsl(var(--border))'
+        }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        whileHover={{ 
+          y: -8, 
+          scale: 1.02,
+          transition: { type: "spring", stiffness: 300, damping: 20 }
+        }}
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        {/* Glass shimmer effect */}
+        {variant === 'glass' && (
+          <motion.div 
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full"
+            style={{
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+              backgroundSize: '200% 100%',
+            }}
+            animate={{ x: isHovered ? "100%" : "-100%" }}
+            transition={{ duration: 1, ease: "easeOut" }}
+          />
         )}
 
-        {/* Text Content */}
-        <div className="flex-1 min-w-0">
-          <h2 className="section-heading text-xl mb-2 transition-colors duration-300 group-hover:text-primary-800">
-            {title}
-          </h2>
-          <p className="elegant-text text-sm transition-colors duration-300 group-hover:text-foreground">
-            {description}
-          </p>
+        {/* Content */}
+        <div className="relative z-10 flex items-start space-x-4">
+          {/* Icon Container */}
+          {icon && (
+            <motion.div 
+              className={`
+                flex-shrink-0 p-3 rounded-xl transition-all duration-300
+                ${iconVariantClasses()}
+              `}
+              whileHover={{ 
+                scale: 1.1, 
+                rotate: 3,
+                transition: { type: "spring", stiffness: 400, damping: 17 }
+              }}
+            >
+              <div className="text-primary-600 group-hover:text-primary-700 transition-colors duration-300">
+                {icon}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Text Content */}
+          <div className="flex-1 min-w-0">
+            <motion.h2 
+              className="section-heading text-xl mb-2 transition-colors duration-300 group-hover:text-primary-800"
+              initial={{ opacity: 0.8 }}
+              whileHover={{ opacity: 1 }}
+            >
+              {title}
+            </motion.h2>
+            <motion.p 
+              className="elegant-text text-sm transition-colors duration-300 group-hover:text-foreground"
+              initial={{ opacity: 0.7 }}
+              whileHover={{ opacity: 1 }}
+            >
+              {description}
+            </motion.p>
+          </div>
+
+          {/* Hover Arrow */}
+          <motion.div 
+            className="flex-shrink-0 text-primary-400"
+            animate={{ 
+              x: isHovered ? 4 : 0,
+              color: isHovered ? 'hsl(var(--primary-600))' : 'hsl(var(--primary-400))'
+            }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </motion.div>
         </div>
 
-        {/* Hover Arrow */}
-        <div className={`
-          flex-shrink-0 text-primary-400 transform transition-all duration-300
-          ${isHovered ? 'translate-x-1 text-primary-600' : 'translate-x-0'}
-        `}>
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </div>
-      </div>
-
-      {/* Gradient Overlay for Depth */}
-      {variant === 'gradient' && (
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
-      )}
+        {/* Gradient Overlay for Depth */}
+        {variant === 'gradient' && (
+          <motion.div 
+            className="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-transparent rounded-xl"
+            initial={{ opacity: 0 }}
+            whileHover={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          />
+        )}
+      </motion.div>
     </Link>
   );
 }

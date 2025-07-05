@@ -2,6 +2,7 @@ import { Calendar, DollarSign, MessageCircle, Palette, Globe } from 'lucide-reac
 import { useSearchParams } from 'react-router-dom';
 import DashboardCard from '../common/DashboardCard';
 import PaymentVerification from './PaymentVerification';
+import { motion } from 'framer-motion';
 
 export default function Dashboard() {
   const [searchParams] = useSearchParams();
@@ -79,56 +80,124 @@ export default function Dashboard() {
     >
       <div className="max-w-6xl mx-auto pt-8">
         {/* Header with subtle animation */}
-        <div className="text-center mb-12 animate-fade-in">
-          <div className="subheading-accent text-primary mb-4">Your Wedding Journey</div>
-          <h1 className="section-heading text-primary-700 mb-4">
+        <motion.div 
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+          <motion.div 
+            className="subheading-accent text-primary mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" }}
+          >
+            Your Wedding Journey
+          </motion.div>
+          <motion.h1 
+            className="section-heading text-primary-700 mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.6, ease: "easeOut" }}
+          >
             Wedding Dashboard
-          </h1>
-          <p className="elegant-text max-w-2xl mx-auto mb-6">
+          </motion.h1>
+          <motion.p 
+            className="elegant-text max-w-2xl mx-auto mb-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.6, ease: "easeOut" }}
+          >
             Everything you need to plan your perfect wedding, organized and accessible in one beautiful space
-          </p>
-          <div 
+          </motion.p>
+          <motion.div 
             className="mt-6 h-1 w-24 mx-auto rounded-full"
             style={{ 
               background: 'linear-gradient(90deg, hsl(var(--primary-500)), hsl(var(--primary-300)))' 
             }}
-          ></div>
-        </div>
+            initial={{ width: 0, opacity: 0 }}
+            animate={{ width: 96, opacity: 1 }}
+            transition={{ delay: 0.8, duration: 0.8, ease: "easeOut" }}
+          ></motion.div>
+        </motion.div>
 
         {/* Enhanced Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.0, duration: 0.6, ease: "easeOut" }}
+        >
           {dashboardItems.map((item, index) => (
-            <DashboardCard
+            <motion.div
               key={item.to}
-              to={item.to}
-              title={item.title}
-              description={item.description}
-              icon={item.icon}
-              variant={item.variant}
-              animationDelay={item.delay}
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ 
+                delay: 1.2 + (index * 0.1), 
+                duration: 0.6, 
+                ease: "easeOut" 
+              }}
               className={`
                 ${index === 0 ? 'md:col-span-2 lg:col-span-1' : ''}
                 ${index === dashboardItems.length - 1 && dashboardItems.length % 3 === 0 ? 'lg:col-start-2' : ''}
               `}
-            />
+            >
+              <DashboardCard
+                to={item.to}
+                title={item.title}
+                description={item.description}
+                icon={item.icon}
+                variant={item.variant}
+              />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Quick Stats or Additional Info */}
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in" style={{ animationDelay: '600ms' }}>
-          <div className="text-center p-6 bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 shadow-glass">
-            <div className="text-3xl font-bold text-primary-600 mb-2">5</div>
-            <div className="text-muted-foreground">Planning Tools</div>
-          </div>
-          <div className="text-center p-6 bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 shadow-glass">
-            <div className="text-3xl font-bold text-primary-600 mb-2">∞</div>
-            <div className="text-muted-foreground">Possibilities</div>
-          </div>
-          <div className="text-center p-6 bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 shadow-glass">
-            <div className="text-3xl font-bold text-primary-600 mb-2">1</div>
-            <div className="text-muted-foreground">Perfect Day</div>
-          </div>
-        </div>
+        <motion.div 
+          className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.8, duration: 0.8, ease: "easeOut" }}
+        >
+          {[
+            { number: "5", label: "Planning Tools" },
+            { number: "∞", label: "Possibilities" },
+            { number: "1", label: "Perfect Day" }
+          ].map((stat, index) => (
+            <motion.div
+              key={stat.label}
+              className="text-center p-6 bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 shadow-glass"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ 
+                delay: 2.0 + (index * 0.1), 
+                duration: 0.5, 
+                ease: "easeOut" 
+              }}
+              whileHover={{ 
+                scale: 1.05, 
+                transition: { type: "spring", stiffness: 300, damping: 20 } 
+              }}
+            >
+              <motion.div 
+                className="text-3xl font-bold text-primary-600 mb-2"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ 
+                  delay: 2.2 + (index * 0.1), 
+                  type: "spring", 
+                  stiffness: 200, 
+                  damping: 15 
+                }}
+              >
+                {stat.number}
+              </motion.div>
+              <div className="text-muted-foreground">{stat.label}</div>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
     </div>
   );

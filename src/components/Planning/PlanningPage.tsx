@@ -6,6 +6,7 @@ import TaskCard from './TaskCard';
 import AddTaskModal from './AddTaskModal';
 import BackButton from '../common/BackButton';
 import { Task } from '../../types';
+import { motion } from 'framer-motion';
 
 export default function PlanningPage() {
   const [tasks, setTasks] = useState<Task[]>([
@@ -75,28 +76,67 @@ export default function PlanningPage() {
         </div>
         
         {/* Header */}
-        <div className="text-center mb-12 animate-fade-in">
-          <div className="subheading-accent text-primary mb-4">Countdown to Forever</div>
-          <h1 className="section-heading mb-6">
+        <motion.div 
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+          <motion.div 
+            className="subheading-accent text-primary mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" }}
+          >
+            Countdown to Forever
+          </motion.div>
+          <motion.h1 
+            className="section-heading mb-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.6, ease: "easeOut" }}
+          >
             Wedding Planning
-          </h1>
-          <div className="elegant-text max-w-2xl mx-auto">
+          </motion.h1>
+          <motion.div 
+            className="elegant-text max-w-2xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.6, ease: "easeOut" }}
+          >
             <p className="text-xl font-medium mb-2">Welcome to Your Wedding Journey</p>
             <p className="text-base">You've completed {completionPercentage}% of your tasks</p>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Countdown Checklist */}
-        <div className="bg-background rounded-xl shadow-lg p-8 mb-8 animate-slide-up border border-border">
+        <motion.div 
+          className="bg-background rounded-xl shadow-lg p-8 mb-8 border border-border"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.8, ease: "easeOut" }}
+        >
           <div className="flex items-center justify-between mb-8">
-            <h2 className="section-heading">Countdown Checklist</h2>
-            <button
+            <motion.h2 
+              className="section-heading"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 1.0, duration: 0.6, ease: "easeOut" }}
+            >
+              Countdown Checklist
+            </motion.h2>
+            <motion.button
               onClick={() => setIsAddModalOpen(true)}
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-primary text-white rounded-lg hover:shadow-lg transition-all duration-normal hover:scale-105 font-medium"
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-primary text-white rounded-lg hover:shadow-lg transition-all duration-normal font-medium"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 1.2, duration: 0.6, ease: "easeOut" }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               <Plus className="w-5 h-5" />
               Add Task
-            </button>
+            </motion.button>
           </div>
 
           {/* Scrollable Task Cards */}
@@ -131,13 +171,34 @@ export default function PlanningPage() {
               <ChevronRight className="w-5 h-5 text-primary" />
             </button>
           </div>
-        </div>
+        </motion.div>
 
         {/* Planning Tools Grid */}
-        <div className="bg-background rounded-xl shadow-lg p-8 mb-8 border border-border">
-          <h2 className="section-heading mb-6">Planning Tools</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <motion.div 
+          className="bg-background rounded-xl shadow-lg p-8 mb-8 border border-border"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+          <motion.h2 
+            className="section-heading mb-6"
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" }}
+          >
+            Planning Tools
+          </motion.h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            <motion.div
+              className="bg-white p-6 rounded-lg shadow-sm border border-gray-200"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4, duration: 0.6, ease: "easeOut" }}
+              whileHover={{ y: -5 }}
+            >
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center">
                   <Plus className="h-4 w-4 text-primary-600" />
@@ -154,9 +215,16 @@ export default function PlanningPage() {
               >
                 Manage Guests
               </Link>
-            </div>
+            </motion.div>
 
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <motion.div
+              className="bg-white p-6 rounded-lg shadow-sm border border-gray-200"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.5, duration: 0.6, ease: "easeOut" }}
+              whileHover={{ y: -5 }}
+            >
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
                   <Plus className="h-4 w-4 text-blue-600" />
@@ -173,9 +241,9 @@ export default function PlanningPage() {
               >
                 Plan Seating
               </Link>
-            </div>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       <AddTaskModal
