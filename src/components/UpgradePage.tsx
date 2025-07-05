@@ -1,28 +1,78 @@
 import { useNavigate } from 'react-router-dom';
-import { useApp } from '../context/AppContext';
-import { Heart, CheckCircle, Sparkles, Globe, Users, ArrowLeft, Crown, Zap, Camera, Palette } from 'lucide-react';
+import { Heart, CheckCircle, Sparkles, Globe, Users, ArrowLeft, Crown, Loader } from 'lucide-react';
+import { supabase } from '../integrations/supabase/client';
+import { useState } from 'react';
 
 export default function UpgradePage() {
-  const { dispatch } = useApp();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState<string | null>(null);
 
-  const handleUpgrade = () => {
-    // In a real app, this would trigger a payment flow (e.g., with Stripe)
-    // For this demo, we'll just update the user's state.
-    dispatch({ type: 'UPGRADE_USER_TIER' });
-    alert('Congratulations! You are now a Wedly Pro member.');
-    navigate('/dashboard');
+  const handleUpgrade = async (tier: string) => {
+    try {
+      setLoading(tier);
+      
+      const { data, error } = await supabase.functions.invoke('create-checkout-session', {
+        body: { tier }
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        // Open Stripe checkout in a new tab
+        window.open(data.url, '_blank');
+      }
+    } catch (error) {
+      console.error('Error creating checkout session:', error);
+      alert('There was an error processing your request. Please try again.');
+    } finally {
+      setLoading(null);
+    }
   };
 
-  const proFeatures = [
-    { icon: Sparkles, text: 'Unlimited AI Assistant Chats', description: 'Get unlimited access to our AI wedding planning assistant' },
-    { icon: Globe, text: 'Custom Domain for Your Website', description: 'Use your own domain for your wedding website' },
-    { icon: Users, text: 'Advanced RSVP Management', description: 'Unlimited guests, custom questions, and detailed analytics' },
-    { icon: Camera, text: 'Unlimited Vision Boards & Photos', description: 'Create unlimited mood boards with unlimited photo uploads' },
-    { icon: Users, text: 'Collaboration Tools', description: 'Share planning access with family members and wedding planners' },
-    { icon: Palette, text: 'AI-Powered Style Recommendations', description: 'Get personalized vendor and style recommendations' },
-    { icon: Zap, text: 'Priority Support', description: '24/7 priority customer support for all your questions' },
-    { icon: Crown, text: 'Exclusive Templates', description: 'Access to premium website themes and invitation templates' }
+  const pricingPlans = [
+    {
+      tier: 'basic',
+      name: 'Basic',
+      price: '$9.99',
+      popular: false,
+      features: [
+        'Unlimited AI Assistant Chats',
+        'Basic Website Builder',
+        '5 Vision Boards',
+        '500 Photo Uploads',
+        'Email Support'
+      ]
+    },
+    {
+      tier: 'premium',
+      name: 'Premium',
+      price: '$29.99',
+      popular: true,
+      features: [
+        'Everything in Basic',
+        'Custom Domain for Website',
+        'Unlimited Vision Boards',
+        'Unlimited Photo Uploads',
+        'Advanced RSVP Management',
+        'Collaboration Tools',
+        'Priority Support'
+      ]
+    },
+    {
+      tier: 'enterprise',
+      name: 'Enterprise',
+      price: '$99.99',
+      popular: false,
+      features: [
+        'Everything in Premium',
+        'White-label Solutions',
+        'Dedicated Account Manager',
+        'Custom Integrations',
+        'Advanced Analytics',
+        'API Access',
+        '24/7 Phone Support'
+      ]
+    }
   ];
 
   const freeFeatures = [
@@ -70,19 +120,19 @@ export default function UpgradePage() {
           </p>
         </div>
 
-        {/* Pricing Comparison */}
-        <div className="grid md:grid-cols-2 gap-8 mb-16">
+        {/* Pricing Plans */}
+        <div className="grid md:grid-cols-4 gap-6 mb-16">
           {/* Free Plan */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 border-2 border-gray-200">
-            <div className="text-center mb-8">
-              <h3 className="text-2xl font-semibold text-gray-800 mb-2">Free Plan</h3>
-              <div className="text-4xl font-bold text-gray-600 mb-2">$0</div>
-              <p className="text-gray-500">Forever free</p>
+          <div className="bg-white rounded-2xl shadow-lg p-6 border-2 border-gray-200">
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">Free</h3>
+              <div className="text-3xl font-bold text-gray-600 mb-2">$0</div>
+              <p className="text-gray-500 text-sm">Forever free</p>
             </div>
-            <ul className="space-y-3 mb-8">
+            <ul className="space-y-2 mb-6 text-sm">
               {freeFeatures.map((feature, index) => (
                 <li key={index} className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-4 w-4 text-gray-400 mr-2 mt-0.5 flex-shrink-0" />
                   <span className="text-gray-600">{feature}</span>
                 </li>
               ))}
@@ -92,46 +142,56 @@ export default function UpgradePage() {
             </div>
           </div>
 
-          {/* Pro Plan */}
-          <div className="bg-gradient-to-br from-primary-500 to-sage-400 rounded-2xl shadow-xl p-8 text-white relative overflow-hidden">
-            <div className="absolute top-4 right-4">
-              <span className="bg-gold-400 text-gray-800 px-3 py-1 rounded-full text-sm font-semibold">
-                Most Popular
-              </span>
-            </div>
-            <div className="text-center mb-8">
-              <h3 className="text-2xl font-semibold mb-2">Wedly Pro</h3>
-              <div className="text-5xl font-bold mb-2">$99</div>
-              <p className="text-primary-100">One-time payment, lifetime access</p>
-            </div>
-            <ul className="space-y-3 mb-8">
-              <li className="flex items-start">
-                <CheckCircle className="h-5 w-5 text-green-300 mr-3 mt-0.5 flex-shrink-0" />
-                <span className="text-white">Everything in Free, plus:</span>
-              </li>
-              {proFeatures.map((feature, index) => (
-                <li key={index} className="flex items-start">
-                  <feature.icon className="h-5 w-5 text-gold-300 mr-3 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <span className="text-white font-medium">{feature.text}</span>
-                    <p className="text-primary-100 text-sm mt-1">{feature.description}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-            <button
-              onClick={handleUpgrade}
-              className="w-full bg-white text-primary-600 py-4 rounded-xl font-bold text-lg hover:bg-gray-50 transition-all transform hover:scale-105 shadow-lg"
+          {/* Paid Plans */}
+          {pricingPlans.map((plan) => (
+            <div 
+              key={plan.tier}
+              className={`bg-white rounded-2xl shadow-lg p-6 border-2 relative ${
+                plan.popular 
+                  ? 'border-primary-500 bg-gradient-to-br from-primary-50 to-white' 
+                  : 'border-gray-200'
+              }`}
             >
-              Upgrade to Pro Now
-            </button>
-            <button
-              onClick={() => navigate(-1)}
-              className="w-full mt-4 text-primary-100 hover:text-white transition-colors"
-            >
-              Maybe Later
-            </button>
-          </div>
+              {plan.popular && (
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                    Most Popular
+                  </span>
+                </div>
+              )}
+              <div className="text-center mb-6">
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">{plan.name}</h3>
+                <div className="text-3xl font-bold text-gray-800 mb-2">{plan.price}</div>
+                <p className="text-gray-500 text-sm">One-time payment</p>
+              </div>
+              <ul className="space-y-2 mb-6 text-sm">
+                {plan.features.map((feature, featureIndex) => (
+                  <li key={featureIndex} className="flex items-start">
+                    <CheckCircle className="h-4 w-4 text-primary-500 mr-2 mt-0.5 flex-shrink-0" />
+                    <span className="text-gray-600">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <button
+                onClick={() => handleUpgrade(plan.tier)}
+                disabled={loading === plan.tier}
+                className={`w-full py-3 rounded-xl font-semibold transition-all ${
+                  plan.popular
+                    ? 'bg-primary-500 text-white hover:bg-primary-600 shadow-lg'
+                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                } disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center`}
+              >
+                {loading === plan.tier ? (
+                  <>
+                    <Loader className="h-4 w-4 animate-spin mr-2" />
+                    Processing...
+                  </>
+                ) : (
+                  `Upgrade to ${plan.name}`
+                )}
+              </button>
+            </div>
+          ))}
         </div>
 
         {/* Feature Highlights */}

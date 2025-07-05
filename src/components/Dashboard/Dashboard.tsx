@@ -1,7 +1,22 @@
 import { Calendar, DollarSign, MessageCircle, Palette, Globe } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import DashboardCard from '../common/DashboardCard';
+import PaymentVerification from './PaymentVerification';
 
 export default function Dashboard() {
+  const [searchParams] = useSearchParams();
+  
+  // Check if we're handling payment verification
+  const paymentStatus = searchParams.get('payment');
+  if (paymentStatus) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-secondary p-4">
+        <div className="max-w-4xl mx-auto pt-8">
+          <PaymentVerification />
+        </div>
+      </div>
+    );
+  }
   // Debug CSS variables
   console.log('Dashboard component loaded');
   console.log('CSS Variables check:', {
