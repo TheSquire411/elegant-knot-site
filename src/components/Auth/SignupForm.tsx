@@ -106,9 +106,12 @@ export default function SignupForm() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl border border-gray-200 p-8 w-full max-w-md">
-        <h2 className="text-3xl font-serif font-bold text-primary-700 mb-6 text-center">
-          Create Account
-        </h2>
+        <div className="text-center mb-6">
+          <div className="subheading-accent text-primary mb-2">Get Started</div>
+          <h2 className="section-heading text-primary-700">
+            Create Your Account
+          </h2>
+        </div>
         {error && (
           <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
             {error}
@@ -179,10 +182,10 @@ export default function SignupForm() {
             {loading ? 'Creating account...' : 'Sign Up'}
           </button>
         </form>
-        <p className="text-center text-muted-foreground mt-4">
+        <p className="elegant-text text-center mt-4">
           Already have an account?{' '}
-          <Link to="/login" className="text-primary-600 hover:underline">
-            Login
+          <Link to="/login" className="text-primary-600 hover:underline font-medium">
+            Sign in
           </Link>
         </p>
       </div>

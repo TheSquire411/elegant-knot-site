@@ -77,9 +77,12 @@ export default function BudgetPage() {
         </div>
 
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-4xl font-bold text-primary-700">
-            Budget Tracker
-          </h1>
+          <div>
+            <div className="subheading-accent text-primary mb-2">Financial Planning</div>
+            <h1 className="section-heading text-primary-700">
+              Budget Tracker
+            </h1>
+          </div>
           
           <div className="flex items-center gap-4">
             {budgets.length > 0 && (

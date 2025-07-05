@@ -17,8 +17,9 @@ export default function VisionBoardPage() {
             <div className="mb-4">
               <BackButton />
             </div>
-            <h1 className="text-3xl font-serif font-bold text-primary-700">Vision Board Studio</h1>
-            <p className="text-muted-foreground mt-1">Create your perfect wedding vision</p>
+            <div className="subheading-accent text-primary mb-2">Creative Studio</div>
+            <h1 className="section-heading text-primary-700">Vision Board Studio</h1>
+            <p className="elegant-text mt-1">Create your perfect wedding vision</p>
           </div>
           
           {/* Navigation Tabs */}

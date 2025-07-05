@@ -106,10 +106,13 @@ export default function ChatPage() {
           <BackButton />
         </div>
         
-        <h1 className="text-4xl font-serif font-bold text-foreground mb-8 text-center flex items-center justify-center gap-3">
-          <Sparkles className="h-8 w-8 text-primary" />
-          AI Wedding Assistant
-        </h1>
+        <div className="text-center mb-12">
+          <div className="subheading-accent text-primary mb-4">AI Wedding Assistant</div>
+          <h1 className="section-heading flex items-center justify-center gap-3 mb-8">
+            <Sparkles className="h-8 w-8 text-primary" />
+            AI Wedding Assistant
+          </h1>
+        </div>
 
         <FeatureGate
           featureType="ai_conversations"
@@ -120,14 +123,14 @@ export default function ChatPage() {
             {/* Chat Messages */}
             <div className="flex-1 overflow-y-auto p-6">
               {messages.length === 0 ? (
-                <div className="text-center py-12">
-                  <MessageCircle className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-medium text-foreground mb-2">
-                    Welcome to your AI Wedding Assistant!
-                  </h3>
-                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                    I can help you with budget planning, vendor suggestions, timeline management, and answer questions about your wedding plans.
-                  </p>
+                  <div className="text-center py-12">
+                    <MessageCircle className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                    <h3 className="section-heading text-lg mb-2">
+                      Welcome to your AI Wedding Assistant!
+                    </h3>
+                    <p className="elegant-text mb-6 max-w-md mx-auto">
+                      I can help you with budget planning, vendor suggestions, timeline management, and answer questions about your wedding plans.
+                    </p>
                   {!weddingDataLoading && (
                     <button
                       onClick={startConversation}

@@ -91,18 +91,10 @@ export default function DashboardCard({
 
         {/* Text Content */}
         <div className="flex-1 min-w-0">
-          <h2 
-            className="text-xl font-semibold mb-2 transition-colors duration-300 group-hover:text-primary-800"
-            style={{ 
-              color: variant === 'glass' ? 'hsl(var(--foreground))' : 'hsl(var(--primary-700))'
-            }}
-          >
+          <h2 className="section-heading text-xl mb-2 transition-colors duration-300 group-hover:text-primary-800">
             {title}
           </h2>
-          <p 
-            className="text-sm leading-relaxed transition-colors duration-300 group-hover:text-foreground"
-            style={{ color: 'hsl(var(--muted-foreground))' }}
-          >
+          <p className="elegant-text text-sm transition-colors duration-300 group-hover:text-foreground">
             {description}
           </p>
         </div>

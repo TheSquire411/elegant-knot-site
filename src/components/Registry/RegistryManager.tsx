@@ -53,8 +53,9 @@ export default function RegistryManager() {
       <div className="mb-8">
         <div className="flex justify-between items-start mb-4">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">{registry?.title}</h1>
-            <p className="text-muted-foreground mt-2">{registry?.description}</p>
+            <div className="subheading-accent text-primary mb-2">Wedding Registry</div>
+            <h1 className="section-heading">{registry?.title}</h1>
+            <p className="elegant-text mt-2">{registry?.description}</p>
           </div>
           <div className="flex gap-2">
             <button
@@ -158,10 +159,10 @@ export default function RegistryManager() {
       {filteredItems.length === 0 ? (
         <div className="text-center py-12">
           <Package className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-foreground mb-2">
+          <h3 className="section-heading text-xl mb-2">
             {registryItems.length === 0 ? 'No items in your registry yet' : 'No items match your filters'}
           </h3>
-          <p className="text-muted-foreground mb-4">
+          <p className="elegant-text mb-4">
             {registryItems.length === 0 
               ? 'Start building your registry by adding items from your favorite stores'
               : 'Try adjusting your search or filters to see more items'

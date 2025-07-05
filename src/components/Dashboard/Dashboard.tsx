@@ -80,16 +80,11 @@ export default function Dashboard() {
       <div className="max-w-6xl mx-auto pt-8">
         {/* Header with subtle animation */}
         <div className="text-center mb-12 animate-fade-in">
-          <h1 
-            className="text-5xl font-serif font-bold mb-4"
-            style={{ color: 'hsl(var(--primary-700))' }}
-          >
+          <div className="subheading-accent text-primary mb-4">Your Wedding Journey</div>
+          <h1 className="section-heading text-primary-700 mb-4">
             Wedding Dashboard
           </h1>
-          <p 
-            className="text-xl max-w-2xl mx-auto leading-relaxed"
-            style={{ color: 'hsl(var(--muted-foreground))' }}
-          >
+          <p className="elegant-text max-w-2xl mx-auto mb-6">
             Everything you need to plan your perfect wedding, organized and accessible in one beautiful space
           </p>
           <div 

@@ -76,10 +76,11 @@ export default function PlanningPage() {
         
         {/* Header */}
         <div className="text-center mb-12 animate-fade-in">
-          <h1 className="font-heading text-foreground mb-6">
+          <div className="subheading-accent text-primary mb-4">Countdown to Forever</div>
+          <h1 className="section-heading mb-6">
             Wedding Planning
           </h1>
-          <div className="text-muted-foreground max-w-2xl mx-auto">
+          <div className="elegant-text max-w-2xl mx-auto">
             <p className="text-xl font-medium mb-2">Welcome to Your Wedding Journey</p>
             <p className="text-base">You've completed {completionPercentage}% of your tasks</p>
           </div>
@@ -88,7 +89,7 @@ export default function PlanningPage() {
         {/* Countdown Checklist */}
         <div className="bg-background rounded-xl shadow-lg p-8 mb-8 animate-slide-up border border-border">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-heading text-foreground">Countdown Checklist</h2>
+            <h2 className="section-heading">Countdown Checklist</h2>
             <button
               onClick={() => setIsAddModalOpen(true)}
               className="flex items-center gap-2 px-6 py-3 bg-gradient-primary text-white rounded-lg hover:shadow-lg transition-all duration-normal hover:scale-105 font-medium"
@@ -134,7 +135,7 @@ export default function PlanningPage() {
 
         {/* Planning Tools Grid */}
         <div className="bg-background rounded-xl shadow-lg p-8 mb-8 border border-border">
-          <h2 className="text-2xl font-heading text-foreground mb-6">Planning Tools</h2>
+          <h2 className="section-heading mb-6">Planning Tools</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <div className="flex items-center space-x-3 mb-4">
