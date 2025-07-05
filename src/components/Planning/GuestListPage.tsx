@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Users, Search, Plus, Download, Mail } from 'lucide-react';
 import { useGuests } from '../../hooks/useGuests';
+import { useInvitations } from '../../hooks/useInvitations';
 import GuestCard from './GuestCard';
 import AddGuestModal from './AddGuestModal';
+import SendInvitesModal from './SendInvitesModal';
 import BackButton from '../common/BackButton';
 
 export default function GuestListPage() {
@@ -18,9 +20,11 @@ export default function GuestListPage() {
     getGroupedGuests
   } = useGuests();
 
+  const { getInvitationStats } = useInvitations();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'attending' | 'not-attending' | 'pending'>('all');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isSendInvitesModalOpen, setIsSendInvitesModalOpen] = useState(false);
 
   const { grouped, ungrouped } = getGroupedGuests();
 
@@ -84,12 +88,14 @@ export default function GuestListPage() {
     // TODO: Open modal to add guest to existing group
   };
 
+  const invitationStats = getInvitationStats();
   const stats = {
     totalGuests: guests.length,
     totalGroups: guestGroups.length,
     attending: rsvpResponses.filter((rsvp: any) => rsvp.attending === true).length,
     notAttending: rsvpResponses.filter((rsvp: any) => rsvp.attending === false).length,
-    pending: guests.length - rsvpResponses.length
+    pending: guests.length - rsvpResponses.length,
+    invitationsSent: invitationStats.sent
   };
 
   if (loading) {
@@ -131,7 +137,7 @@ export default function GuestListPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid md:grid-cols-5 gap-4 mb-8">
+      <div className="grid md:grid-cols-6 gap-4 mb-8">
         <div className="bg-blue-50 rounded-lg p-4">
           <div className="flex items-center space-x-2 mb-2">
             <Users className="h-5 w-5 text-blue-500" />
@@ -171,6 +177,14 @@ export default function GuestListPage() {
           </div>
           <div className="text-2xl font-bold text-yellow-800">{stats.pending}</div>
         </div>
+
+        <div className="bg-indigo-50 rounded-lg p-4">
+          <div className="flex items-center space-x-2 mb-2">
+            <Mail className="h-5 w-5 text-indigo-500" />
+            <span className="text-sm font-medium text-indigo-700">Invites Sent</span>
+          </div>
+          <div className="text-2xl font-bold text-indigo-800">{stats.invitationsSent}</div>
+        </div>
       </div>
 
       {/* Search and Filter */}
@@ -199,7 +213,10 @@ export default function GuestListPage() {
         </div>
         
         <div className="flex items-center space-x-3">
-          <button className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+          <button 
+            onClick={() => setIsSendInvitesModalOpen(true)}
+            className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+          >
             <Mail className="h-4 w-4" />
             <span>Send Invites</span>
           </button>
@@ -269,6 +286,13 @@ export default function GuestListPage() {
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onSave={handleAddGuests}
+      />
+
+      {/* Send Invites Modal */}
+      <SendInvitesModal
+        isOpen={isSendInvitesModalOpen}
+        onClose={() => setIsSendInvitesModalOpen(false)}
+        guests={guests}
       />
     </div>
   );
