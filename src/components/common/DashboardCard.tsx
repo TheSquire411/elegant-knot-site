@@ -123,8 +123,7 @@ export default function DashboardCard({
           <motion.div 
             className="flex-shrink-0 text-primary-400"
             animate={{ 
-              x: isHovered ? 4 : 0,
-              color: isHovered ? 'hsl(var(--primary-600))' : 'hsl(var(--primary-400))'
+              x: isHovered ? 4 : 0
             }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
