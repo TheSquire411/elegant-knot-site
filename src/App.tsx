@@ -10,6 +10,7 @@ import StyleQuiz from './components/StyleQuiz';
 import Dashboard from './components/Dashboard/Dashboard';
 import PlanningPage from './components/Planning/PlanningPage';
 import GuestListPage from './components/Planning/GuestListPage';
+import SeatingPage from './components/Planning/SeatingPage';
 import BudgetPage from './components/Budget/BudgetPage';
 import ChatPage from './components/Chat/ChatPage';
 import VisionBoardPage from './components/VisionBoard/VisionBoardPage';
@@ -64,6 +65,7 @@ function AppRoutes() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/planning" element={<PlanningPage />} />
           <Route path="/planning/guests" element={<GuestListPage />} />
+          <Route path="/planning/seating" element={<SeatingPage />} />
           <Route path="/budget" element={<BudgetPage />} />
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/vision-board" element={<VisionBoardPage />} />

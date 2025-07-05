@@ -154,6 +154,25 @@ export default function PlanningPage() {
                 Manage Guests
               </Link>
             </div>
+
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <Plus className="h-4 w-4 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800">Seating Chart</h3>
+                  <p className="text-sm text-gray-600">Arrange tables</p>
+                </div>
+              </div>
+              <p className="text-gray-600 mb-4">Create interactive seating arrangements with drag-and-drop.</p>
+              <Link 
+                to="/planning/seating" 
+                className="block w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-center font-medium"
+              >
+                Plan Seating
+              </Link>
+            </div>
           </div>
         </div>
       </div>
