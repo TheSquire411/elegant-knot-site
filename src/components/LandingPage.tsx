@@ -20,18 +20,19 @@ export default function LandingPage() {
         
         {/* Header with Auth Status - positioned over hero */}
         <header className="absolute top-0 left-0 right-0 flex justify-between items-center p-6 z-30">
-          <h2 className="text-2xl font-heading font-bold text-white">Wedly</h2>
+          <h2 className="brand-text text-white">Wedly</h2>
           <div className="text-white">
             <AuthStatus />
           </div>
         </header>
         
         {/* Centered Hero Content */}
-        <div className="relative z-20 px-4 text-white animate-fade-in">
-          <h1 className="text-4xl md:text-6xl font-heading font-bold mb-4">
+        <div className="relative z-20 px-4 animate-fade-in">
+          <div className="subheading-accent text-white/80 mb-4">Premium Wedding Planning</div>
+          <h1 className="hero-heading mb-6">
             Your Dream Wedding, Perfectly Planned.
           </h1>
-          <p className="text-lg md:text-xl max-w-2xl mx-auto mb-8 leading-relaxed">
+          <p className="hero-subtext max-w-2xl mx-auto mb-8">
             From your vision board to your final vows, we bring all your planning tools together in one beautiful place.
           </p>
           
