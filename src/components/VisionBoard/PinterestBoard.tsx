@@ -5,6 +5,7 @@ import { useDeepseek } from '../../hooks/useDeepseek';
 import PhotoUploadModal from './PhotoUploadModal';
 import ImageAnalyzer from './ImageAnalyzer';
 import BackgroundRemovalModal from './BackgroundRemovalModal';
+import AddUrlImageModal from './AddUrlImageModal';
 
 interface Board {
   id: string;
@@ -37,6 +38,7 @@ export default function PinterestBoard({ onNavigateBack }: PinterestBoardProps) 
   const [viewMode, setViewMode] = useState<'boards' | 'gallery'>('boards');
   const [newBoardName, setNewBoardName] = useState('');
   const [showNewBoardInput, setShowNewBoardInput] = useState(false);
+  const [showAddUrlModal, setShowAddUrlModal] = useState(false);
 
   const { analyzeImage } = useDeepseek({
     onSuccess: (analysis) => {
@@ -105,28 +107,32 @@ export default function PinterestBoard({ onNavigateBack }: PinterestBoardProps) 
     return matchesSearch && matchesCategory;
   });
 
-  const addUrlImage = () => {
-    const url = prompt('Enter image URL:');
-    if (url && selectedBoard) {
-      const newImage = {
-        id: Date.now().toString(),
-        url,
-        thumbnail: url,
-        filename: 'Image from URL',
-        size: 0,
-        category: selectedBoard.category,
-        tags: [],
-        isFavorite: false,
-        uploadDate: new Date(),
-        source: 'url' as const
-      };
-      
-      setBoards(prev => prev.map(board => 
-        board.id === selectedBoard.id 
-          ? { ...board, images: [...board.images, newImage] }
-          : board
-      ));
-    }
+  const handleAddUrlImage = (imageData: {
+    url: string;
+    thumbnail: string;
+    filename: string;
+    tags: string[];
+  }) => {
+    if (!selectedBoard) return;
+    
+    const newImage = {
+      id: Date.now().toString(),
+      url: imageData.url,
+      thumbnail: imageData.thumbnail,
+      filename: imageData.filename,
+      size: 0,
+      category: selectedBoard.category,
+      tags: imageData.tags,
+      isFavorite: false,
+      uploadDate: new Date(),
+      source: 'url' as const
+    };
+    
+    setBoards(prev => prev.map(board => 
+      board.id === selectedBoard.id 
+        ? { ...board, images: [...board.images, newImage] }
+        : board
+    ));
   };
 
   return (
@@ -271,7 +277,7 @@ export default function PinterestBoard({ onNavigateBack }: PinterestBoardProps) 
                   </div>
                   <div className="flex items-center space-x-3">
                     <button
-                      onClick={addUrlImage}
+                      onClick={() => setShowAddUrlModal(true)}
                       className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                     >
                       <Plus className="h-4 w-4" />
@@ -432,6 +438,16 @@ export default function PinterestBoard({ onNavigateBack }: PinterestBoardProps) 
           imageUrl={selectedImage}
           onAnalysisComplete={handleAnalysisComplete}
           onClose={() => setShowAnalyzer(false)}
+        />
+      )}
+
+      {/* Add URL Modal */}
+      {showAddUrlModal && selectedBoard && (
+        <AddUrlImageModal
+          isOpen={showAddUrlModal}
+          onClose={() => setShowAddUrlModal(false)}
+          onAddImage={handleAddUrlImage}
+          category={selectedBoard.name}
         />
       )}
 
