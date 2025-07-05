@@ -131,6 +131,95 @@ export type Database = {
         }
         Relationships: []
       }
+      guest_groups: {
+        Row: {
+          created_at: string
+          id: string
+          max_size: number | null
+          name: string
+          notes: string | null
+          type: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          max_size?: number | null
+          name: string
+          notes?: string | null
+          type?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          max_size?: number | null
+          name?: string
+          notes?: string | null
+          type?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      guests: {
+        Row: {
+          created_at: string
+          dietary_restrictions: string | null
+          email: string | null
+          first_name: string
+          guest_group_id: string | null
+          id: string
+          is_plus_one: boolean | null
+          last_name: string | null
+          notes: string | null
+          phone: string | null
+          relationship: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          dietary_restrictions?: string | null
+          email?: string | null
+          first_name: string
+          guest_group_id?: string | null
+          id?: string
+          is_plus_one?: boolean | null
+          last_name?: string | null
+          notes?: string | null
+          phone?: string | null
+          relationship?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          dietary_restrictions?: string | null
+          email?: string | null
+          first_name?: string
+          guest_group_id?: string | null
+          id?: string
+          is_plus_one?: boolean | null
+          last_name?: string | null
+          notes?: string | null
+          phone?: string | null
+          relationship?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guests_guest_group_id_fkey"
+            columns: ["guest_group_id"]
+            isOneToOne: false
+            referencedRelation: "guest_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -176,6 +265,140 @@ export type Database = {
           updated_at?: string
           user_id?: string
           username?: string | null
+        }
+        Relationships: []
+      }
+      rsvp_responses: {
+        Row: {
+          additional_notes: string | null
+          attending: boolean | null
+          created_at: string
+          guest_id: string
+          id: string
+          meal_choice: string | null
+          plus_one_attending: boolean | null
+          plus_one_name: string | null
+          response_date: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          additional_notes?: string | null
+          attending?: boolean | null
+          created_at?: string
+          guest_id: string
+          id?: string
+          meal_choice?: string | null
+          plus_one_attending?: boolean | null
+          plus_one_name?: string | null
+          response_date?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          additional_notes?: string | null
+          attending?: boolean | null
+          created_at?: string
+          guest_id?: string
+          id?: string
+          meal_choice?: string | null
+          plus_one_attending?: boolean | null
+          plus_one_name?: string | null
+          response_date?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rsvp_responses_guest_id_fkey"
+            columns: ["guest_id"]
+            isOneToOne: false
+            referencedRelation: "guests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      seating_assignments: {
+        Row: {
+          assigned_at: string | null
+          created_at: string
+          guest_group_id: string
+          id: string
+          seating_table_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          created_at?: string
+          guest_group_id: string
+          id?: string
+          seating_table_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string | null
+          created_at?: string
+          guest_group_id?: string
+          id?: string
+          seating_table_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seating_assignments_guest_group_id_fkey"
+            columns: ["guest_group_id"]
+            isOneToOne: false
+            referencedRelation: "guest_groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "seating_assignments_seating_table_id_fkey"
+            columns: ["seating_table_id"]
+            isOneToOne: false
+            referencedRelation: "seating_tables"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      seating_tables: {
+        Row: {
+          capacity: number
+          created_at: string
+          id: string
+          name: string
+          notes: string | null
+          shape: string | null
+          updated_at: string
+          user_id: string
+          x_position: number | null
+          y_position: number | null
+        }
+        Insert: {
+          capacity?: number
+          created_at?: string
+          id?: string
+          name: string
+          notes?: string | null
+          shape?: string | null
+          updated_at?: string
+          user_id: string
+          x_position?: number | null
+          y_position?: number | null
+        }
+        Update: {
+          capacity?: number
+          created_at?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          shape?: string | null
+          updated_at?: string
+          user_id?: string
+          x_position?: number | null
+          y_position?: number | null
         }
         Relationships: []
       }
