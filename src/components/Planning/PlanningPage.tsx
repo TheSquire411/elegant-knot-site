@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { format, parseISO } from 'date-fns';
 import { Plus, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import TaskCard from './TaskCard';
 import AddTaskModal from './AddTaskModal';
 import BackButton from '../common/BackButton';
@@ -128,6 +129,31 @@ export default function PlanningPage() {
             >
               <ChevronRight className="w-5 h-5 text-primary" />
             </button>
+          </div>
+        </div>
+
+        {/* Planning Tools Grid */}
+        <div className="bg-background rounded-xl shadow-lg p-8 mb-8 border border-border">
+          <h2 className="text-2xl font-heading text-foreground mb-6">Planning Tools</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center">
+                  <Plus className="h-4 w-4 text-primary-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800">Guest List</h3>
+                  <p className="text-sm text-gray-600">Manage your guests</p>
+                </div>
+              </div>
+              <p className="text-gray-600 mb-4">Add guests, organize seating, and track RSVPs.</p>
+              <Link 
+                to="/planning/guests" 
+                className="block w-full px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors text-center font-medium"
+              >
+                Manage Guests
+              </Link>
+            </div>
           </div>
         </div>
       </div>

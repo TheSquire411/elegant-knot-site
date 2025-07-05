@@ -45,9 +45,9 @@ export function useGuests() {
 
       if (rsvpError) throw rsvpError;
 
-      setGuests(guestsData || []);
-      setGuestGroups(groupsData || []);
-      setRSVPResponses(rsvpData || []);
+      setGuests(guestsData as Guest[] || []);
+      setGuestGroups(groupsData as GuestGroup[] || []);
+      setRSVPResponses(rsvpData as RSVPResponse[] || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch guests');
     } finally {
@@ -68,7 +68,7 @@ export function useGuests() {
 
       if (error) throw error;
 
-      setGuestGroups(prev => [...prev, data]);
+      setGuestGroups(prev => [...prev, data as GuestGroup]);
       return data;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create guest group');
@@ -89,7 +89,7 @@ export function useGuests() {
 
       if (error) throw error;
 
-      setGuests(prev => [...prev, data]);
+      setGuests(prev => [...prev, data as Guest]);
       return data;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to add guest');
@@ -110,7 +110,7 @@ export function useGuests() {
       if (error) throw error;
 
       setGuests(prev => prev.map(guest => 
-        guest.id === guestId ? data : guest
+        guest.id === guestId ? data as Guest : guest
       ));
       return data;
     } catch (err) {

@@ -58,7 +58,8 @@ export default function GuestListPage() {
       const group = await createGuestGroup({
         name: groupName,
         type: guestData[0]?.relationship || 'friends',
-        max_size: Math.max(8, guestData.length)
+        max_size: Math.max(8, guestData.length),
+        notes: null
       });
 
       if (!group) return;
