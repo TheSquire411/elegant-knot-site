@@ -220,6 +220,56 @@ export type Database = {
           },
         ]
       }
+      invitations: {
+        Row: {
+          created_at: string
+          email: string
+          guest_id: string
+          id: string
+          invitation_type: string
+          opened_at: string | null
+          rsvp_token: string
+          sent_at: string | null
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          guest_id: string
+          id?: string
+          invitation_type?: string
+          opened_at?: string | null
+          rsvp_token?: string
+          sent_at?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          guest_id?: string
+          id?: string
+          invitation_type?: string
+          opened_at?: string | null
+          rsvp_token?: string
+          sent_at?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invitations_guest_id_fkey"
+            columns: ["guest_id"]
+            isOneToOne: false
+            referencedRelation: "guests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
