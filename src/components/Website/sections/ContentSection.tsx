@@ -31,6 +31,15 @@ export default function ContentSection({ websiteData, onUpdate, isGenerating }: 
     });
   };
 
+  const updateSimpleContent = (field: string, value: any) => {
+    onUpdate({
+      content: {
+        ...websiteData.content,
+        [field]: value
+      }
+    });
+  };
+
   const handleGenerateStory = async (style: 'romantic' | 'casual' | 'formal') => {
     try {
       const coupleInfo = {
@@ -67,7 +76,7 @@ export default function ContentSection({ websiteData, onUpdate, isGenerating }: 
           <input
             type="text"
             value={websiteData.content.coupleNames}
-            onChange={(e) => updateContent('coupleNames', e.target.value)}
+            onChange={(e) => updateSimpleContent('coupleNames', e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           />
         </div>
@@ -77,7 +86,7 @@ export default function ContentSection({ websiteData, onUpdate, isGenerating }: 
           <input
             type="date"
             value={websiteData.content.weddingDate}
-            onChange={(e) => updateContent('weddingDate', e.target.value)}
+            onChange={(e) => updateSimpleContent('weddingDate', e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           />
         </div>
