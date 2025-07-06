@@ -53,9 +53,32 @@ export function useDeepseek({ onSuccess, onError }: UseDeepseekProps) {
     }
   };
 
+  const generateTemplateContent = async (templateData: any) => {
+    setIsAnalyzing(true);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('gemini-analysis', {
+        body: {
+          type: 'generateTemplateContent',
+          templateData
+        }
+      });
+
+      if (error) throw error;
+      
+      onSuccess(data);
+    } catch (error) {
+      console.error('Failed to generate template content:', error);
+      onError('Failed to generate template content');
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
   return {
     analyzeImage,
     generateStory,
+    generateTemplateContent,
     isAnalyzing
   };
 }

@@ -7,6 +7,7 @@ import WebsiteBuilder from './WebsiteBuilder';
 import WebsitePreview from './WebsitePreview';
 import SectionBuilder from './SectionBuilder';
 import TemplateGallery from './TemplateGallery';
+import { useDeepseek } from '../../hooks/useDeepseek';
 
 type ActiveTab = 'templates' | 'builder' | 'sections' | 'preview' | 'settings';
 
@@ -15,8 +16,50 @@ export default function WebsiteManager() {
   const [website, setWebsite] = useState<WeddingWebsite | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [generating, setGenerating] = useState(false);
   const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+
+  const { generateTemplateContent } = useDeepseek({
+    onSuccess: (generatedContent) => {
+      if (!website) return;
+      
+      // Merge AI-generated content with existing website data
+      const updatedContent = {
+        ...website.content,
+        coupleNames: 'Alex & Taylor',
+        ourStory: {
+          content: `${generatedContent.ourStory.paragraph1} ${generatedContent.ourStory.paragraph2}`,
+          style: 'romantic' as const,
+          photos: []
+        },
+        schedule: {
+          ceremony: {
+            time: generatedContent.ceremonyDetails.time,
+            location: generatedContent.ceremonyDetails.location
+          },
+          reception: {
+            time: generatedContent.receptionDetails.time,
+            location: generatedContent.receptionDetails.location
+          }
+        },
+        registry: {
+          message: generatedContent.registryMessage,
+          stores: []
+        }
+      };
+
+      handleWebsiteUpdate({ content: updatedContent });
+      setGenerating(false);
+      setActiveTab('builder');
+    },
+    onError: (error) => {
+      console.error('Template content generation failed:', error);
+      setGenerating(false);
+      // Continue with original template selection without AI content
+      setActiveTab('builder');
+    }
+  });
 
   // Default website data structure
   const getDefaultWebsiteData = (): Omit<WeddingWebsite, 'id' | 'user_id' | 'created_at' | 'updated_at'> => ({
@@ -230,8 +273,12 @@ export default function WebsiteManager() {
       }
     };
 
+    // Update theme first
     handleWebsiteUpdate({ theme: templateTheme });
-    setActiveTab('builder');
+    
+    // Generate AI content for the template
+    setGenerating(true);
+    generateTemplateContent(template);
   };
 
   const tabs = [
@@ -337,10 +384,21 @@ export default function WebsiteManager() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {activeTab === 'templates' && (
-          <TemplateGallery 
-            onSelectTemplate={handleTemplateSelect}
-            selectedTemplate={undefined}
-          />
+          <div className="relative">
+            <TemplateGallery 
+              onSelectTemplate={handleTemplateSelect}
+              selectedTemplate={undefined}
+            />
+            {generating && (
+              <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-10">
+                <div className="text-center">
+                  <div className="animate-spin h-12 w-12 border-2 border-primary-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+                  <p className="text-sage-700 font-medium">Generating personalized content...</p>
+                  <p className="text-sage-600 text-sm">Creating unique content for your template</p>
+                </div>
+              </div>
+            )}
+          </div>
         )}
 
         {activeTab === 'builder' && (

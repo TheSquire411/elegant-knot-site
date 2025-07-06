@@ -45,10 +45,10 @@ serve(async (req) => {
     }
 
     const requestBody = await req.json();
-    const { type, imageUrl, style, personalizationData, message, weddingContext, question, budgetData, expenses } = requestBody;
+    const { type, imageUrl, style, personalizationData, message, weddingContext, question, budgetData, expenses, templateData } = requestBody;
     
     // Input validation
-    if (!type || !['analyzeImage', 'generateStory', 'weddingAssistant', 'analyzeBudget'].includes(type)) {
+    if (!type || !['analyzeImage', 'generateStory', 'weddingAssistant', 'analyzeBudget', 'generateTemplateContent'].includes(type)) {
       throw new Error('Invalid request type');
     }
     
@@ -66,6 +66,10 @@ serve(async (req) => {
     
     if (type === 'analyzeBudget' && !question) {
       throw new Error('Question is required for budget analysis');
+    }
+    
+    if (type === 'generateTemplateContent' && !templateData) {
+      throw new Error('Template data is required for content generation');
     }
     
     // Enhanced URL validation for image analysis
@@ -237,6 +241,57 @@ USER'S QUESTION: "${sanitizedQuestion}"
 Please provide detailed budget analysis and recommendations based on their specific question and current financial status. Be specific with numbers and actionable advice.`;
 
       parts = [{ text: prompt }];
+    } else if (type === 'generateTemplateContent') {
+      const template = templateData;
+      
+      prompt = `You are a wedding content generator creating personalized website content for couples based on their chosen wedding template theme.
+
+TEMPLATE INFORMATION:
+- Template Name: ${template.name || 'Wedding Template'}
+- Template Style: ${template.category || template.style || 'Elegant'}
+- Template Colors: ${template.colors?.join(', ') || 'Default colors'}
+
+DEFAULT COUPLE INFORMATION:
+- Names: Alex & Taylor
+- Wedding Date: September 15, 2024
+- Venue: ${template.name?.includes('Beach') ? 'Seaside Pavilion' : 
+           template.name?.includes('Rustic') ? 'Whispering Pines Forest' :
+           template.name?.includes('Modern') ? 'Contemporary Arts Center' :
+           template.name?.includes('Garden') ? 'Rose Garden Estate' :
+           'Beautiful Venue'}
+
+Generate personalized wedding website content that matches the template's theme and style. Return ONLY a JSON object with this exact structure:
+
+{
+  "welcomeHeadline": "A welcoming headline that matches the template style",
+  "ourStory": {
+    "paragraph1": "First paragraph of their love story, 2-3 sentences",
+    "paragraph2": "Second paragraph continuing their love story, 2-3 sentences"
+  },
+  "ceremonyDetails": {
+    "time": "4:00 PM",
+    "location": "Venue-specific ceremony location",
+    "description": "Brief description of the ceremony space that matches template style"
+  },
+  "receptionDetails": {
+    "time": "6:00 PM", 
+    "location": "Venue-specific reception location",
+    "description": "Brief description of the reception space"
+  },
+  "registryMessage": "A message about gifts that matches the template's tone and style"
+}
+
+STYLE GUIDELINES:
+- ${template.name?.includes('Rustic') || template.name?.includes('Bohemian') ? 'Use warm, casual, natural language with organic feeling' :
+    template.name?.includes('Modern') || template.name?.includes('Minimal') ? 'Use clean, contemporary, sophisticated language' :
+    template.name?.includes('Beach') || template.name?.includes('Coastal') ? 'Use relaxed, breezy, coastal-themed language' :
+    template.name?.includes('Luxury') || template.name?.includes('Gold') ? 'Use elegant, premium, sophisticated language' :
+    'Use classic, romantic, timeless language'}
+- Make content feel personal and authentic
+- Keep paragraphs concise but meaningful
+- Match the emotional tone of the template style`;
+
+      parts = [{ text: prompt }];
     }
 
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiApiKey}`, {
@@ -284,6 +339,31 @@ Please provide detailed budget analysis and recommendations based on their speci
       result = { response: content }
     } else if (type === 'analyzeBudget') {
       result = { analysis: content }
+    } else if (type === 'generateTemplateContent') {
+      try {
+        // Try to parse JSON response
+        result = JSON.parse(content)
+      } catch {
+        // If parsing fails, create a fallback response
+        result = {
+          welcomeHeadline: "Welcome to Our Wedding",
+          ourStory: {
+            paragraph1: "Alex and Taylor's love story began in a way that could only be described as magical.",
+            paragraph2: "Their journey together has been filled with adventure, laughter, and countless memories that have led them to this beautiful moment."
+          },
+          ceremonyDetails: {
+            time: "4:00 PM",
+            location: "Beautiful Venue",
+            description: "A stunning ceremony space perfect for celebrating their union."
+          },
+          receptionDetails: {
+            time: "6:00 PM",
+            location: "Reception Hall",
+            description: "An elegant space for dancing, dining, and celebrating with loved ones."
+          },
+          registryMessage: "Your presence is the only present we need, but if you wish to honor us with a gift, we've created a registry for your convenience."
+        }
+      }
     }
 
     return new Response(JSON.stringify(result), {
