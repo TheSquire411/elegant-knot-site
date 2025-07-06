@@ -2,6 +2,7 @@ import { Calendar, DollarSign, MessageCircle, Palette, Globe, Gift } from 'lucid
 import { useSearchParams } from 'react-router-dom';
 import DashboardCard from '../common/DashboardCard';
 import PaymentVerification from './PaymentVerification';
+import AuthStatus from '../Auth/AuthStatus';
 import { motion } from 'framer-motion';
 
 export default function Dashboard() {
@@ -86,6 +87,13 @@ export default function Dashboard() {
         minHeight: '100vh'
       }}
     >
+      {/* Header with AuthStatus */}
+      <div className="max-w-6xl mx-auto pt-4 pb-4">
+        <div className="flex justify-end">
+          <AuthStatus />
+        </div>
+      </div>
+
       <div className="max-w-6xl mx-auto pt-8">
         {/* Header with subtle animation */}
         <motion.div 
