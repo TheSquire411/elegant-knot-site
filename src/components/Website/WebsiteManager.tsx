@@ -322,7 +322,6 @@ export default function WebsiteManager() {
               <WebsiteBuilder
                 websiteData={website}
                 onUpdate={handleWebsiteUpdate}
-                onGenerateStory={() => {}}
                 isGenerating={false}
               />
             </div>
