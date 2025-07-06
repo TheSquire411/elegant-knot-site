@@ -17,14 +17,20 @@ export function useRegistry() {
     try {
       setIsLoading(true);
       
-      // Get or create registry
-      let { data: registryData, error: registryError } = await supabase
+      // Get all registries for the user to handle duplicates
+      const { data: allRegistries, error: registryError } = await supabase
         .from('registries')
         .select('*')
         .eq('user_id', state.user.id)
-        .single();
+        .order('created_at', { ascending: true }); // Oldest first
 
-      if (registryError && registryError.code === 'PGRST116') {
+      let registryData: Registry | null = null;
+
+      if (registryError) {
+        throw registryError;
+      }
+
+      if (!allRegistries || allRegistries.length === 0) {
         // No registry exists, create one
         const { data: newRegistry, error: createError } = await supabase
           .from('registries')
@@ -39,13 +45,20 @@ export function useRegistry() {
 
         if (createError) throw createError;
         registryData = newRegistry;
-      } else if (registryError) {
-        throw registryError;
+      } else {
+        // Use the oldest registry (first in the array)
+        registryData = allRegistries[0];
+
+        // If there are duplicate registries, consolidate them
+        if (allRegistries.length > 1) {
+          console.log(`Found ${allRegistries.length} registries for user. Consolidating...`);
+          await consolidateDuplicateRegistries(allRegistries);
+        }
       }
 
       setRegistry(registryData);
 
-      // Load registry items
+      // Load registry items for the primary registry
       if (registryData) {
         const { data: itemsData, error: itemsError } = await supabase
           .from('registry_items')
@@ -64,6 +77,58 @@ export function useRegistry() {
       console.error('Error loading registry:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Consolidate duplicate registries by moving all items to the oldest registry
+  const consolidateDuplicateRegistries = async (registries: Registry[]) => {
+    if (registries.length <= 1) return;
+
+    const primaryRegistry = registries[0]; // Oldest registry
+    const duplicateRegistries = registries.slice(1); // All other registries
+
+    try {
+      // Move all items from duplicate registries to the primary registry
+      for (const duplicateRegistry of duplicateRegistries) {
+        const { data: itemsToMove, error: fetchError } = await supabase
+          .from('registry_items')
+          .select('*')
+          .eq('registry_id', duplicateRegistry.id);
+
+        if (fetchError) {
+          console.error('Error fetching items from duplicate registry:', fetchError);
+          continue;
+        }
+
+        if (itemsToMove && itemsToMove.length > 0) {
+          // Update registry_id for all items
+          const { error: updateError } = await supabase
+            .from('registry_items')
+            .update({ registry_id: primaryRegistry.id })
+            .eq('registry_id', duplicateRegistry.id);
+
+          if (updateError) {
+            console.error('Error moving items to primary registry:', updateError);
+            continue;
+          }
+
+          console.log(`Moved ${itemsToMove.length} items from duplicate registry to primary registry`);
+        }
+
+        // Delete the duplicate registry
+        const { error: deleteError } = await supabase
+          .from('registries')
+          .delete()
+          .eq('id', duplicateRegistry.id);
+
+        if (deleteError) {
+          console.error('Error deleting duplicate registry:', deleteError);
+        } else {
+          console.log('Deleted duplicate registry');
+        }
+      }
+    } catch (error) {
+      console.error('Error consolidating duplicate registries:', error);
     }
   };
 
