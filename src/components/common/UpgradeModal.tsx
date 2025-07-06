@@ -69,12 +69,13 @@ export default function UpgradeModal({ isOpen, onClose, featureName, description
             <li>• Custom domain for your wedding website</li>
             <li>• Unlimited vision boards and photo uploads</li>
             <li>• Advanced RSVP management</li>
+            <li>• AI-powered creative tools</li>
             <li>• Priority customer support</li>
           </ul>
         </div>
         
         <p className="text-sm text-muted-foreground">
-          One-time payment of <span className="font-bold text-primary">$99</span> • Lifetime access
+          Starting at <span className="font-bold text-primary">$49</span> • One-time payment
         </p>
       </div>
     </Modal>

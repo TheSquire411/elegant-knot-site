@@ -31,46 +31,35 @@ export default function UpgradePage() {
 
   const pricingPlans = [
     {
-      tier: 'basic',
-      name: 'Basic',
-      price: '$9.99',
+      tier: 'plus',
+      name: 'Wedly Plus',
+      price: '$49',
       popular: false,
       features: [
-        'Unlimited AI Assistant Chats',
-        'Basic Website Builder',
-        '5 Vision Boards',
-        '500 Photo Uploads',
+        'Custom Domain for Wedding Website',
+        'All Premium Website Templates',
+        'Advanced RSVP Management',
+        'Unlimited Vision Boards',
+        'Unlimited Photo Uploads',
+        'Basic AI Assistant (10 chats/month)',
         'Email Support'
       ]
     },
     {
-      tier: 'premium',
-      name: 'Premium',
-      price: '$29.99',
+      tier: 'pro',
+      name: 'Wedly Pro',
+      price: '$99',
       popular: true,
       features: [
-        'Everything in Basic',
-        'Custom Domain for Website',
-        'Unlimited Vision Boards',
-        'Unlimited Photo Uploads',
-        'Advanced RSVP Management',
-        'Collaboration Tools',
-        'Priority Support'
-      ]
-    },
-    {
-      tier: 'enterprise',
-      name: 'Enterprise',
-      price: '$99.99',
-      popular: false,
-      features: [
-        'Everything in Premium',
-        'White-label Solutions',
-        'Dedicated Account Manager',
-        'Custom Integrations',
+        'Everything in Wedly Plus',
+        'Unlimited AI Assistant Chats',
+        'AI Budget Analysis & Insights',
+        'AI Timeline Generation',
+        'AI Vendor Coordination',
+        'AI Image Analyzer',
+        'Background Remover Tool',
         'Advanced Analytics',
-        'API Access',
-        '24/7 Phone Support'
+        'Priority Support'
       ]
     }
   ];
@@ -121,7 +110,7 @@ export default function UpgradePage() {
         </div>
 
         {/* Pricing Plans */}
-        <div className="grid md:grid-cols-4 gap-6 mb-16">
+        <div className="grid md:grid-cols-3 gap-6 mb-16 max-w-5xl mx-auto">
           {/* Free Plan */}
           <div className="bg-white rounded-2xl shadow-lg p-6 border-2 border-gray-200">
             <div className="text-center mb-6">

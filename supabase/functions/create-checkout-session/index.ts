@@ -56,9 +56,11 @@ serve(async (req) => {
 
     // Define pricing based on tier
     const priceMapping = {
-      'basic': { amount: 999, name: 'Basic Plan' }, // $9.99
-      'premium': { amount: 2999, name: 'Premium Plan' }, // $29.99
-      'enterprise': { amount: 9999, name: 'Enterprise Plan' } // $99.99
+      'plus': { amount: 4900, name: 'Wedly Plus' }, // $49.00
+      'pro': { amount: 9900, name: 'Wedly Pro' }, // $99.00
+      'basic': { amount: 4900, name: 'Wedly Plus' }, // Legacy support
+      'premium': { amount: 9900, name: 'Wedly Pro' }, // Legacy support
+      'enterprise': { amount: 9900, name: 'Wedly Pro Max' } // Legacy support
     };
 
     const priceInfo = priceMapping[tier as keyof typeof priceMapping];
