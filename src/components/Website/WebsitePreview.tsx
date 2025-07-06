@@ -20,9 +20,6 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
   
   // Ensure theme has required properties with AI template support
   const safeTheme = {
-    // Use AI color palette if available, otherwise fall back to colors array
-    colors: Array.isArray(theme.colors) && theme.colors.length >= 2 ? theme.colors : ['#F8BBD9', '#D4AF37'],
-    fonts: theme.fonts || { heading: 'Playfair Display', body: 'Montserrat' },
     // AI-generated design data
     colorPalette: theme.colorPalette || {
       primary: theme.colors?.[0] || '#F8BBD9',
