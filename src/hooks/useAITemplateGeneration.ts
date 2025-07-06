@@ -62,7 +62,7 @@ export function useAITemplateGeneration() {
           .from('website_templates')
           .insert({
             user_id: user.id,
-            name: 'AI-Generated Theme',
+            name: 'AI-Generated Design',
             layout: data.template.layout || {},
             colors: data.template.colors || {},
             typography: data.template.typography || {},
@@ -75,19 +75,26 @@ export function useAITemplateGeneration() {
         }
 
         // Convert to Template format and set as generated template
+        const templateColors = data.template.colors || {};
+        const aesthetic = weddingData.style_quiz_answers?.aesthetic || 'modern';
+        
         const aiTemplate: Template = {
           id: savedTemplate.id,
-          name: savedTemplate.name,
-          category: 'modern',
+          name: `AI ${aesthetic.charAt(0).toUpperCase() + aesthetic.slice(1)} Design`,
+          category: aesthetic as any,
           style: 'contemporary',
           preview: 'https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg',
           thumbnail: 'https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg',
-          features: ['AI Generated', 'Personalized', 'Modern Design', 'Custom Colors'],
+          features: ['AI Generated', 'Personalized Colors', 'Custom Typography', 'Unique Layout'],
           isPremium: true,
           rating: 5.0,
           downloads: 1,
-          colors: data.template.colors?.primary ? [data.template.colors.primary] : ['#2C3E50'],
-          description: 'AI-generated template based on your wedding preferences'
+          colors: [
+            templateColors.primary || '#F8BBD9',
+            templateColors.secondary || '#D4AF37',
+            templateColors.accent || '#8B4513'
+          ],
+          description: `AI-generated ${aesthetic} template with personalized colors and typography`
         };
 
         setGeneratedTemplate(aiTemplate);

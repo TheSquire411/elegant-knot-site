@@ -242,54 +242,52 @@ Please provide detailed budget analysis and recommendations based on their speci
 
       parts = [{ text: prompt }];
     } else if (type === 'generateTemplateContent') {
-      const template = templateData;
+      const data = templateData;
       
-      prompt = `You are a wedding content generator creating personalized website content for couples based on their chosen wedding template theme.
+      prompt = `You are a wedding template design generator creating personalized template designs based on wedding style preferences.
 
-TEMPLATE INFORMATION:
-- Template Name: ${template.name || 'Wedding Template'}
-- Template Style: ${template.category || template.style || 'Elegant'}
-- Template Colors: ${template.colors?.join(', ') || 'Default colors'}
+WEDDING STYLE INFORMATION:
+- Aesthetic: ${data.style?.aesthetic || 'elegant'}
+- Colors: ${data.style?.colors?.join(', ') || 'pink, gold'}
+- Partner Names: ${data.details?.partner1Name || 'Alex'} & ${data.details?.partner2Name || 'Taylor'}
+- Wedding Date: ${data.details?.weddingDate || 'September 15, 2024'}
+- Venue: ${data.details?.venue || 'Beautiful Venue'}
 
-DEFAULT COUPLE INFORMATION:
-- Names: Alex & Taylor
-- Wedding Date: September 15, 2024
-- Venue: ${template.name?.includes('Beach') ? 'Seaside Pavilion' : 
-           template.name?.includes('Rustic') ? 'Whispering Pines Forest' :
-           template.name?.includes('Modern') ? 'Contemporary Arts Center' :
-           template.name?.includes('Garden') ? 'Rose Garden Estate' :
-           'Beautiful Venue'}
-
-Generate personalized wedding website content that matches the template's theme and style. Return ONLY a JSON object with this exact structure:
+Generate a complete wedding website template design. Return ONLY a JSON object with this exact structure:
 
 {
-  "welcomeHeadline": "A welcoming headline that matches the template style",
-  "ourStory": {
-    "paragraph1": "First paragraph of their love story, 2-3 sentences",
-    "paragraph2": "Second paragraph continuing their love story, 2-3 sentences"
-  },
-  "ceremonyDetails": {
-    "time": "4:00 PM",
-    "location": "Venue-specific ceremony location",
-    "description": "Brief description of the ceremony space that matches template style"
-  },
-  "receptionDetails": {
-    "time": "6:00 PM", 
-    "location": "Venue-specific reception location",
-    "description": "Brief description of the reception space"
-  },
-  "registryMessage": "A message about gifts that matches the template's tone and style"
+  "template": {
+    "layout": {
+      "headerStyle": "one of: centered, split, overlay",
+      "sectionOrder": ["hero", "story", "details", "photos", "rsvp"],
+      "spacing": "one of: compact, balanced, spacious",
+      "imageLayout": "one of: grid, masonry, carousel"
+    },
+    "colors": {
+      "primary": "#hex-color",
+      "secondary": "#hex-color", 
+      "accent": "#hex-color",
+      "background": "#hex-color",
+      "text": "#hex-color"
+    },
+    "typography": {
+      "headingFont": "font name like 'Playfair Display' or 'Montserrat'",
+      "bodyFont": "font name like 'Source Sans Pro' or 'Open Sans'",
+      "headingWeight": "number like 400, 600, 700",
+      "bodyWeight": "number like 300, 400, 500"
+    }
+  }
 }
 
-STYLE GUIDELINES:
-- ${template.name?.includes('Rustic') || template.name?.includes('Bohemian') ? 'Use warm, casual, natural language with organic feeling' :
-    template.name?.includes('Modern') || template.name?.includes('Minimal') ? 'Use clean, contemporary, sophisticated language' :
-    template.name?.includes('Beach') || template.name?.includes('Coastal') ? 'Use relaxed, breezy, coastal-themed language' :
-    template.name?.includes('Luxury') || template.name?.includes('Gold') ? 'Use elegant, premium, sophisticated language' :
-    'Use classic, romantic, timeless language'}
-- Make content feel personal and authentic
-- Keep paragraphs concise but meaningful
-- Match the emotional tone of the template style`;
+DESIGN GUIDELINES based on aesthetic:
+- elegant: Use serif fonts, soft colors (blush, gold, cream), spacious layouts
+- modern: Use sans-serif fonts, bold colors, clean layouts with good spacing
+- rustic: Use natural colors (earth tones, sage, brown), organic layouts
+- vintage: Use classic fonts, muted colors (dusty rose, antique gold), traditional layouts
+- beach: Use coastal colors (blues, sandy beiges), relaxed layouts
+- garden: Use floral colors (greens, soft pinks), nature-inspired layouts
+
+Make sure all hex colors are valid 6-digit hex codes starting with #.`;
 
       parts = [{ text: prompt }];
     }
@@ -344,24 +342,29 @@ STYLE GUIDELINES:
         // Try to parse JSON response
         result = JSON.parse(content)
       } catch {
-        // If parsing fails, create a fallback response
+        // If parsing fails, create a fallback template design
         result = {
-          welcomeHeadline: "Welcome to Our Wedding",
-          ourStory: {
-            paragraph1: "Alex and Taylor's love story began in a way that could only be described as magical.",
-            paragraph2: "Their journey together has been filled with adventure, laughter, and countless memories that have led them to this beautiful moment."
-          },
-          ceremonyDetails: {
-            time: "4:00 PM",
-            location: "Beautiful Venue",
-            description: "A stunning ceremony space perfect for celebrating their union."
-          },
-          receptionDetails: {
-            time: "6:00 PM",
-            location: "Reception Hall",
-            description: "An elegant space for dancing, dining, and celebrating with loved ones."
-          },
-          registryMessage: "Your presence is the only present we need, but if you wish to honor us with a gift, we've created a registry for your convenience."
+          template: {
+            layout: {
+              headerStyle: "centered",
+              sectionOrder: ["hero", "story", "details", "photos", "rsvp"],
+              spacing: "balanced",
+              imageLayout: "grid"
+            },
+            colors: {
+              primary: "#F8BBD9",
+              secondary: "#D4AF37", 
+              accent: "#8B4513",
+              background: "#FFFFFF",
+              text: "#2C3E50"
+            },
+            typography: {
+              headingFont: "Playfair Display",
+              bodyFont: "Source Sans Pro",
+              headingWeight: 600,
+              bodyWeight: 400
+            }
+          }
         }
       }
     }
