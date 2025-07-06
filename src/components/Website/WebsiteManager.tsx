@@ -88,15 +88,29 @@ export default function WebsiteManager() {
 
       if (websites && websites.length > 0) {
         const websiteData = websites[0];
+        
+        // Parse JSON fields safely
+        const parseJsonField = (field: any, fallback: any) => {
+          if (!field) return fallback;
+          if (typeof field === 'string') {
+            try {
+              return JSON.parse(field);
+            } catch {
+              return fallback;
+            }
+          }
+          return field;
+        };
+
         setWebsite({
           ...websiteData,
           slug: websiteData.slug || undefined,
           domain: websiteData.domain || undefined,
           published_at: websiteData.published_at || undefined,
           status: websiteData.status as 'draft' | 'published' | 'archived',
-          content: (websiteData.content as any) || {},
-          theme: (websiteData.theme as any) || { colors: [], fonts: { heading: '', body: '' } },
-          settings: (websiteData.settings as any) || {}
+          content: parseJsonField(websiteData.content, getDefaultWebsiteData().content),
+          theme: parseJsonField(websiteData.theme, getDefaultWebsiteData().theme),
+          settings: parseJsonField(websiteData.settings, getDefaultWebsiteData().settings)
         });
         setActiveTab('builder');
       } else {
@@ -132,15 +146,28 @@ export default function WebsiteManager() {
 
       if (error) throw error;
 
+      // Parse JSON fields safely
+      const parseJsonField = (field: any, fallback: any) => {
+        if (!field) return fallback;
+        if (typeof field === 'string') {
+          try {
+            return JSON.parse(field);
+          } catch {
+            return fallback;
+          }
+        }
+        return field;
+      };
+
       setWebsite({
         ...data,
         slug: data.slug || undefined,
         domain: data.domain || undefined,
         published_at: data.published_at || undefined,
         status: data.status as 'draft' | 'published' | 'archived',
-        content: (data.content as any) || {},
-        theme: (data.theme as any) || { colors: [], fonts: { heading: '', body: '' } },
-        settings: (data.settings as any) || {}
+        content: parseJsonField(data.content, getDefaultWebsiteData().content),
+        theme: parseJsonField(data.theme, getDefaultWebsiteData().theme),
+        settings: parseJsonField(data.settings, getDefaultWebsiteData().settings)
       });
     } catch (error) {
       console.error('Error creating website:', error);
