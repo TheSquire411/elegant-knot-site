@@ -8,7 +8,30 @@ interface WebsitePreviewProps {
 }
 
 export default function WebsitePreview({ websiteData, previewMode, onPreviewModeChange }: WebsitePreviewProps) {
-  const { theme, content } = websiteData;
+  // Safe data extraction with fallbacks
+  const theme = websiteData?.theme || { colors: ['#F8BBD9', '#D4AF37'], fonts: { heading: 'Playfair Display', body: 'Montserrat' } };
+  const content = websiteData?.content || {};
+  
+  // Ensure theme has required properties
+  const safeTheme = {
+    colors: Array.isArray(theme.colors) && theme.colors.length >= 2 ? theme.colors : ['#F8BBD9', '#D4AF37'],
+    fonts: theme.fonts || { heading: 'Playfair Display', body: 'Montserrat' }
+  };
+  
+  // Ensure content has safe string values
+  const safeContent = {
+    coupleNames: typeof content.coupleNames === 'string' ? content.coupleNames : 'Sarah & Michael',
+    weddingDate: typeof content.weddingDate === 'string' ? content.weddingDate : '2024-09-15',
+    venue: content.venue || { name: 'Garden Venue', address: '123 Beautiful Street, City, State' },
+    ourStory: content.ourStory || { content: 'Our love story begins here...', style: 'romantic', photos: [] },
+    schedule: content.schedule || {
+      ceremony: { time: '16:00', location: 'Garden Venue' },
+      reception: { time: '18:00', location: 'Reception Hall' }
+    },
+    registry: content.registry || { message: 'Your presence is the only present we need!', stores: [] },
+    accommodations: Array.isArray(content.accommodations) ? content.accommodations : [],
+    travel: content.travel || {}
+  };
 
   const formatDate = (dateString: string) => {
     if (!dateString) return '';
@@ -82,9 +105,9 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
               : 'w-80 rounded-2xl border-8 border-gray-800'
           }`}
           style={{
-            fontFamily: theme.fonts.body,
-            '--primary-color': theme.colors[0],
-            '--secondary-color': theme.colors[1]
+            fontFamily: safeTheme.fonts.body,
+            '--primary-color': safeTheme.colors[0],
+            '--secondary-color': safeTheme.colors[1]
           } as React.CSSProperties}
         >
           {/* Website Content */}
@@ -93,28 +116,28 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
             <section
               className="relative bg-gradient-to-br from-primary-100 to-secondary-100 text-center py-20 px-6"
               style={{
-                background: `linear-gradient(135deg, ${theme.colors[0]}20, ${theme.colors[1]}20)`
+                background: `linear-gradient(135deg, ${safeTheme.colors[0]}20, ${safeTheme.colors[1]}20)`
               }}
             >
               <div className="max-w-4xl mx-auto">
                 <h1
                   className="text-5xl md:text-7xl font-bold mb-6"
                   style={{
-                    fontFamily: theme.fonts.heading,
-                    color: theme.colors[0]
+                    fontFamily: safeTheme.fonts.heading,
+                    color: safeTheme.colors[0]
                   }}
                 >
-                  {content.coupleNames}
+                  {safeContent.coupleNames}
                 </h1>
                 <p className="text-xl md:text-2xl text-gray-700 mb-8">
-                  {formatDate(content.weddingDate)}
+                  {formatDate(safeContent.weddingDate)}
                 </p>
                 <p className="text-lg text-gray-600 mb-8">
-                  {content.venue.name} • {content.venue.address}
+                  {safeContent.venue.name} • {safeContent.venue.address}
                 </p>
                 <button
                   className="px-8 py-3 text-white rounded-full font-semibold hover:opacity-90 transition-opacity"
-                  style={{ backgroundColor: theme.colors[0] }}
+                  style={{ backgroundColor: safeTheme.colors[0] }}
                 >
                   RSVP Now
                 </button>
@@ -122,20 +145,20 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
             </section>
 
             {/* Our Story Section */}
-            {content.ourStory.content && (
+            {safeContent.ourStory.content && (
               <section className="py-16 px-6">
                 <div className="max-w-4xl mx-auto text-center">
                   <h2
                     className="text-3xl md:text-4xl font-bold mb-8"
                     style={{
-                      fontFamily: theme.fonts.heading,
-                      color: theme.colors[0]
+                      fontFamily: safeTheme.fonts.heading,
+                      color: safeTheme.colors[0]
                     }}
                   >
                     Our Story
                   </h2>
                   <div className="prose prose-lg mx-auto text-gray-700">
-                    <p className="leading-relaxed">{content.ourStory.content}</p>
+                    <p className="leading-relaxed">{safeContent.ourStory.content}</p>
                   </div>
                 </div>
               </section>
@@ -147,60 +170,60 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
                 <h2
                   className="text-3xl md:text-4xl font-bold text-center mb-12"
                   style={{
-                    fontFamily: theme.fonts.heading,
-                    color: theme.colors[0]
+                    fontFamily: safeTheme.fonts.heading,
+                    color: safeTheme.colors[0]
                   }}
                 >
                   Schedule
                 </h2>
                 <div className="grid md:grid-cols-2 gap-8">
                   <div className="text-center p-6 bg-white rounded-lg shadow-md">
-                    <h3 className="text-xl font-semibold mb-4" style={{ color: theme.colors[0] }}>
+                    <h3 className="text-xl font-semibold mb-4" style={{ color: safeTheme.colors[0] }}>
                       Ceremony
                     </h3>
                     <p className="text-lg font-medium text-gray-800 mb-2">
-                      {formatTime(content.schedule.ceremony.time)}
+                      {formatTime(safeContent.schedule.ceremony.time)}
                     </p>
-                    <p className="text-gray-600">{content.schedule.ceremony.location}</p>
+                    <p className="text-gray-600">{safeContent.schedule.ceremony.location}</p>
                   </div>
                   <div className="text-center p-6 bg-white rounded-lg shadow-md">
-                    <h3 className="text-xl font-semibold mb-4" style={{ color: theme.colors[0] }}>
+                    <h3 className="text-xl font-semibold mb-4" style={{ color: safeTheme.colors[0] }}>
                       Reception
                     </h3>
                     <p className="text-lg font-medium text-gray-800 mb-2">
-                      {formatTime(content.schedule.reception.time)}
+                      {formatTime(safeContent.schedule.reception.time)}
                     </p>
-                    <p className="text-gray-600">{content.schedule.reception.location}</p>
+                    <p className="text-gray-600">{safeContent.schedule.reception.location}</p>
                   </div>
                 </div>
               </div>
             </section>
 
             {/* Registry Section */}
-            {content.registry.stores.length > 0 && (
+            {safeContent.registry.stores.length > 0 && (
               <section className="py-16 px-6">
                 <div className="max-w-4xl mx-auto text-center">
                   <h2
                     className="text-3xl md:text-4xl font-bold mb-8"
                     style={{
-                      fontFamily: theme.fonts.heading,
-                      color: theme.colors[0]
+                      fontFamily: safeTheme.fonts.heading,
+                      color: safeTheme.colors[0]
                     }}
                   >
                     Registry
                   </h2>
-                  <p className="text-lg text-gray-700 mb-8">{content.registry.message}</p>
+                  <p className="text-lg text-gray-700 mb-8">{safeContent.registry.message}</p>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {content.registry.stores.map((store: any, index: number) => (
+                    {safeContent.registry.stores.map((store: any, index: number) => (
                       <a
                         key={index}
                         href={store.url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="block p-4 border-2 rounded-lg hover:shadow-md transition-shadow"
-                        style={{ borderColor: theme.colors[1] }}
+                        style={{ borderColor: safeTheme.colors[1] }}
                       >
-                        <span className="font-semibold" style={{ color: theme.colors[0] }}>
+                        <span className="font-semibold" style={{ color: safeTheme.colors[0] }}>
                           {store.name}
                         </span>
                       </a>
@@ -211,22 +234,22 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
             )}
 
             {/* Accommodations Section */}
-            {content.accommodations.length > 0 && (
+            {safeContent.accommodations.length > 0 && (
               <section className="py-16 px-6 bg-gray-50">
                 <div className="max-w-4xl mx-auto">
                   <h2
                     className="text-3xl md:text-4xl font-bold text-center mb-12"
                     style={{
-                      fontFamily: theme.fonts.heading,
-                      color: theme.colors[0]
+                      fontFamily: safeTheme.fonts.heading,
+                      color: safeTheme.colors[0]
                     }}
                   >
                     Accommodations
                   </h2>
                   <div className="grid md:grid-cols-2 gap-6">
-                    {content.accommodations.map((hotel: any, index: number) => (
+                    {safeContent.accommodations.map((hotel: any, index: number) => (
                       <div key={index} className="bg-white p-6 rounded-lg shadow-md">
-                        <h3 className="text-xl font-semibold mb-2" style={{ color: theme.colors[0] }}>
+                        <h3 className="text-xl font-semibold mb-2" style={{ color: safeTheme.colors[0] }}>
                           {hotel.name}
                         </h3>
                         <p className="text-gray-600 mb-2">{hotel.address}</p>
@@ -238,7 +261,7 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-block px-4 py-2 text-white rounded hover:opacity-90 transition-opacity"
-                            style={{ backgroundColor: theme.colors[0] }}
+                            style={{ backgroundColor: safeTheme.colors[0] }}
                           >
                             Book Now
                           </a>
@@ -251,41 +274,41 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
             )}
 
             {/* Travel Section */}
-            {(content.travel.airport || content.travel.directions || content.travel.parking) && (
+            {(safeContent.travel.airport || safeContent.travel.directions || safeContent.travel.parking) && (
               <section className="py-16 px-6">
                 <div className="max-w-4xl mx-auto">
                   <h2
                     className="text-3xl md:text-4xl font-bold text-center mb-12"
                     style={{
-                      fontFamily: theme.fonts.heading,
-                      color: theme.colors[0]
+                      fontFamily: safeTheme.fonts.heading,
+                      color: safeTheme.colors[0]
                     }}
                   >
                     Travel & Directions
                   </h2>
                   <div className="space-y-8">
-                    {content.travel.airport && (
+                    {safeContent.travel.airport && (
                       <div className="text-center">
-                        <h3 className="text-xl font-semibold mb-2" style={{ color: theme.colors[0] }}>
+                        <h3 className="text-xl font-semibold mb-2" style={{ color: safeTheme.colors[0] }}>
                           Nearest Airport
                         </h3>
-                        <p className="text-gray-700">{content.travel.airport}</p>
+                        <p className="text-gray-700">{safeContent.travel.airport}</p>
                       </div>
                     )}
-                    {content.travel.directions && (
+                    {safeContent.travel.directions && (
                       <div>
-                        <h3 className="text-xl font-semibold mb-4" style={{ color: theme.colors[0] }}>
+                        <h3 className="text-xl font-semibold mb-4" style={{ color: safeTheme.colors[0] }}>
                           Directions
                         </h3>
-                        <p className="text-gray-700 leading-relaxed">{content.travel.directions}</p>
+                        <p className="text-gray-700 leading-relaxed">{safeContent.travel.directions}</p>
                       </div>
                     )}
-                    {content.travel.parking && (
+                    {safeContent.travel.parking && (
                       <div>
-                        <h3 className="text-xl font-semibold mb-4" style={{ color: theme.colors[0] }}>
+                        <h3 className="text-xl font-semibold mb-4" style={{ color: safeTheme.colors[0] }}>
                           Parking
                         </h3>
-                        <p className="text-gray-700 leading-relaxed">{content.travel.parking}</p>
+                        <p className="text-gray-700 leading-relaxed">{safeContent.travel.parking}</p>
                       </div>
                     )}
                   </div>
@@ -297,15 +320,15 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
             <section
               className="py-16 px-6 text-center"
               style={{
-                background: `linear-gradient(135deg, ${theme.colors[0]}10, ${theme.colors[1]}10)`
+                background: `linear-gradient(135deg, ${safeTheme.colors[0]}10, ${safeTheme.colors[1]}10)`
               }}
             >
               <div className="max-w-2xl mx-auto">
                 <h2
                   className="text-3xl md:text-4xl font-bold mb-8"
                   style={{
-                    fontFamily: theme.fonts.heading,
-                    color: theme.colors[0]
+                    fontFamily: safeTheme.fonts.heading,
+                    color: safeTheme.colors[0]
                   }}
                 >
                   RSVP
@@ -315,7 +338,7 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
                 </p>
                 <button
                   className="px-8 py-3 text-white rounded-full font-semibold hover:opacity-90 transition-opacity"
-                  style={{ backgroundColor: theme.colors[0] }}
+                  style={{ backgroundColor: safeTheme.colors[0] }}
                 >
                   RSVP Now
                 </button>
@@ -325,10 +348,10 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
             {/* Footer */}
             <footer className="py-8 px-6 bg-gray-800 text-white text-center">
               <p className="mb-2">
-                {content.coupleNames}
+                {safeContent.coupleNames}
               </p>
               <p className="text-gray-400">
-                {formatDate(content.weddingDate)}
+                {formatDate(safeContent.weddingDate)}
               </p>
             </footer>
           </div>
