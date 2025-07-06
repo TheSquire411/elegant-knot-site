@@ -811,6 +811,10 @@ export type Database = {
         Args: { p_user_id: string; p_feature_type: string }
         Returns: number
       }
+      get_current_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       increment_usage: {
         Args: { p_user_id: string; p_feature_type: string }
         Returns: number
