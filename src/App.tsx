@@ -17,6 +17,8 @@ import VisionBoardPage from './components/VisionBoard/VisionBoardPage';
 import WebsitePage from './components/Website/WebsitePage';
 import RegistryPage from './components/Registry/RegistryPage';
 import UpgradePage from './components/UpgradePage';
+import AdminProtectedRoute from './components/common/AdminProtectedRoute';
+import AdminDashboard from './components/Admin/AdminDashboard';
 
 
 /**
@@ -75,6 +77,11 @@ function AppRoutes() {
           <Route path="/website" element={<WebsitePage />} />
           <Route path="/registry" element={<RegistryPage />} />
           
+        </Route>
+
+        {/* Admin Routes */}
+        <Route element={<AdminProtectedRoute />}>
+          <Route path="/admin" element={<AdminDashboard />} />
         </Route>
 
         {/* Fallback Route */}

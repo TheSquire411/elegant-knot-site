@@ -737,9 +737,72 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      admin_content_stats: {
+        Row: {
+          total_budgets: number | null
+          total_guests: number | null
+          total_registries: number | null
+          total_websites: number | null
+        }
+        Relationships: []
+      }
+      admin_feature_usage_stats: {
+        Row: {
+          avg_per_user: number | null
+          feature_type: string | null
+          total_usage: number | null
+          unique_users: number | null
+        }
+        Relationships: []
+      }
+      admin_subscription_stats: {
+        Row: {
+          percentage: number | null
+          subscription_tier:
+            | Database["public"]["Enums"]["subscription_tier"]
+            | null
+          user_count: number | null
+        }
+        Relationships: []
+      }
+      admin_user_stats: {
+        Row: {
+          admin_users: number | null
+          new_this_month: number | null
+          paid_users: number | null
+          total_users: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      admin_get_users: {
+        Args: { p_limit?: number; p_offset?: number; p_search?: string }
+        Returns: {
+          id: string
+          user_id: string
+          full_name: string
+          username: string
+          avatar_url: string
+          role: string
+          subscription_tier: Database["public"]["Enums"]["subscription_tier"]
+          subscription_status: Database["public"]["Enums"]["subscription_status"]
+          created_at: string
+          updated_at: string
+          last_sign_in_at: string
+        }[]
+      }
+      admin_update_user_role: {
+        Args: { p_user_id: string; p_new_role: string }
+        Returns: boolean
+      }
+      admin_update_user_subscription: {
+        Args: {
+          p_user_id: string
+          p_new_tier: Database["public"]["Enums"]["subscription_tier"]
+        }
+        Returns: boolean
+      }
       can_use_feature: {
         Args: { p_user_id: string; p_feature_type: string }
         Returns: boolean
