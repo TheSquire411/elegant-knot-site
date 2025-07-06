@@ -16,8 +16,8 @@ function AdminProtectedRoute() {
     hasAdminRole: state.profile ? hasRole(state.profile, 'admin') : false
   });
 
-  // Show loading while checking auth state
-  if (state.isLoading) {
+  // Show loading while checking auth state OR while profile is loading
+  if (state.isLoading || (state.user && !state.profile)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-500"></div>
@@ -25,10 +25,15 @@ function AdminProtectedRoute() {
     );
   }
 
-  // If the user is not logged in or is not an admin, redirect them.
-  if (!state.user || !state.profile || !hasRole(state.profile, 'admin')) {
-    console.log('AdminProtectedRoute: Access denied - redirecting to dashboard');
-    // Redirect non-admins to the main dashboard.
+  // If the user is not logged in, redirect to dashboard
+  if (!state.user) {
+    console.log('AdminProtectedRoute: No user - redirecting to dashboard');
+    return <Navigate to="/dashboard" state={{ from: location }} replace />;
+  }
+
+  // If profile is loaded but user is not admin, redirect to dashboard
+  if (state.profile && !hasRole(state.profile, 'admin')) {
+    console.log('AdminProtectedRoute: User is not admin - redirecting to dashboard');
     return <Navigate to="/dashboard" state={{ from: location }} replace />;
   }
 
