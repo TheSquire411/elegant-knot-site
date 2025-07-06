@@ -1,4 +1,4 @@
-import { Calendar, DollarSign, MessageCircle, Palette, Globe } from 'lucide-react';
+import { Calendar, DollarSign, MessageCircle, Palette, Globe, Gift } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import DashboardCard from '../common/DashboardCard';
 import PaymentVerification from './PaymentVerification';
@@ -67,6 +67,14 @@ export default function Dashboard() {
       icon: <Globe className="h-8 w-8" />,
       variant: 'glass' as const,
       delay: 400
+    },
+    {
+      to: '/registry',
+      title: 'Gift Registry',
+      description: 'Create and manage your wedding gift registry for guests',
+      icon: <Gift className="h-8 w-8" />,
+      variant: 'default' as const,
+      delay: 500
     }
   ];
 
@@ -162,7 +170,7 @@ export default function Dashboard() {
           transition={{ delay: 1.8, duration: 0.8, ease: "easeOut" }}
         >
           {[
-            { number: "5", label: "Planning Tools" },
+            { number: "6", label: "Planning Tools" },
             { number: "∞", label: "Possibilities" },
             { number: "1", label: "Perfect Day" }
           ].map((stat, index) => (
