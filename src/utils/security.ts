@@ -61,7 +61,14 @@ export function validateEmail(email: string): boolean {
  * Checks if user has specific role safely
  */
 export function hasRole(profile: any, role: string): boolean {
-  return profile?.role === role;
+  const result = profile?.role === role;
+  console.log('hasRole Debug:', {
+    profile,
+    profileRole: profile?.role,
+    requiredRole: role,
+    result
+  });
+  return result;
 }
 
 /**

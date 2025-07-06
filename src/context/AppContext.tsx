@@ -159,15 +159,19 @@ export function AppProvider({ children }: AppProviderProps) {
 
   const fetchUserProfile = async (userId: string) => {
     try {
+      console.log('AppContext: Fetching profile for user:', userId);
       const { data: profile, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('user_id', userId)
         .single();
 
+      console.log('AppContext: Profile fetch result:', { profile, error });
+
       if (error && error.code !== 'PGRST116') {
         console.error('Error fetching profile:', error);
       } else {
+        console.log('AppContext: Setting profile in state:', profile);
         dispatch({ type: 'SET_PROFILE', payload: profile });
       }
     } catch (error) {
