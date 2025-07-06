@@ -12,10 +12,30 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
   const theme = websiteData?.theme || { colors: ['#F8BBD9', '#D4AF37'], fonts: { heading: 'Playfair Display', body: 'Montserrat' } };
   const content = websiteData?.content || {};
   
-  // Ensure theme has required properties
+  // Ensure theme has required properties with AI template support
   const safeTheme = {
+    // Use AI color palette if available, otherwise fall back to colors array
     colors: Array.isArray(theme.colors) && theme.colors.length >= 2 ? theme.colors : ['#F8BBD9', '#D4AF37'],
-    fonts: theme.fonts || { heading: 'Playfair Display', body: 'Montserrat' }
+    fonts: theme.fonts || { heading: 'Playfair Display', body: 'Montserrat' },
+    // AI-generated design data
+    colorPalette: theme.colorPalette || {
+      primary: theme.colors?.[0] || '#F8BBD9',
+      secondary: theme.colors?.[1] || '#D4AF37',
+      accent: theme.colors?.[2] || theme.colors?.[0] || '#F8BBD9',
+      background: '#FFFFFF',
+      text: '#374151'
+    },
+    typography: theme.typography || {
+      headingFont: theme.fonts?.heading || 'Playfair Display',
+      bodyFont: theme.fonts?.body || 'Montserrat',
+      headingWeight: 700,
+      bodyWeight: 400
+    },
+    layout: theme.layout || {
+      headerStyle: 'classic',
+      spacing: 'normal',
+      imageLayout: 'standard'
+    }
   };
   
   // Ensure content has safe string values
@@ -105,9 +125,13 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
               : 'w-80 rounded-2xl border-8 border-gray-800'
           }`}
           style={{
-            fontFamily: safeTheme.fonts.body,
-            '--primary-color': safeTheme.colors[0],
-            '--secondary-color': safeTheme.colors[1]
+            fontFamily: safeTheme.typography.bodyFont,
+            fontWeight: safeTheme.typography.bodyWeight,
+            '--primary-color': safeTheme.colorPalette.primary,
+            '--secondary-color': safeTheme.colorPalette.secondary,
+            '--accent-color': safeTheme.colorPalette.accent,
+            '--bg-color': safeTheme.colorPalette.background,
+            '--text-color': safeTheme.colorPalette.text
           } as React.CSSProperties}
         >
           {/* Website Content */}
@@ -116,28 +140,35 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
             <section
               className="relative bg-gradient-to-br from-primary-100 to-secondary-100 text-center py-20 px-6"
               style={{
-                background: `linear-gradient(135deg, ${safeTheme.colors[0]}20, ${safeTheme.colors[1]}20)`
+                background: `linear-gradient(135deg, ${safeTheme.colorPalette.primary}20, ${safeTheme.colorPalette.secondary}20)`
               }}
             >
               <div className="max-w-4xl mx-auto">
                 <h1
-                  className="text-5xl md:text-7xl font-bold mb-6"
+                  className="text-5xl md:text-7xl mb-6"
                   style={{
-                    fontFamily: safeTheme.fonts.heading,
-                    color: safeTheme.colors[0]
+                    fontFamily: safeTheme.typography.headingFont,
+                    fontWeight: safeTheme.typography.headingWeight,
+                    color: safeTheme.colorPalette.primary
                   }}
                 >
                   {safeContent.coupleNames}
                 </h1>
-                <p className="text-xl md:text-2xl text-gray-700 mb-8">
+                <p 
+                  className="text-xl md:text-2xl mb-8"
+                  style={{ color: safeTheme.colorPalette.text }}
+                >
                   {formatDate(safeContent.weddingDate)}
                 </p>
-                <p className="text-lg text-gray-600 mb-8">
+                <p 
+                  className="text-lg mb-8"
+                  style={{ color: safeTheme.colorPalette.text, opacity: 0.8 }}
+                >
                   {safeContent.venue.name} • {safeContent.venue.address}
                 </p>
                 <button
                   className="px-8 py-3 text-white rounded-full font-semibold hover:opacity-90 transition-opacity"
-                  style={{ backgroundColor: safeTheme.colors[0] }}
+                  style={{ backgroundColor: safeTheme.colorPalette.primary }}
                 >
                   RSVP Now
                 </button>
@@ -149,15 +180,19 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
               <section className="py-16 px-6">
                 <div className="max-w-4xl mx-auto text-center">
                   <h2
-                    className="text-3xl md:text-4xl font-bold mb-8"
+                    className="text-3xl md:text-4xl mb-8"
                     style={{
-                      fontFamily: safeTheme.fonts.heading,
-                      color: safeTheme.colors[0]
+                      fontFamily: safeTheme.typography.headingFont,
+                      fontWeight: safeTheme.typography.headingWeight,
+                      color: safeTheme.colorPalette.primary
                     }}
                   >
                     Our Story
                   </h2>
-                  <div className="prose prose-lg mx-auto text-gray-700">
+                  <div 
+                    className="prose prose-lg mx-auto"
+                    style={{ color: safeTheme.colorPalette.text }}
+                  >
                     <div 
                       className="leading-relaxed"
                       dangerouslySetInnerHTML={{ 
@@ -175,32 +210,39 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
             <section className="py-16 px-6 bg-gray-50">
               <div className="max-w-4xl mx-auto">
                 <h2
-                  className="text-3xl md:text-4xl font-bold text-center mb-12"
+                  className="text-3xl md:text-4xl text-center mb-12"
                   style={{
-                    fontFamily: safeTheme.fonts.heading,
-                    color: safeTheme.colors[0]
+                    fontFamily: safeTheme.typography.headingFont,
+                    fontWeight: safeTheme.typography.headingWeight,
+                    color: safeTheme.colorPalette.primary
                   }}
                 >
                   Schedule
                 </h2>
                 <div className="grid md:grid-cols-2 gap-8">
                   <div className="text-center p-6 bg-white rounded-lg shadow-md">
-                    <h3 className="text-xl font-semibold mb-4" style={{ color: safeTheme.colors[0] }}>
+                    <h3 className="text-xl font-semibold mb-4" style={{ color: safeTheme.colorPalette.primary }}>
                       Ceremony
                     </h3>
-                    <p className="text-lg font-medium text-gray-800 mb-2">
+                    <p 
+                      className="text-lg font-medium mb-2"
+                      style={{ color: safeTheme.colorPalette.text }}
+                    >
                       {formatTime(safeContent.schedule.ceremony.time)}
                     </p>
-                    <p className="text-gray-600">{safeContent.schedule.ceremony.location}</p>
+                    <p style={{ color: safeTheme.colorPalette.text, opacity: 0.7 }}>{safeContent.schedule.ceremony.location}</p>
                   </div>
                   <div className="text-center p-6 bg-white rounded-lg shadow-md">
-                    <h3 className="text-xl font-semibold mb-4" style={{ color: safeTheme.colors[0] }}>
+                    <h3 className="text-xl font-semibold mb-4" style={{ color: safeTheme.colorPalette.primary }}>
                       Reception
                     </h3>
-                    <p className="text-lg font-medium text-gray-800 mb-2">
+                    <p 
+                      className="text-lg font-medium mb-2"
+                      style={{ color: safeTheme.colorPalette.text }}
+                    >
                       {formatTime(safeContent.schedule.reception.time)}
                     </p>
-                    <p className="text-gray-600">{safeContent.schedule.reception.location}</p>
+                    <p style={{ color: safeTheme.colorPalette.text, opacity: 0.7 }}>{safeContent.schedule.reception.location}</p>
                   </div>
                 </div>
               </div>
@@ -327,25 +369,29 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
             <section
               className="py-16 px-6 text-center"
               style={{
-                background: `linear-gradient(135deg, ${safeTheme.colors[0]}10, ${safeTheme.colors[1]}10)`
+                background: `linear-gradient(135deg, ${safeTheme.colorPalette.primary}10, ${safeTheme.colorPalette.secondary}10)`
               }}
             >
               <div className="max-w-2xl mx-auto">
                 <h2
-                  className="text-3xl md:text-4xl font-bold mb-8"
+                  className="text-3xl md:text-4xl mb-8"
                   style={{
-                    fontFamily: safeTheme.fonts.heading,
-                    color: safeTheme.colors[0]
+                    fontFamily: safeTheme.typography.headingFont,
+                    fontWeight: safeTheme.typography.headingWeight,
+                    color: safeTheme.colorPalette.primary
                   }}
                 >
                   RSVP
                 </h2>
-                <p className="text-lg text-gray-700 mb-8">
+                <p 
+                  className="text-lg mb-8"
+                  style={{ color: safeTheme.colorPalette.text }}
+                >
                   Please let us know if you'll be joining us for our special day!
                 </p>
                 <button
                   className="px-8 py-3 text-white rounded-full font-semibold hover:opacity-90 transition-opacity"
-                  style={{ backgroundColor: safeTheme.colors[0] }}
+                  style={{ backgroundColor: safeTheme.colorPalette.primary }}
                 >
                   RSVP Now
                 </button>
