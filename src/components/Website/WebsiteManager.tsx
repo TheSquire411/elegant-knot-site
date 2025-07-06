@@ -274,14 +274,14 @@ export default function WebsiteManager() {
     }, 1000);
   };
 
-  const handleTemplateSelect = (template: any) => {
+  const handleTemplateSelect = async (template: any) => {
     console.log('Template selected:', template);
     if (!website) {
       console.log('No website found, cannot select template');
       return;
     }
 
-    const templateTheme: WebsiteTheme = {
+    let templateTheme: WebsiteTheme = {
       style: template.name,
       colors: template.colors,
       fonts: {
@@ -290,7 +290,51 @@ export default function WebsiteManager() {
       }
     };
 
-    console.log('Created theme:', templateTheme);
+    // If this is an AI-generated template with a database ID, fetch full design data
+    if (template.id && typeof template.id === 'string' && template.id.includes('-')) {
+      try {
+        const { data: templateData, error } = await supabase
+          .from('website_templates')
+          .select('layout, colors, typography')
+          .eq('id', template.id)
+          .single();
+
+        if (error) throw error;
+
+        if (templateData) {
+          console.log('Fetched AI template data:', templateData);
+          
+          // Safely cast and validate the data
+          const layoutData = templateData.layout as any;
+          const colorsData = templateData.colors as any;
+          const typographyData = templateData.typography as any;
+          
+          // Apply AI-generated design data
+          templateTheme = {
+            ...templateTheme,
+            layout: layoutData || undefined,
+            colorPalette: colorsData || undefined,
+            typography: typographyData || undefined,
+            // Update fonts from AI data
+            fonts: {
+              heading: typographyData?.headingFont || 'Playfair Display',
+              body: typographyData?.bodyFont || 'Montserrat'
+            },
+            // Update colors array from AI palette
+            colors: colorsData ? [
+              colorsData.primary,
+              colorsData.secondary,
+              colorsData.accent
+            ].filter(Boolean) : template.colors
+          };
+        }
+      } catch (error) {
+        console.error('Error fetching AI template data:', error);
+        // Continue with basic template data
+      }
+    }
+
+    console.log('Final theme to apply:', templateTheme);
 
     // Update theme first
     handleWebsiteUpdate({ theme: templateTheme });

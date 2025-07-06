@@ -147,6 +147,26 @@ export interface WebsiteTheme {
     heading: string;
     body: string;
   };
+  // Extended AI template properties
+  layout?: {
+    headerStyle?: string;
+    sectionOrder?: string[];
+    spacing?: string;
+    imageLayout?: string;
+  };
+  colorPalette?: {
+    primary?: string;
+    secondary?: string;
+    accent?: string;
+    background?: string;
+    text?: string;
+  };
+  typography?: {
+    headingFont?: string;
+    bodyFont?: string;
+    headingWeight?: number;
+    bodyWeight?: number;
+  };
 }
 
 export interface WebsiteSettings {
