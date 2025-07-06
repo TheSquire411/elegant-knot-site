@@ -141,7 +141,7 @@ export function getCSPHeaders(isDevelopment: boolean = import.meta.env?.DEV ?? f
       styleSrc,
       "img-src 'self' data: https:",
       "font-src 'self' data:",
-      "connect-src 'self' https://rpcnysgxybcffnprttar.supabase.co wss://rpcnysgxybcffnprttar.supabase.co https://api.deepseek.com",
+      "connect-src 'self' https://rpcnysgxybcffnprttar.supabase.co wss://rpcnysgxybcffnprttar.supabase.co https://generativelanguage.googleapis.com",
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "object-src 'none'",

@@ -13,7 +13,7 @@ export function useDeepseek({ onSuccess, onError }: UseDeepseekProps) {
     setIsAnalyzing(true);
     
     try {
-      const { data, error } = await supabase.functions.invoke('deepseek-analysis', {
+      const { data, error } = await supabase.functions.invoke('gemini-analysis', {
         body: {
           type: 'analyzeImage',
           imageUrl
@@ -35,7 +35,7 @@ export function useDeepseek({ onSuccess, onError }: UseDeepseekProps) {
     setIsAnalyzing(true);
     
     try {
-      const { data, error } = await supabase.functions.invoke('deepseek-analysis', {
+      const { data, error } = await supabase.functions.invoke('gemini-analysis', {
         body: {
           type: 'generateStory',
           personalizationData

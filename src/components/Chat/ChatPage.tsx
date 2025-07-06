@@ -22,7 +22,7 @@ export default function ChatPage() {
 
   const sendWeddingMessage = async (message: string, context: any) => {
     try {
-      const response = await fetch(`https://rpcnysgxybcffnprttar.supabase.co/functions/v1/deepseek-analysis`, {
+      const response = await fetch(`https://rpcnysgxybcffnprttar.supabase.co/functions/v1/gemini-analysis`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -72,7 +72,7 @@ export default function BudgetAnalysis({ isOpen, onClose, budget, expenses }: Bu
     try {
       const budgetSummary = generateBudgetSummary();
       
-      const { data, error } = await supabase.functions.invoke('deepseek-analysis', {
+      const { data, error } = await supabase.functions.invoke('gemini-analysis', {
         body: {
           type: 'analyzeBudget',
           question: message,
