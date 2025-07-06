@@ -643,6 +643,48 @@ export type Database = {
         }
         Relationships: []
       }
+      user_vision_boards: {
+        Row: {
+          aesthetic: string
+          avoid: string | null
+          colors: string[]
+          created_at: string
+          generated_board_data: Json | null
+          id: string
+          must_have: string | null
+          season: string
+          updated_at: string
+          user_id: string
+          venue: string
+        }
+        Insert: {
+          aesthetic: string
+          avoid?: string | null
+          colors: string[]
+          created_at?: string
+          generated_board_data?: Json | null
+          id?: string
+          must_have?: string | null
+          season: string
+          updated_at?: string
+          user_id: string
+          venue: string
+        }
+        Update: {
+          aesthetic?: string
+          avoid?: string | null
+          colors?: string[]
+          created_at?: string
+          generated_board_data?: Json | null
+          id?: string
+          must_have?: string | null
+          season?: string
+          updated_at?: string
+          user_id?: string
+          venue?: string
+        }
+        Relationships: []
+      }
       website_sections: {
         Row: {
           content: Json

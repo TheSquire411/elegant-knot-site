@@ -6,16 +6,17 @@ interface VisionBoardCustomizerProps {
   onComplete?: (preferences: any) => void;
   onGenerate?: (preferences: any) => void;
   onClose?: () => void;
+  existingPreferences?: any;
 }
 
-export default function VisionBoardCustomizer({ onComplete, onGenerate, onClose }: VisionBoardCustomizerProps) {
+export default function VisionBoardCustomizer({ onComplete, onGenerate, onClose, existingPreferences }: VisionBoardCustomizerProps) {
   const [preferences, setPreferences] = useState({
-    aesthetic: '',
-    venue: '',
-    colors: [] as string[],
-    season: '',
-    mustHave: '',
-    avoid: ''
+    aesthetic: existingPreferences?.aesthetic || '',
+    venue: existingPreferences?.venue || '',
+    colors: existingPreferences?.colors || [] as string[],
+    season: existingPreferences?.season || '',
+    mustHave: existingPreferences?.mustHave || '',
+    avoid: existingPreferences?.avoid || ''
   });
 
   const aestheticOptions = [
@@ -69,6 +70,9 @@ export default function VisionBoardCustomizer({ onComplete, onGenerate, onClose 
           throw error;
         }
 
+        // Save to database after successful generation
+        await saveVisionBoardToDatabase(data, preferences);
+
         if (onGenerate) {
           onGenerate(data);
         } else if (onComplete) {
@@ -110,6 +114,9 @@ export default function VisionBoardCustomizer({ onComplete, onGenerate, onClose 
           elements: mockElements
         };
 
+        // Save mock data to database as well
+        await saveVisionBoardToDatabase(boardData, preferences);
+
         if (onGenerate) {
           onGenerate(boardData);
         } else if (onComplete) {
@@ -118,6 +125,61 @@ export default function VisionBoardCustomizer({ onComplete, onGenerate, onClose 
       } finally {
         setIsGenerating(false);
       }
+    }
+  };
+
+  const saveVisionBoardToDatabase = async (boardData: any, prefs: any) => {
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) return;
+
+      // Check if user already has a vision board
+      const { data: existingBoard } = await supabase
+        .from('user_vision_boards')
+        .select('id')
+        .eq('user_id', userData.user.id)
+        .single();
+
+      if (existingBoard) {
+        // Update existing vision board
+        const { error } = await supabase
+          .from('user_vision_boards')
+          .update({
+            aesthetic: prefs.aesthetic,
+            venue: prefs.venue,
+            colors: prefs.colors,
+            season: prefs.season,
+            must_have: prefs.mustHave,
+            avoid: prefs.avoid,
+            generated_board_data: boardData.elements,
+            updated_at: new Date().toISOString()
+          })
+          .eq('user_id', userData.user.id);
+
+        if (error) {
+          console.error('Error updating vision board:', error);
+        }
+      } else {
+        // Create new vision board
+        const { error } = await supabase
+          .from('user_vision_boards')
+          .insert({
+            user_id: userData.user.id,
+            aesthetic: prefs.aesthetic,
+            venue: prefs.venue,
+            colors: prefs.colors,
+            season: prefs.season,
+            must_have: prefs.mustHave,
+            avoid: prefs.avoid,
+            generated_board_data: boardData.elements
+          });
+
+        if (error) {
+          console.error('Error saving vision board:', error);
+        }
+      }
+    } catch (error) {
+      console.error('Error saving vision board to database:', error);
     }
   };
 

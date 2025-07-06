@@ -16,10 +16,11 @@ interface VisionBoardProps {
       userPhotos?: any[];
     };
   };
-  
+  hasExistingBoard?: boolean;
+  onEditPreferences?: () => void;
 }
 
-export default function VisionBoardGenerator({ board }: VisionBoardProps) {
+export default function VisionBoardGenerator({ board, hasExistingBoard, onEditPreferences }: VisionBoardProps) {
   const { elements, preferences } = board;
   const [showUnsplashModal, setShowUnsplashModal] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -84,6 +85,14 @@ export default function VisionBoardGenerator({ board }: VisionBoardProps) {
               )}
             </div>
             <div className="flex items-center space-x-3">
+              {hasExistingBoard && onEditPreferences && (
+                <button
+                  onClick={onEditPreferences}
+                  className="px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors text-white text-sm"
+                >
+                  Edit Preferences
+                </button>
+              )}
               <button
                 onClick={() => setShowUnsplashModal(true)}
                 className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors"

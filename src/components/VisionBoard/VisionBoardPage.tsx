@@ -1,12 +1,68 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabase } from '../../integrations/supabase/client';
+import { useApp } from '../../context/AppContext';
 import BackButton from '../common/BackButton';
 import VisionBoardCustomizer from './VisionBoardCustomizer';
 import VisionBoardGenerator from './VisionBoardGenerator';
 import PinterestBoard from './PinterestBoard';
 
 export default function VisionBoardPage() {
+  const { state } = useApp();
   const [activeStep, setActiveStep] = useState<'customize' | 'generate' | 'pinterest'>('customize');
   const [boardData, setBoardData] = useState<any>(null);
+  const [hasExistingBoard, setHasExistingBoard] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    loadExistingVisionBoard();
+  }, [state.user]);
+
+  const loadExistingVisionBoard = async () => {
+    if (!state.user) {
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('user_vision_boards')
+        .select('*')
+        .eq('user_id', state.user.id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error loading vision board:', error);
+      } else if (data) {
+        setHasExistingBoard(true);
+        // If user has an existing vision board, go directly to generate view
+        setBoardData({
+          id: data.id,
+          preferences: {
+            aesthetic: data.aesthetic,
+            venue: data.venue,
+            colors: data.colors,
+            season: data.season,
+            mustHave: data.must_have,
+            avoid: data.avoid
+          },
+          elements: data.generated_board_data
+        });
+        setActiveStep('generate');
+      }
+    } catch (error) {
+      console.error('Error loading vision board:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary-100">
@@ -69,6 +125,7 @@ export default function VisionBoardPage() {
                 setBoardData(data);
                 setActiveStep('generate');
               }}
+              existingPreferences={hasExistingBoard && boardData ? boardData.preferences : null}
             />
           </div>
         )}
@@ -83,6 +140,8 @@ export default function VisionBoardPage() {
           <div className="p-6">
             <VisionBoardGenerator 
               board={boardData}
+              hasExistingBoard={hasExistingBoard}
+              onEditPreferences={() => setActiveStep('customize')}
             />
           </div>
         )}
