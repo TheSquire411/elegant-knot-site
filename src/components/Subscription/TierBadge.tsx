@@ -41,14 +41,14 @@ export default function TierBadge({ size = 'md', variant = 'badge', className = 
         };
       case 'basic':
         return {
-          label: 'Basic',
+          label: 'Plus',
           icon: Zap,
           colors: 'bg-blue-500 text-white',
           gradientColors: 'from-blue-400 to-blue-600'
         };
       case 'premium':
         return {
-          label: 'Premium',
+          label: 'Pro',
           icon: Crown,
           colors: 'bg-gradient-to-r from-primary to-primary-glow text-white',
           gradientColors: 'from-primary to-primary-glow'

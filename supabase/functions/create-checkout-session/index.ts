@@ -54,13 +54,13 @@ serve(async (req) => {
       logStep("Creating new customer");
     }
 
-    // Define pricing based on tier
+    // Define pricing based on tier and map frontend tiers to database tiers
     const priceMapping = {
-      'plus': { amount: 4900, name: 'Wedly Plus' }, // $49.00
-      'pro': { amount: 9900, name: 'Wedly Pro' }, // $99.00
-      'basic': { amount: 4900, name: 'Wedly Plus' }, // Legacy support
-      'premium': { amount: 9900, name: 'Wedly Pro' }, // Legacy support
-      'enterprise': { amount: 9900, name: 'Wedly Pro Max' } // Legacy support
+      'plus': { amount: 4900, name: 'Wedly Plus', dbTier: 'basic' }, // $49.00
+      'pro': { amount: 9900, name: 'Wedly Pro', dbTier: 'premium' }, // $99.00
+      'basic': { amount: 4900, name: 'Wedly Plus', dbTier: 'basic' }, // Legacy support
+      'premium': { amount: 9900, name: 'Wedly Pro', dbTier: 'premium' }, // Legacy support
+      'enterprise': { amount: 9900, name: 'Wedly Pro Max', dbTier: 'premium' } // Legacy support
     };
 
     const priceInfo = priceMapping[tier as keyof typeof priceMapping];
@@ -85,11 +85,11 @@ serve(async (req) => {
         },
       ],
       mode: "payment", // One-time payment for lifetime access
-      success_url: `${req.headers.get("origin")}/dashboard?payment=success`,
+      success_url: `${req.headers.get("origin")}/dashboard?payment=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/upgrade?payment=cancelled`,
       metadata: {
         user_id: user.id,
-        tier: tier,
+        tier: priceInfo.dbTier, // Use database tier name
       },
     });
 

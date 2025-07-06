@@ -41,6 +41,10 @@ export default function PaymentVerification() {
       if (data?.success) {
         setStatus('success');
         setMessage(`Payment verified! You're now on the ${data.tier} plan.`);
+        
+        // Force refresh of user session to update subscription data
+        await supabase.auth.getSession();
+        
         setTimeout(() => navigate('/dashboard'), 3000);
       } else {
         setStatus('error');
