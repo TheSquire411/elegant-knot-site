@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-import { Search, Eye, Heart, Download, Layout, Star, Crown } from 'lucide-react';
+import { Search, Eye, Heart, Download, Layout, Star, Crown, Sparkles } from 'lucide-react';
+import { supabase } from '../../integrations/supabase/client';
 
 interface Template {
   id: string;
@@ -27,6 +28,98 @@ export default function TemplateGallery({ onSelectTemplate, selectedTemplate }: 
   const [selectedStyle, setSelectedStyle] = useState<string>('all');
   const [showPremiumOnly, setShowPremiumOnly] = useState(false);
   const [sortBy, setSortBy] = useState<'popular' | 'newest' | 'rating'>('popular');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generationError, setGenerationError] = useState<string | null>(null);
+  const [generatedTemplate, setGeneratedTemplate] = useState<Template | null>(null);
+
+  // Mock wedding data - in real app, this would come from context or API
+  const weddingData = {
+    style_quiz_answers: { aesthetic: 'elegant', colors: ['#F8BBD9', '#D4AF37'] },
+    partner1_name: 'Alex',
+    partner2_name: 'Taylor',
+    wedding_date: '2024-09-15',
+    venue_name: 'Garden Venue'
+  };
+
+  const generateTemplate = async () => {
+    if (!weddingData) {
+      alert("Please enter some wedding details on the dashboard first!");
+      return;
+    }
+
+    setIsGenerating(true);
+    setGenerationError(null);
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+
+      const { data, error } = await supabase.functions.invoke('gemini-analysis', {
+        body: {
+          type: 'generateTemplateContent',
+          templateData: {
+            style: weddingData.style_quiz_answers,
+            details: {
+              partner1Name: weddingData.partner1_name,
+              partner2Name: weddingData.partner2_name,
+              weddingDate: weddingData.wedding_date,
+              venue: weddingData.venue_name,
+            },
+          }
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data && data.template) {
+        // Save the new template to the database
+        const { data: savedTemplate, error: insertError } = await supabase
+          .from('website_templates')
+          .insert({
+            user_id: user.id,
+            name: 'AI-Generated Theme',
+            layout: data.template.layout || {},
+            colors: data.template.colors || {},
+            typography: data.template.typography || {},
+          })
+          .select()
+          .single();
+
+        if (insertError) {
+          throw insertError;
+        }
+
+        // Convert to Template format and set as generated template
+        const aiTemplate: Template = {
+          id: savedTemplate.id,
+          name: savedTemplate.name,
+          category: 'modern',
+          style: 'contemporary',
+          preview: 'https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg',
+          thumbnail: 'https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg',
+          features: ['AI Generated', 'Personalized', 'Modern Design', 'Custom Colors'],
+          isPremium: true,
+          rating: 5.0,
+          downloads: 1,
+          colors: data.template.colors?.primary ? [data.template.colors.primary] : ['#2C3E50'],
+          description: 'AI-generated template based on your wedding preferences'
+        };
+
+        setGeneratedTemplate(aiTemplate);
+      }
+    } catch (error) {
+      console.error("Error generating template:", error);
+      if (error instanceof Error) {
+        setGenerationError(error.message);
+      } else {
+        setGenerationError("An unknown error occurred during AI template generation.");
+      }
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   // Mock template data - in a real app, this would come from an API
   const templates: Template[] = [
@@ -165,7 +258,8 @@ export default function TemplateGallery({ onSelectTemplate, selectedTemplate }: 
   ];
 
   const filteredTemplates = useMemo(() => {
-    return templates
+    const allTemplates = generatedTemplate ? [generatedTemplate, ...templates] : templates;
+    return allTemplates
       .filter(template => {
         const matchesSearch = template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                              template.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -187,7 +281,7 @@ export default function TemplateGallery({ onSelectTemplate, selectedTemplate }: 
             return 0;
         }
       });
-  }, [templates, searchTerm, selectedCategory, selectedStyle, showPremiumOnly, sortBy]);
+  }, [templates, generatedTemplate, searchTerm, selectedCategory, selectedStyle, showPremiumOnly, sortBy]);
 
   return (
     <div className="space-y-6">
@@ -195,6 +289,38 @@ export default function TemplateGallery({ onSelectTemplate, selectedTemplate }: 
       <div className="text-center">
         <h2 className="text-3xl font-serif font-bold text-gray-800 mb-4">Choose Your Perfect Template</h2>
         <p className="text-xl text-gray-600">Over 100 professionally designed templates to match your wedding style</p>
+      </div>
+
+      {/* AI Template Generation */}
+      <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-8 border border-purple-200">
+        <div className="text-center">
+          <div className="flex items-center justify-center mb-4">
+            <Sparkles className="h-8 w-8 text-purple-600 mr-2" />
+            <h3 className="text-2xl font-bold text-gray-800">AI-Powered Template Generation</h3>
+          </div>
+          <p className="text-gray-600 mb-6">Let our AI create a personalized template based on your wedding details and style preferences</p>
+          
+          <button
+            onClick={generateTemplate}
+            disabled={isGenerating}
+            className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-3 rounded-lg hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 transition-all transform hover:scale-105 flex items-center space-x-2 mx-auto"
+          >
+            <Sparkles className="h-5 w-5" />
+            <span>{isGenerating ? 'Generating...' : 'Generate AI Template'}</span>
+          </button>
+
+          {generationError && (
+            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-700">Error: {generationError}</p>
+            </div>
+          )}
+
+          {generatedTemplate && (
+            <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <p className="text-green-700">AI template generated successfully! Look for "{generatedTemplate.name}" in the templates below.</p>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Filters */}

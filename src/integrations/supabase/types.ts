@@ -732,6 +732,45 @@ export type Database = {
           },
         ]
       }
+      website_templates: {
+        Row: {
+          colors: Json
+          created_at: string
+          id: string
+          is_public: boolean
+          layout: Json
+          name: string
+          thumbnail_url: string | null
+          typography: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          colors?: Json
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          layout?: Json
+          name: string
+          thumbnail_url?: string | null
+          typography?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          colors?: Json
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          layout?: Json
+          name?: string
+          thumbnail_url?: string | null
+          typography?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       wedding_websites: {
         Row: {
           content: Json
