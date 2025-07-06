@@ -22,36 +22,49 @@ export default function WebsiteManager() {
 
   const { generateTemplateContent } = useDeepseek({
     onSuccess: (generatedContent) => {
-      if (!website) return;
+      console.log('AI generation successful, received:', generatedContent);
+      if (!website) {
+        console.log('No website found in success callback');
+        return;
+      }
       
-      // Merge AI-generated content with existing website data
-      const updatedContent = {
-        ...website.content,
-        coupleNames: 'Alex & Taylor',
-        ourStory: {
-          content: `${generatedContent.ourStory.paragraph1} ${generatedContent.ourStory.paragraph2}`,
-          style: 'romantic' as const,
-          photos: []
-        },
-        schedule: {
-          ceremony: {
-            time: generatedContent.ceremonyDetails.time,
-            location: generatedContent.ceremonyDetails.location
+      try {
+        // Merge AI-generated content with existing website data
+        const updatedContent = {
+          ...website.content,
+          coupleNames: generatedContent.coupleNames || 'Alex & Taylor',
+          ourStory: {
+            content: generatedContent.ourStory ? 
+              `${generatedContent.ourStory.paragraph1} ${generatedContent.ourStory.paragraph2}` : 
+              'Our love story begins here...',
+            style: 'romantic' as const,
+            photos: []
           },
-          reception: {
-            time: generatedContent.receptionDetails.time,
-            location: generatedContent.receptionDetails.location
+          schedule: {
+            ceremony: {
+              time: generatedContent.ceremonyDetails?.time || '4:00 PM',
+              location: generatedContent.ceremonyDetails?.location || 'Beautiful Venue'
+            },
+            reception: {
+              time: generatedContent.receptionDetails?.time || '6:00 PM',
+              location: generatedContent.receptionDetails?.location || 'Reception Hall'
+            }
+          },
+          registry: {
+            message: generatedContent.registryMessage || 'Your presence is the only present we need!',
+            stores: []
           }
-        },
-        registry: {
-          message: generatedContent.registryMessage,
-          stores: []
-        }
-      };
+        };
 
-      handleWebsiteUpdate({ content: updatedContent });
-      setGenerating(false);
-      setActiveTab('builder');
+        console.log('Updated content:', updatedContent);
+        handleWebsiteUpdate({ content: updatedContent });
+        setGenerating(false);
+        setActiveTab('builder');
+      } catch (error) {
+        console.error('Error processing AI content:', error);
+        setGenerating(false);
+        setActiveTab('builder');
+      }
     },
     onError: (error) => {
       console.error('Template content generation failed:', error);
@@ -262,7 +275,11 @@ export default function WebsiteManager() {
   };
 
   const handleTemplateSelect = (template: any) => {
-    if (!website) return;
+    console.log('Template selected:', template);
+    if (!website) {
+      console.log('No website found, cannot select template');
+      return;
+    }
 
     const templateTheme: WebsiteTheme = {
       style: template.name,
@@ -273,10 +290,13 @@ export default function WebsiteManager() {
       }
     };
 
+    console.log('Created theme:', templateTheme);
+
     // Update theme first
     handleWebsiteUpdate({ theme: templateTheme });
     
     // Generate AI content for the template
+    console.log('Starting AI generation for template:', template.name);
     setGenerating(true);
     generateTemplateContent(template);
   };

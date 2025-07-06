@@ -54,15 +54,19 @@ export function useDeepseek({ onSuccess, onError }: UseDeepseekProps) {
   };
 
   const generateTemplateContent = async (templateData: any) => {
+    console.log('generateTemplateContent called with:', templateData);
     setIsAnalyzing(true);
     
     try {
+      console.log('Invoking gemini-analysis function...');
       const { data, error } = await supabase.functions.invoke('gemini-analysis', {
         body: {
           type: 'generateTemplateContent',
           templateData
         }
       });
+
+      console.log('Function response:', { data, error });
 
       if (error) throw error;
       
