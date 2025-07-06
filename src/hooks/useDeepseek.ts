@@ -31,14 +31,14 @@ export function useDeepseek({ onSuccess, onError }: UseDeepseekProps) {
     }
   };
 
-  const generateStory = async (style: string) => {
+  const generateStory = async (personalizationData: any) => {
     setIsAnalyzing(true);
     
     try {
       const { data, error } = await supabase.functions.invoke('deepseek-analysis', {
         body: {
           type: 'generateStory',
-          style
+          personalizationData
         }
       });
 

@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { Sparkles, Plus, Trash2 } from 'lucide-react';
 import { useDeepseek } from '../../../hooks/useDeepseek';
+import StoryPersonalizationModal from '../StoryPersonalizationModal';
 
 interface ContentSectionProps {
   websiteData: any;
@@ -8,6 +10,8 @@ interface ContentSectionProps {
 }
 
 export default function ContentSection({ websiteData, onUpdate, isGenerating }: ContentSectionProps) {
+  const [isStoryModalOpen, setIsStoryModalOpen] = useState(false);
+  
   const { generateStory } = useDeepseek({
     onSuccess: (data) => {
       if (data && data.story) {
@@ -40,17 +44,10 @@ export default function ContentSection({ websiteData, onUpdate, isGenerating }: 
     });
   };
 
-  const handleGenerateStory = async (style: 'romantic' | 'casual' | 'formal') => {
+  const handleGenerateStory = async (personalizationData: any) => {
     try {
-      const coupleInfo = {
-        names: websiteData.content.coupleNames || 'The Happy Couple',
-        style,
-        weddingDate: websiteData.content.weddingDate,
-        venue: websiteData.content.venue?.name,
-        additionalInfo: 'A beautiful love story'
-      };
-
-      await generateStory(JSON.stringify(coupleInfo));
+      await generateStory(personalizationData);
+      setIsStoryModalOpen(false);
     } catch (error) {
       console.error('Failed to generate story:', error);
     }
@@ -106,12 +103,12 @@ export default function ContentSection({ websiteData, onUpdate, isGenerating }: 
               <option value="formal">Formal</option>
             </select>
             <button
-              onClick={() => handleGenerateStory(websiteData.content.ourStory.style)}
+              onClick={() => setIsStoryModalOpen(true)}
               disabled={isGenerating}
               className="flex items-center space-x-2 px-3 py-1 bg-primary-500 text-white rounded text-sm hover:bg-primary-600 disabled:opacity-50"
             >
               <Sparkles className="h-3 w-3" />
-              <span>{isGenerating ? 'Generating...' : 'AI Generate'}</span>
+              <span>Personalize Story</span>
             </button>
           </div>
         </div>
@@ -203,6 +200,14 @@ export default function ContentSection({ websiteData, onUpdate, isGenerating }: 
           </div>
         </div>
       </div>
+
+      <StoryPersonalizationModal
+        isOpen={isStoryModalOpen}
+        onClose={() => setIsStoryModalOpen(false)}
+        websiteData={websiteData}
+        onGenerate={handleGenerateStory}
+        isGenerating={isGenerating}
+      />
     </div>
   );
 }

@@ -158,7 +158,14 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
                     Our Story
                   </h2>
                   <div className="prose prose-lg mx-auto text-gray-700">
-                    <p className="leading-relaxed">{safeContent.ourStory.content}</p>
+                    <div 
+                      className="leading-relaxed"
+                      dangerouslySetInnerHTML={{ 
+                        __html: safeContent.ourStory.content.includes('<') 
+                          ? safeContent.ourStory.content 
+                          : `<p>${safeContent.ourStory.content}</p>`
+                      }}
+                    />
                   </div>
                 </div>
               </section>
