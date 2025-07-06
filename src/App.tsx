@@ -16,6 +16,7 @@ import ChatPage from './components/Chat/ChatPage';
 import VisionBoardPage from './components/VisionBoard/VisionBoardPage';
 import WebsitePage from './components/Website/WebsitePage';
 import RegistryPage from './components/Registry/RegistryPage';
+import UpgradePage from './components/UpgradePage';
 
 
 /**
@@ -59,6 +60,7 @@ function AppRoutes() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<SignupForm />} />
+        <Route path="/upgrade" element={<UpgradePage />} />
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
