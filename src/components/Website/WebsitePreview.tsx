@@ -86,6 +86,7 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
         <FooterSection
           coupleNames={safeContent.coupleNames}
           weddingDate={safeContent.weddingDate}
+          theme={safeTheme}
         />
       </WebsitePreviewFrame>
 

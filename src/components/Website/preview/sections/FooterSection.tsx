@@ -3,15 +3,41 @@ import { formatDate } from '../../../../utils/previewUtils';
 interface FooterSectionProps {
   coupleNames: string;
   weddingDate: string;
+  theme: {
+    colorPalette: {
+      primary: string;
+      text: string;
+      background: string;
+    };
+    typography: {
+      bodyFont: string;
+      bodyWeight: number;
+    };
+  };
 }
 
-export default function FooterSection({ coupleNames, weddingDate }: FooterSectionProps) {
+export default function FooterSection({ coupleNames, weddingDate, theme }: FooterSectionProps) {
   return (
-    <footer className="py-8 px-6 bg-gray-800 text-white text-center">
-      <p className="mb-2">
+    <footer 
+      className="py-8 px-6 text-center"
+      style={{
+        backgroundColor: theme.colorPalette.primary,
+        fontFamily: theme.typography.bodyFont,
+        fontWeight: theme.typography.bodyWeight
+      }}
+    >
+      <p 
+        className="mb-2"
+        style={{ color: theme.colorPalette.background }}
+      >
         {coupleNames}
       </p>
-      <p className="text-gray-400">
+      <p 
+        style={{ 
+          color: theme.colorPalette.background,
+          opacity: 0.7
+        }}
+      >
         {formatDate(weddingDate)}
       </p>
     </footer>
