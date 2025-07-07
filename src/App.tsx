@@ -1,6 +1,8 @@
 
 import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
+import NotificationCenter from './components/common/NotificationCenter';
 
 // Import all your page components
 import LandingPage from './components/LandingPage';
@@ -96,9 +98,14 @@ function AppRoutes() {
  */
 function App() {
   return (
-    <AppProvider>
-      <AppRoutes />
-    </AppProvider>
+    <ErrorBoundary>
+      <AppProvider>
+        <div className="min-h-screen bg-gradient-to-br from-sage-50 to-blush-50">
+          <AppRoutes />
+          <NotificationCenter />
+        </div>
+      </AppProvider>
+    </ErrorBoundary>
   );
 }
 
