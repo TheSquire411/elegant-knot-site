@@ -38,6 +38,25 @@ export const getDefaultWebsiteData = (): Omit<WeddingWebsite, 'id' | 'user_id' |
     fonts: {
       heading: 'Playfair Display',
       body: 'Montserrat'
+    },
+    // New structured theme fields
+    colorPalette: {
+      primary: '#F8BBD9',
+      secondary: '#D4AF37',
+      accent: '#F8BBD9',
+      background: '#FFFFFF',
+      text: '#374151'
+    },
+    typography: {
+      headingFont: 'Playfair Display',
+      bodyFont: 'Montserrat',
+      headingWeight: 700,
+      bodyWeight: 400
+    },
+    layout: {
+      headerStyle: 'classic',
+      spacing: 'normal',
+      imageLayout: 'standard'
     }
   },
   settings: {

@@ -95,6 +95,32 @@ export function useWebsiteManager() {
         const websiteData = websites[0];
         const defaultData = getDefaultWebsiteData();
         
+        const loadedTheme = parseJsonField(websiteData.theme, defaultData.theme);
+        
+        // Ensure theme has the complete structured format
+        const completeTheme = {
+          ...loadedTheme,
+          // Ensure structured fields exist
+          colorPalette: loadedTheme.colorPalette || {
+            primary: loadedTheme.colors?.[0] || '#F8BBD9',
+            secondary: loadedTheme.colors?.[1] || '#D4AF37',
+            accent: loadedTheme.colors?.[2] || loadedTheme.colors?.[0] || '#F8BBD9',
+            background: '#FFFFFF', 
+            text: '#374151'
+          },
+          typography: loadedTheme.typography || {
+            headingFont: loadedTheme.fonts?.heading || 'Playfair Display',
+            bodyFont: loadedTheme.fonts?.body || 'Montserrat',
+            headingWeight: 700,
+            bodyWeight: 400
+          },
+          layout: loadedTheme.layout || {
+            headerStyle: 'classic',
+            spacing: 'normal',
+            imageLayout: 'standard'
+          }
+        };
+
         setWebsite({
           ...websiteData,
           slug: websiteData.slug || undefined,
@@ -102,7 +128,7 @@ export function useWebsiteManager() {
           published_at: websiteData.published_at || undefined,
           status: websiteData.status as 'draft' | 'published' | 'archived',
           content: parseJsonField(websiteData.content, defaultData.content),
-          theme: parseJsonField(websiteData.theme, defaultData.theme),
+          theme: completeTheme,
           settings: parseJsonField(websiteData.settings, defaultData.settings)
         });
       } else {
