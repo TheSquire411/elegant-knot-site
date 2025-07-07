@@ -323,14 +323,36 @@ export function useWebsiteManager() {
 
       console.log('✅ Final theme to apply:', templateTheme);
 
-      // Update theme immediately for instant preview
-      const updatedWebsite = { ...website, theme: templateTheme };
-      setWebsite(updatedWebsite);
+      // CRITICAL FIX: Immediately save theme to database without delay
+      console.log('💾 Saving AI template theme directly to database...');
       
-      // Save to database immediately
-      saveWebsite({ theme: templateTheme });
+      try {
+        const { error: saveError } = await supabase
+          .from('wedding_websites')
+          .update({
+            theme: templateTheme as any,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', website.id);
+
+        if (saveError) {
+          console.error('❌ Failed to save theme to database:', saveError);
+          throw saveError;
+        }
+        
+        console.log('✅ Theme successfully saved to database');
+        
+        // Update local state only after successful database save
+        const updatedWebsite = { ...website, theme: templateTheme };
+        setWebsite(updatedWebsite);
+        setLastSaved(new Date());
+        
+      } catch (saveError) {
+        console.error('❌ Database save failed:', saveError);
+        return;
+      }
       
-      // Generate AI content for the template
+      // Generate AI content for the template (with theme preservation)
       console.log('🤖 Starting AI content generation...');
       setGenerating(true);
       generateTemplateContent(template);
