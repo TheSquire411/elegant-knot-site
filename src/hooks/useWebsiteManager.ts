@@ -318,22 +318,16 @@ export function useWebsiteManager() {
 
     console.log('✅ Final theme to apply:', templateTheme);
 
-    // Update theme immediately for instant preview
+    // Update theme immediately for instant preview - single state update
     console.log('📝 Updating website theme...');
     const updatedWebsite = { ...website, theme: templateTheme };
-    console.log('📝 Setting website state to:', updatedWebsite);
+    console.log('📝 Final website state:', updatedWebsite);
+    
+    // Single immediate state update
     setWebsite(updatedWebsite);
     
-    // Force a state update by triggering re-render
-    setTimeout(() => {
-      console.log('🔄 Force state refresh');
-      setWebsite(prev => prev ? { ...prev, theme: templateTheme } : null);
-    }, 50);
-    
-    // Also save to database
-    setTimeout(() => {
-      saveWebsite({ theme: templateTheme });
-    }, 100);
+    // Save to database immediately after state update
+    saveWebsite({ theme: templateTheme });
     
     // Generate AI content for the template (this happens in background)
     if (isAITemplate || generateTemplateContent) {

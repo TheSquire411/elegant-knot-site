@@ -61,7 +61,7 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
   console.log('🎨 Final safeTheme applied:', safeTheme);
 
   return (
-    <div key={`preview-${websiteData?.id || 'default'}-${JSON.stringify(theme)}`} className="space-y-6">
+    <div key={`preview-${websiteData?.id}-${Date.now()}`} className="space-y-6">
       <WebsitePreviewControls 
         previewMode={previewMode}
         onPreviewModeChange={onPreviewModeChange}
