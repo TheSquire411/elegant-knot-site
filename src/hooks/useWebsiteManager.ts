@@ -11,23 +11,27 @@ export function useWebsiteManager() {
   const [generating, setGenerating] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
-  const { generateTemplateContent } = useGemini({ // Changed from useDeepseek
+  const { generateTemplateContent } = useGemini({
     onSuccess: (generatedContent) => {
       console.log('AI generation successful, received:', generatedContent);
-      if (!website) {
-        console.log('No website found in success callback');
-        return;
-      }
-      
-      try {
-        // Merge AI-generated content with existing website data
+
+      // CRITICAL FIX: Use the functional update form of setWebsite.
+      // This guarantees we are working with the LATEST state, not a stale closure.
+      setWebsite(currentWebsite => {
+        if (!currentWebsite) {
+          console.error('Website state was null during AI content update.');
+          setGenerating(false);
+          return null;
+        }
+
+        // Merge the new AI content with the existing content
         const updatedContent = {
-          ...website.content,
+          ...currentWebsite.content,
           coupleNames: generatedContent.coupleNames || 'Alex & Taylor',
           ourStory: {
-            content: generatedContent.ourStory ? 
-              `${generatedContent.ourStory.paragraph1} ${generatedContent.ourStory.paragraph2}` : 
-              'Our love story begins here...',
+            content: generatedContent.ourStory
+              ? `${generatedContent.ourStory.paragraph1} ${generatedContent.ourStory.paragraph2}`
+              : 'Our love story begins here...',
             style: 'romantic' as const,
             photos: []
           },
@@ -46,20 +50,22 @@ export function useWebsiteManager() {
             stores: []
           }
         };
-
-        console.log('Updated content:', updatedContent);
-        // CRITICAL FIX: Preserve the current theme when updating content
-        // This prevents the AI template theme from being overwritten
-        const currentWebsite = website;
-        handleWebsiteUpdate({ 
+        
+        // 'currentWebsite' already has the correct new theme from `handleTemplateSelect`.
+        // Now we just add the new content to it.
+        const newWebsiteState = {
+          ...currentWebsite,
           content: updatedContent,
-          theme: currentWebsite.theme // Preserve the AI template theme
-        });
-        setGenerating(false);
-      } catch (error) {
-        console.error('Error processing AI content:', error);
-        setGenerating(false);
-      }
+        };
+
+        // Persist the fully updated state to the database
+        saveWebsite(newWebsiteState);
+
+        // Return the updated state for React to render
+        return newWebsiteState;
+      });
+
+      setGenerating(false);
     },
     onError: (error) => {
       console.error('Template content generation failed:', error);
