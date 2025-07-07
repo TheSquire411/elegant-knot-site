@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../integrations/supabase/client';
 import { useApp } from '../../context/AppContext';
 import { errorHandler } from '../../utils/errorHandling';
@@ -9,6 +10,7 @@ import PinterestBoard from './PinterestBoard';
 
 export default function VisionBoardPage() {
   const { state } = useApp();
+  const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState<'customize' | 'generate' | 'pinterest'>('customize');
   const [boardData, setBoardData] = useState<any>(null);
   const [hasExistingBoard, setHasExistingBoard] = useState(false);
@@ -17,6 +19,10 @@ export default function VisionBoardPage() {
   useEffect(() => {
     loadExistingVisionBoard();
   }, [state.user]);
+
+  const handleClose = () => {
+    navigate('/dashboard');
+  };
 
   const loadExistingVisionBoard = async () => {
     if (!state.user) {
@@ -134,6 +140,7 @@ export default function VisionBoardPage() {
                 setBoardData(data);
                 setActiveStep('generate');
               }}
+              onClose={handleClose}
               existingPreferences={hasExistingBoard && boardData ? boardData.preferences : null}
             />
           </div>
