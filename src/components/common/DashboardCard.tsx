@@ -47,7 +47,7 @@ export default function DashboardCard({
     <Link to={to}>
       <motion.div
         className={`
-          group relative overflow-hidden rounded-xl p-6
+          group relative overflow-hidden rounded-xl p-6 h-full flex flex-col
           ${getVariantClasses()}
           ${className}
         `}
