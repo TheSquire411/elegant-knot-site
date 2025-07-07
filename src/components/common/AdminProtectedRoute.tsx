@@ -17,7 +17,7 @@ function AdminProtectedRoute() {
   });
 
   // Show loading while checking auth state OR while profile is loading
-  if (state.isLoading || (state.user && !state.profile)) {
+  if (state.isLoading || (state.user && state.profile === null)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-500"></div>
@@ -31,9 +31,10 @@ function AdminProtectedRoute() {
     return <Navigate to="/dashboard" state={{ from: location }} replace />;
   }
 
-  // If profile is loaded but user is not admin, redirect to dashboard
-  if (state.profile && !hasRole(state.profile, 'admin')) {
-    console.log('AdminProtectedRoute: User is not admin - redirecting to dashboard');
+  // Critical fix: Only allow access if user is authenticated AND has admin role
+  // This prevents the race condition where profile might be loading
+  if (!state.profile || !hasRole(state.profile, 'admin')) {
+    console.log('AdminProtectedRoute: User is not admin or profile not loaded - redirecting to dashboard');
     return <Navigate to="/dashboard" state={{ from: location }} replace />;
   }
 
