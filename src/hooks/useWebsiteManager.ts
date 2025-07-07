@@ -217,13 +217,32 @@ export function useWebsiteManager() {
     const isAITemplate = template.id && typeof template.id === 'string' && isUUID(template.id);
     console.log('Is AI Template:', isAITemplate);
 
-    // Start with basic template structure
+    // Start with basic template structure  
     let templateTheme: WebsiteTheme = {
       style: template.name,
       colors: template.colors || ['#F8BBD9', '#D4AF37'],
       fonts: {
         heading: 'Playfair Display',
         body: 'Montserrat'
+      },
+      // Initialize with default structured data
+      colorPalette: {
+        primary: template.colors?.[0] || '#F8BBD9',
+        secondary: template.colors?.[1] || '#D4AF37',
+        accent: template.colors?.[2] || template.colors?.[0] || '#F8BBD9',
+        background: '#FFFFFF',
+        text: '#374151'
+      },
+      typography: {
+        headingFont: 'Playfair Display',
+        bodyFont: 'Montserrat',
+        headingWeight: 700,
+        bodyWeight: 400
+      },
+      layout: {
+        headerStyle: 'classic',
+        spacing: 'normal',
+        imageLayout: 'standard'
       }
     };
 
@@ -254,51 +273,39 @@ export function useWebsiteManager() {
           console.log('Typography data:', typographyData);
           console.log('Layout data:', layoutData);
           
-          // Apply AI-generated design data with proper structure for WebsitePreview
-          templateTheme = {
-            ...templateTheme,
-            // Add the new structured data for WebsitePreview
-            colorPalette: colorsData ? {
-              primary: colorsData.primary || '#F8BBD9',
-              secondary: colorsData.secondary || '#D4AF37',
-              accent: colorsData.accent || colorsData.primary || '#F8BBD9',
-              background: colorsData.background || '#FFFFFF',
-              text: colorsData.text || '#374151'
-            } : {
-              primary: template.colors?.[0] || '#F8BBD9',
-              secondary: template.colors?.[1] || '#D4AF37',
-              accent: template.colors?.[2] || template.colors?.[0] || '#F8BBD9',
-              background: '#FFFFFF',
-              text: '#374151'
-            },
-            typography: typographyData ? {
-              headingFont: typographyData.headingFont || 'Playfair Display',
-              bodyFont: typographyData.bodyFont || 'Montserrat',
-              headingWeight: typographyData.headingWeight || 700,
-              bodyWeight: typographyData.bodyWeight || 400
-            } : {
-              headingFont: 'Playfair Display',
-              bodyFont: 'Montserrat',
-              headingWeight: 700,
-              bodyWeight: 400
-            },
-            layout: layoutData || {
-              headerStyle: 'classic',
-              spacing: 'normal',
-              imageLayout: 'standard'
-            },
-            // Keep the old structure for backward compatibility
-            fonts: {
-              heading: typographyData?.headingFont || 'Playfair Display',
-              body: typographyData?.bodyFont || 'Montserrat'
-            },
-            // Update colors array from AI palette
-            colors: colorsData ? [
-              colorsData.primary,
-              colorsData.secondary,
-              colorsData.accent
-            ].filter(Boolean) : template.colors || ['#F8BBD9', '#D4AF37']
+          // Apply AI-generated design data
+          templateTheme.colorPalette = {
+            primary: colorsData?.primary || '#F8BBD9',
+            secondary: colorsData?.secondary || '#D4AF37',
+            accent: colorsData?.accent || colorsData?.primary || '#F8BBD9',
+            background: colorsData?.background || '#FFFFFF',
+            text: colorsData?.text || '#374151'
           };
+          
+          templateTheme.typography = {
+            headingFont: typographyData?.headingFont || 'Playfair Display',
+            bodyFont: typographyData?.bodyFont || 'Montserrat',
+            headingWeight: typographyData?.headingWeight || 700,
+            bodyWeight: typographyData?.bodyWeight || 400
+          };
+          
+          templateTheme.layout = layoutData || {
+            headerStyle: 'classic',
+            spacing: 'normal',
+            imageLayout: 'standard'
+          };
+          
+          // Update backward compatibility fields
+          templateTheme.fonts = {
+            heading: templateTheme.typography.headingFont || 'Playfair Display',
+            body: templateTheme.typography.bodyFont || 'Montserrat'
+          };
+          
+          templateTheme.colors = [
+            templateTheme.colorPalette.primary || '#F8BBD9',
+            templateTheme.colorPalette.secondary || '#D4AF37',
+            templateTheme.colorPalette.accent || '#F8BBD9'
+          ];
         } else {
           console.warn('No template data returned from database');
         }
@@ -307,34 +314,19 @@ export function useWebsiteManager() {
         // Continue with basic template data but show user feedback
         console.log('Continuing with basic template structure...');
       }
-    } else {
-      console.log('Using mock template data structure');
-      // For mock templates, create the structured data expected by WebsitePreview
-      templateTheme.colorPalette = {
-        primary: template.colors?.[0] || '#F8BBD9',
-        secondary: template.colors?.[1] || '#D4AF37',
-        accent: template.colors?.[2] || template.colors?.[0] || '#F8BBD9',
-        background: '#FFFFFF',
-        text: '#374151'
-      };
-      templateTheme.typography = {
-        headingFont: 'Playfair Display',
-        bodyFont: 'Montserrat',
-        headingWeight: 700,
-        bodyWeight: 400
-      };
-      templateTheme.layout = {
-        headerStyle: 'classic',
-        spacing: 'normal',
-        imageLayout: 'standard'
-      };
     }
 
     console.log('✅ Final theme to apply:', templateTheme);
 
     // Update theme immediately for instant preview
     console.log('📝 Updating website theme...');
-    handleWebsiteUpdate({ theme: templateTheme });
+    const updatedWebsite = { ...website, theme: templateTheme };
+    setWebsite(updatedWebsite);
+    
+    // Also save to database
+    setTimeout(() => {
+      saveWebsite({ theme: templateTheme });
+    }, 100);
     
     // Generate AI content for the template (this happens in background)
     if (isAITemplate || generateTemplateContent) {

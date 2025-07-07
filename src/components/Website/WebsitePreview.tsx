@@ -14,16 +14,14 @@ interface WebsitePreviewProps {
 }
 
 export default function WebsitePreview({ websiteData, previewMode, onPreviewModeChange }: WebsitePreviewProps) {
-  // Safe data extraction with fallbacks
-  const theme = websiteData?.theme || { colors: ['#F8BBD9', '#D4AF37'], fonts: { heading: 'Playfair Display', body: 'Montserrat' } };
+  const theme = websiteData?.theme || {};
   const content = websiteData?.content || {};
   
-  // Ensure theme has required properties with AI template support
+  // Use theme data directly if available, otherwise use fallbacks
   const safeTheme = {
-    // AI-generated design data
     colorPalette: theme.colorPalette || {
       primary: theme.colors?.[0] || '#F8BBD9',
-      secondary: theme.colors?.[1] || '#D4AF37',
+      secondary: theme.colors?.[1] || '#D4AF37', 
       accent: theme.colors?.[2] || theme.colors?.[0] || '#F8BBD9',
       background: '#FFFFFF',
       text: '#374151'
@@ -36,7 +34,7 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
     },
     layout: theme.layout || {
       headerStyle: 'classic',
-      spacing: 'normal',
+      spacing: 'normal', 
       imageLayout: 'standard'
     }
   };
