@@ -885,7 +885,15 @@ export type Database = {
     }
     Functions: {
       admin_get_users: {
-        Args: { p_limit?: number; p_offset?: number; p_search?: string }
+        Args:
+          | { p_limit?: number; p_offset?: number; p_search?: string }
+          | {
+              p_search?: string
+              p_limit?: number
+              p_offset?: number
+              p_sort_by?: string
+              p_sort_order?: string
+            }
         Returns: {
           id: string
           user_id: string

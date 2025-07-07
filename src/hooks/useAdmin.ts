@@ -40,6 +40,7 @@ export interface AdminUser {
   created_at: string;
   updated_at: string;
   last_sign_in_at: string | null;
+  total_count?: number;
 }
 
 export function useAdmin() {
@@ -48,6 +49,9 @@ export function useAdmin() {
   const [featureUsageStats, setFeatureUsageStats] = useState<AdminFeatureUsageStats[]>([]);
   const [contentStats, setContentStats] = useState<AdminContentStats | null>(null);
   const [users, setUsers] = useState<AdminUser[]>([]);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
   const [loading, setLoading] = useState(true);
   const [usersLoading, setUsersLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -102,26 +106,50 @@ export function useAdmin() {
     }
   };
 
-  const fetchUsers = async (search?: string, limit = 50, offset = 0) => {
+  const fetchUsers = async (
+    search?: string, 
+    page = 1, 
+    limit = 20,
+    sortBy = 'created_at',
+    sortOrder: 'asc' | 'desc' = 'desc'
+  ) => {
     try {
       setUsersLoading(true);
       setError(null);
 
+      const offset = (page - 1) * limit;
+      
       const { data, error } = await supabase.rpc('admin_get_users', {
         p_search: search || undefined,
         p_limit: limit,
-        p_offset: offset
+        p_offset: offset,
+        p_sort_by: sortBy,
+        p_sort_order: sortOrder
       });
 
       if (error) throw error;
-      setUsers((data || []).map(user => ({
+      
+      const processedUsers = (data as any || []).map((user: any) => ({
         ...user,
         full_name: user.full_name || null,
         username: user.username || null,
         avatar_url: user.avatar_url || null,
         role: user.role || null,
-        last_sign_in_at: user.last_sign_in_at || null
-      })));
+        last_sign_in_at: user.last_sign_in_at || null,
+        total_count: user.total_count || 0
+      }));
+      
+      setUsers(processedUsers);
+      
+      // Set total count from first record (all records have same total_count)
+      if (processedUsers.length > 0) {
+        setTotalUsers(processedUsers[0].total_count || 0);
+      } else {
+        setTotalUsers(0);
+      }
+      
+      setCurrentPage(page);
+      setPageSize(limit);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch users');
     } finally {
@@ -138,8 +166,8 @@ export function useAdmin() {
 
       if (error) throw error;
       
-      // Refresh users list
-      await fetchUsers();
+      // Refresh current page
+      await fetchUsers(undefined, currentPage, pageSize);
       return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update user role');
@@ -156,8 +184,11 @@ export function useAdmin() {
 
       if (error) throw error;
       
-      // Refresh users list and stats
-      await Promise.all([fetchUsers(), fetchStats()]);
+      // Refresh current page and stats
+      await Promise.all([
+        fetchUsers(undefined, currentPage, pageSize), 
+        fetchStats()
+      ]);
       return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update user subscription');
@@ -176,6 +207,9 @@ export function useAdmin() {
     featureUsageStats,
     contentStats,
     users,
+    totalUsers,
+    currentPage,
+    pageSize,
     loading,
     usersLoading,
     error,
@@ -183,6 +217,8 @@ export function useAdmin() {
     fetchUsers,
     updateUserRole,
     updateUserSubscription,
+    setCurrentPage,
+    setPageSize,
     refetch: () => {
       fetchStats();
       fetchUsers();
