@@ -1,4 +1,5 @@
 import { useState, useRef, DragEvent } from 'react';
+import { generateMultipleSizes } from '../utils/imageUtils';
 
 interface UseFileUploadProps {
   onUploadComplete: (photos: any[]) => void;
@@ -49,22 +50,51 @@ export function useFileUpload({ onUploadComplete, onError }: UseFileUploadProps)
           continue;
         }
 
-        // Create a mock upload simulation
-        const photoData = {
-          id: Date.now().toString() + i,
-          filename: file.name,
-          url: URL.createObjectURL(file),
-          thumbnail: URL.createObjectURL(file),
-          size: file.size,
-          uploadDate: new Date(),
-          isFavorite: false
-        };
+        try {
+          // Generate optimized versions of the image
+          const optimizedImages = await generateMultipleSizes(file);
+          
+          // Create URLs for each size
+          const photoData = {
+            id: Date.now().toString() + i,
+            filename: file.name,
+            url: URL.createObjectURL(optimizedImages.large),
+            thumbnail: URL.createObjectURL(optimizedImages.thumbnail),
+            mediumUrl: URL.createObjectURL(optimizedImages.medium),
+            originalUrl: URL.createObjectURL(optimizedImages.original),
+            size: file.size,
+            optimizedSize: {
+              original: optimizedImages.original.size,
+              large: optimizedImages.large.size,
+              medium: optimizedImages.medium.size,
+              thumbnail: optimizedImages.thumbnail.size
+            },
+            uploadDate: new Date(),
+            isFavorite: false
+          };
 
-        photos.push(photoData);
+          photos.push(photoData);
+        } catch (imageError) {
+          console.warn('Failed to optimize image, using original:', imageError);
+          
+          // Fallback to original file if optimization fails
+          const photoData = {
+            id: Date.now().toString() + i,
+            filename: file.name,
+            url: URL.createObjectURL(file),
+            thumbnail: URL.createObjectURL(file),
+            size: file.size,
+            uploadDate: new Date(),
+            isFavorite: false
+          };
+          
+          photos.push(photoData);
+        }
+        
         setUploadProgress((i + 1) / files.length * 100);
         
         // Simulate upload delay
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 300));
       }
 
       onUploadComplete(photos);
