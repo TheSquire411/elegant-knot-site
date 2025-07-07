@@ -48,7 +48,13 @@ export function useWebsiteManager() {
         };
 
         console.log('Updated content:', updatedContent);
-        handleWebsiteUpdate({ content: updatedContent });
+        // CRITICAL FIX: Preserve the current theme when updating content
+        // This prevents the AI template theme from being overwritten
+        const currentWebsite = website;
+        handleWebsiteUpdate({ 
+          content: updatedContent,
+          theme: currentWebsite.theme // Preserve the AI template theme
+        });
         setGenerating(false);
       } catch (error) {
         console.error('Error processing AI content:', error);
