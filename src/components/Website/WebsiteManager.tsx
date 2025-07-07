@@ -275,23 +275,39 @@ export default function WebsiteManager() {
   };
 
   const handleTemplateSelect = async (template: any) => {
+    console.log('=== Template Selection Started ===');
     console.log('Template selected:', template);
+    console.log('Template ID:', template.id);
+    console.log('Template ID type:', typeof template.id);
+    
     if (!website) {
-      console.log('No website found, cannot select template');
+      console.error('No website found, cannot select template');
       return;
     }
 
+    // Helper function to check if ID is a UUID format
+    const isUUID = (id: string) => {
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      return uuidRegex.test(id);
+    };
+    
+    // Check if this is an AI-generated template (has UUID format ID)
+    const isAITemplate = template.id && typeof template.id === 'string' && isUUID(template.id);
+    console.log('Is AI Template:', isAITemplate);
+
+    // Start with basic template structure
     let templateTheme: WebsiteTheme = {
       style: template.name,
-      colors: template.colors,
+      colors: template.colors || ['#F8BBD9', '#D4AF37'],
       fonts: {
         heading: 'Playfair Display',
         body: 'Montserrat'
       }
     };
 
-    // If this is an AI-generated template with a database ID, fetch full design data
-    if (template.id && typeof template.id === 'string' && template.id.includes('-')) {
+    // If this is an AI-generated template, fetch full design data from database
+    if (isAITemplate) {
+      console.log('Fetching AI template data from database...');
       try {
         const { data: templateData, error } = await supabase
           .from('website_templates')
@@ -299,23 +315,57 @@ export default function WebsiteManager() {
           .eq('id', template.id)
           .single();
 
-        if (error) throw error;
+        if (error) {
+          console.error('Database error fetching template:', error);
+          throw error;
+        }
 
         if (templateData) {
-          console.log('Fetched AI template data:', templateData);
+          console.log('✅ Successfully fetched AI template data:', templateData);
           
           // Safely cast and validate the data
           const layoutData = templateData.layout as any;
           const colorsData = templateData.colors as any;
           const typographyData = templateData.typography as any;
           
-          // Apply AI-generated design data
+          console.log('Colors data:', colorsData);
+          console.log('Typography data:', typographyData);
+          console.log('Layout data:', layoutData);
+          
+          // Apply AI-generated design data with proper structure for WebsitePreview
           templateTheme = {
             ...templateTheme,
-            layout: layoutData || undefined,
-            colorPalette: colorsData || undefined,
-            typography: typographyData || undefined,
-            // Update fonts from AI data
+            // Add the new structured data for WebsitePreview
+            colorPalette: colorsData ? {
+              primary: colorsData.primary || '#F8BBD9',
+              secondary: colorsData.secondary || '#D4AF37',
+              accent: colorsData.accent || colorsData.primary || '#F8BBD9',
+              background: colorsData.background || '#FFFFFF',
+              text: colorsData.text || '#374151'
+            } : {
+              primary: template.colors?.[0] || '#F8BBD9',
+              secondary: template.colors?.[1] || '#D4AF37',
+              accent: template.colors?.[2] || template.colors?.[0] || '#F8BBD9',
+              background: '#FFFFFF',
+              text: '#374151'
+            },
+            typography: typographyData ? {
+              headingFont: typographyData.headingFont || 'Playfair Display',
+              bodyFont: typographyData.bodyFont || 'Montserrat',
+              headingWeight: typographyData.headingWeight || 700,
+              bodyWeight: typographyData.bodyWeight || 400
+            } : {
+              headingFont: 'Playfair Display',
+              bodyFont: 'Montserrat',
+              headingWeight: 700,
+              bodyWeight: 400
+            },
+            layout: layoutData || {
+              headerStyle: 'classic',
+              spacing: 'normal',
+              imageLayout: 'standard'
+            },
+            // Keep the old structure for backward compatibility
             fonts: {
               heading: typographyData?.headingFont || 'Playfair Display',
               body: typographyData?.bodyFont || 'Montserrat'
@@ -325,24 +375,57 @@ export default function WebsiteManager() {
               colorsData.primary,
               colorsData.secondary,
               colorsData.accent
-            ].filter(Boolean) : template.colors
+            ].filter(Boolean) : template.colors || ['#F8BBD9', '#D4AF37']
           };
+        } else {
+          console.warn('No template data returned from database');
         }
       } catch (error) {
-        console.error('Error fetching AI template data:', error);
-        // Continue with basic template data
+        console.error('❌ Error fetching AI template data:', error);
+        // Continue with basic template data but show user feedback
+        console.log('Continuing with basic template structure...');
       }
+    } else {
+      console.log('Using mock template data structure');
+      // For mock templates, create the structured data expected by WebsitePreview
+      templateTheme.colorPalette = {
+        primary: template.colors?.[0] || '#F8BBD9',
+        secondary: template.colors?.[1] || '#D4AF37',
+        accent: template.colors?.[2] || template.colors?.[0] || '#F8BBD9',
+        background: '#FFFFFF',
+        text: '#374151'
+      };
+      templateTheme.typography = {
+        headingFont: 'Playfair Display',
+        bodyFont: 'Montserrat',
+        headingWeight: 700,
+        bodyWeight: 400
+      };
+      templateTheme.layout = {
+        headerStyle: 'classic',
+        spacing: 'normal',
+        imageLayout: 'standard'
+      };
     }
 
-    console.log('Final theme to apply:', templateTheme);
+    console.log('✅ Final theme to apply:', templateTheme);
 
-    // Update theme first
+    // Update theme immediately for instant preview
+    console.log('📝 Updating website theme...');
     handleWebsiteUpdate({ theme: templateTheme });
     
-    // Generate AI content for the template
-    console.log('Starting AI generation for template:', template.name);
-    setGenerating(true);
-    generateTemplateContent(template);
+    // Switch to builder tab immediately to show the preview
+    console.log('🔄 Switching to builder tab...');
+    setActiveTab('builder');
+    
+    // Generate AI content for the template (this happens in background)
+    if (isAITemplate || generateTemplateContent) {
+      console.log('🤖 Starting AI content generation for template:', template.name);
+      setGenerating(true);
+      generateTemplateContent(template);
+    }
+    
+    console.log('=== Template Selection Complete ===');
   };
 
   const tabs = [
