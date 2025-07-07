@@ -24,6 +24,8 @@ import UpgradePage from './components/UpgradePage';
 import AdminProtectedRoute from './components/common/AdminProtectedRoute';
 import AdminDashboard from './components/Admin/AdminDashboard';
 import RSVPPage from './components/RSVP/RSVPPage';
+import BlogPage from './components/Blog/BlogPage';
+import BlogPost from './components/Blog/BlogPost';
 
 
 /**
@@ -71,6 +73,12 @@ function AppRoutes() {
         <Route path="/reset-password" element={<ResetPasswordForm />} />
         <Route path="/upgrade" element={<UpgradePage />} />
         <Route path="/rsvp/:token" element={<RSVPPage />} />
+        
+        {/* Blog Routes */}
+        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/blog/category/:category" element={<BlogPage />} />
+        <Route path="/blog/tag/:tag" element={<BlogPage />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>

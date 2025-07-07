@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { BookOpen } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import AuthStatus from './Auth/AuthStatus';
 import heroImage from '../assets/wedding-hero-bg.jpg';
@@ -35,9 +36,15 @@ export default function LandingPage() {
           transition={{ delay: 0.3, duration: 0.8, ease: "easeOut" }}
         >
           <h2 className="brand-text text-white">Wedly</h2>
-          <div className="text-white">
-            <AuthStatus />
-          </div>
+          <nav className="flex items-center gap-6 text-white">
+            <Link to="/blog" className="hover:text-primary-200 transition-colors flex items-center gap-2">
+              <BookOpen className="h-4 w-4" />
+              Blog
+            </Link>
+            <div>
+              <AuthStatus />
+            </div>
+          </nav>
         </motion.header>
         
         {/* Centered Hero Content */}
