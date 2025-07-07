@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Upload, Plus, Heart, Search, Image as ImageIcon, Sparkles, Scissors } from 'lucide-react';
 import { useFileUpload } from '../../hooks/useFileUpload';
-import { useDeepseek } from '../../hooks/useGemini';
+import { useGemini } from '../../hooks/useGemini';
 import PhotoUploadModal from './PhotoUploadModal';
 import ImageAnalyzer from './ImageAnalyzer';
 import BackgroundRemovalModal from './BackgroundRemovalModal';
@@ -40,7 +40,7 @@ export default function PinterestBoard({ onNavigateBack }: PinterestBoardProps) 
   const [showNewBoardInput, setShowNewBoardInput] = useState(false);
   const [showAddUrlModal, setShowAddUrlModal] = useState(false);
 
-  const { analyzeImage } = useDeepseek({
+  const { analyzeImage } = useGemini({
     onSuccess: (analysis) => {
       console.log('Image analysis complete:', analysis);
       setShowAnalyzer(false);

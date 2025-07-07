@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../integrations/supabase/client';
 import { WeddingWebsite, WebsiteTheme } from '../types';
-import { useDeepseek } from './useGemini';
+import { useGemini } from './useGemini';
 import { getDefaultWebsiteData } from '../constants/websiteDefaults';
 
 export function useWebsiteManager() {
@@ -11,7 +11,7 @@ export function useWebsiteManager() {
   const [generating, setGenerating] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
-  const { generateTemplateContent } = useDeepseek({
+  const { generateTemplateContent } = useGemini({
     onSuccess: (generatedContent) => {
       console.log('AI generation successful, received:', generatedContent);
       if (!website) {

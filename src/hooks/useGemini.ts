@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { supabase } from '../integrations/supabase/client';
 
-interface UseDeepseekProps {
+interface UseGeminiProps {
   onSuccess: (data: any) => void;
   onError: (error: string) => void;
 }
 
-export function useDeepseek({ onSuccess, onError }: UseDeepseekProps) {
+export function useGemini({ onSuccess, onError }: UseGeminiProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const analyzeImage = async (imageUrl: string) => {
     setIsAnalyzing(true);
-    
+
     try {
       const { data, error } = await supabase.functions.invoke('gemini-analysis', {
         body: {
@@ -21,7 +21,7 @@ export function useDeepseek({ onSuccess, onError }: UseDeepseekProps) {
       });
 
       if (error) throw error;
-      
+
       onSuccess(data);
     } catch (error) {
       console.error('Failed to analyze image:', error);
@@ -33,7 +33,7 @@ export function useDeepseek({ onSuccess, onError }: UseDeepseekProps) {
 
   const generateStory = async (personalizationData: any) => {
     setIsAnalyzing(true);
-    
+
     try {
       const { data, error } = await supabase.functions.invoke('gemini-analysis', {
         body: {
@@ -43,7 +43,7 @@ export function useDeepseek({ onSuccess, onError }: UseDeepseekProps) {
       });
 
       if (error) throw error;
-      
+
       onSuccess(data);
     } catch (error) {
       console.error('Failed to generate story:', error);
@@ -56,7 +56,7 @@ export function useDeepseek({ onSuccess, onError }: UseDeepseekProps) {
   const generateTemplateContent = async (templateData: any) => {
     console.log('generateTemplateContent called with:', templateData);
     setIsAnalyzing(true);
-    
+
     try {
       console.log('Invoking gemini-analysis function...');
       const { data, error } = await supabase.functions.invoke('gemini-analysis', {
@@ -69,7 +69,7 @@ export function useDeepseek({ onSuccess, onError }: UseDeepseekProps) {
       console.log('Function response:', { data, error });
 
       if (error) throw error;
-      
+
       onSuccess(data);
     } catch (error) {
       console.error('Failed to generate template content:', error);

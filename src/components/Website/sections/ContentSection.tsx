@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Sparkles, Plus, Trash2 } from 'lucide-react';
-import { useDeepseek } from '../../../hooks/useGemini';
+import { useGemini } from '../../../hooks/useGemini';
 import StoryPersonalizationModal from '../StoryPersonalizationModal';
 
 interface ContentSectionProps {
@@ -12,7 +12,7 @@ interface ContentSectionProps {
 export default function ContentSection({ websiteData, onUpdate, isGenerating }: ContentSectionProps) {
   const [isStoryModalOpen, setIsStoryModalOpen] = useState(false);
   
-  const { generateStory } = useDeepseek({
+  const { generateStory } = useGemini({
     onSuccess: (data) => {
       if (data && data.story) {
         updateContent('ourStory', { content: data.story });
