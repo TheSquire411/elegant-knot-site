@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { MessageCircle, Sparkles } from 'lucide-react';
+import { errorHandler } from '../../utils/errorHandling';
 import BackButton from '../common/BackButton';
 import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
@@ -40,7 +41,11 @@ export default function ChatPage() {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('Error calling wedding assistant:', error);
+      errorHandler.handle(error, {
+        context: 'Chat - Wedding Assistant API',
+        showToUser: false,
+        severity: 'high'
+      });
       throw error;
     }
   };

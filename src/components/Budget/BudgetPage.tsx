@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import { supabase } from '../../integrations/supabase/client';
 import { Budget } from '../../types';
+import { errorHandler } from '../../utils/errorHandling';
 import BudgetTracker from './BudgetTracker';
 import CreateBudgetModal from './CreateBudgetModal';
 import BackButton from '../common/BackButton';
@@ -32,7 +33,11 @@ export default function BudgetPage() {
         setSelectedBudget(data[0]);
       }
     } catch (error) {
-      console.error('Error fetching budgets:', error);
+      errorHandler.handle(error, {
+        context: 'Budget Page - Fetch Budgets',
+        showToUser: true,
+        severity: 'medium'
+      });
     } finally {
       setLoading(false);
     }

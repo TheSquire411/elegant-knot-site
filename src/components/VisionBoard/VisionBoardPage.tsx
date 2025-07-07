@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../../integrations/supabase/client';
 import { useApp } from '../../context/AppContext';
+import { errorHandler } from '../../utils/errorHandling';
 import BackButton from '../common/BackButton';
 import VisionBoardCustomizer from './VisionBoardCustomizer';
 import VisionBoardGenerator from './VisionBoardGenerator';
@@ -31,7 +32,11 @@ export default function VisionBoardPage() {
         .single();
 
       if (error && error.code !== 'PGRST116') {
-        console.error('Error loading vision board:', error);
+        errorHandler.handle(error, {
+          context: 'Vision Board - Load Existing Board',
+          showToUser: true,
+          severity: 'medium'
+        });
       } else if (data) {
         setHasExistingBoard(true);
         // If user has an existing vision board, go directly to generate view
@@ -50,7 +55,11 @@ export default function VisionBoardPage() {
         setActiveStep('generate');
       }
     } catch (error) {
-      console.error('Error loading vision board:', error);
+      errorHandler.handle(error, {
+        context: 'Vision Board - Load Data',
+        showToUser: true,
+        severity: 'high'
+      });
     } finally {
       setIsLoading(false);
     }
