@@ -17,6 +17,10 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
   const theme = websiteData?.theme || {};
   const content = websiteData?.content || {};
   
+  // Debug logging to see what theme data we're receiving
+  console.log('🎨 WebsitePreview received theme:', theme);
+  console.log('🎨 WebsitePreview websiteData.id:', websiteData?.id);
+  
   // Use theme data directly if available, otherwise use fallbacks
   const safeTheme = {
     colorPalette: theme.colorPalette || {
@@ -54,8 +58,10 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
     travel: content.travel || {}
   };
 
+  console.log('🎨 Final safeTheme applied:', safeTheme);
+
   return (
-    <div className="space-y-6">
+    <div key={`preview-${websiteData?.id || 'default'}-${JSON.stringify(theme)}`} className="space-y-6">
       <WebsitePreviewControls 
         previewMode={previewMode}
         onPreviewModeChange={onPreviewModeChange}

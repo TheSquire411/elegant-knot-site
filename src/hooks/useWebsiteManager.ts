@@ -321,7 +321,14 @@ export function useWebsiteManager() {
     // Update theme immediately for instant preview
     console.log('📝 Updating website theme...');
     const updatedWebsite = { ...website, theme: templateTheme };
+    console.log('📝 Setting website state to:', updatedWebsite);
     setWebsite(updatedWebsite);
+    
+    // Force a state update by triggering re-render
+    setTimeout(() => {
+      console.log('🔄 Force state refresh');
+      setWebsite(prev => prev ? { ...prev, theme: templateTheme } : null);
+    }, 50);
     
     // Also save to database
     setTimeout(() => {
