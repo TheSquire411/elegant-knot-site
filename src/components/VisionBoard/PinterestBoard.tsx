@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Upload, Plus, Heart, Search, Image as ImageIcon, Sparkles, Scissors } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Upload, Plus, Heart, Search, Image as ImageIcon, Sparkles, Scissors, X } from 'lucide-react';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useGemini } from '../../hooks/useGemini';
 import PhotoUploadModal from './PhotoUploadModal';
@@ -41,6 +41,9 @@ export default function PinterestBoard({ onNavigateBack }: PinterestBoardProps) 
   const [showNewBoardInput, setShowNewBoardInput] = useState(false);
   const [showAddUrlModal, setShowAddUrlModal] = useState(false);
   const [showUnsplashModal, setShowUnsplashModal] = useState(false);
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [unsplashSearchResults, setUnsplashSearchResults] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   const { analyzeImage } = useGemini({
     onSuccess: (analysis) => {
@@ -163,6 +166,77 @@ export default function PinterestBoard({ onNavigateBack }: PinterestBoardProps) 
     setShowUnsplashModal(false);
   };
 
+  const handleAddImageFromSearch = (image: any) => {
+    if (!selectedBoard) return;
+    
+    const newImage = {
+      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+      url: image.url,
+      thumbnail: image.thumbnail,
+      filename: image.description || 'Unsplash image',
+      size: 0,
+      category: selectedBoard.category,
+      tags: image.tags,
+      isFavorite: false,
+      uploadDate: new Date(),
+      source: 'unsplash' as const,
+      author: image.author,
+      authorProfile: image.authorProfile
+    };
+    
+    setBoards(prev => prev.map(board => 
+      board.id === selectedBoard.id 
+        ? { ...board, images: [...board.images, newImage] }
+        : board
+    ));
+    setShowSearchResults(false);
+    setSearchTerm('');
+    setUnsplashSearchResults([]);
+  };
+
+  // Debounced search function
+  const debouncedSearch = useCallback(
+    (() => {
+      let timeoutId: NodeJS.Timeout;
+      return (query: string) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(async () => {
+          if (query.trim() && query.length > 2) {
+            setIsSearching(true);
+            try {
+              const response = await fetch(`https://rpcnysgxyxbcffnprttar.supabase.co/functions/v1/search-unsplash`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJwY255c2d4eWJjZmZucHJ0dGFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE0Mzg0NzEsImV4cCI6MjA2NzAxNDQ3MX0.SRW1RxKoEMnELP_n2HABctZls_niw6a5_D6PsSxvhUM`
+                },
+                body: JSON.stringify({ query, per_page: 12 })
+              });
+              
+              const data = await response.json();
+              if (data.images) {
+                setUnsplashSearchResults(data.images);
+                setShowSearchResults(true);
+              }
+            } catch (error) {
+              console.error('Search error:', error);
+            } finally {
+              setIsSearching(false);
+            }
+          } else {
+            setShowSearchResults(false);
+            setUnsplashSearchResults([]);
+          }
+        }, 500);
+      };
+    })(),
+    []
+  );
+
+  useEffect(() => {
+    debouncedSearch(searchTerm);
+  }, [searchTerm, debouncedSearch]);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -184,18 +258,63 @@ export default function PinterestBoard({ onNavigateBack }: PinterestBoardProps) 
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Search inspiration..."
+                  placeholder="Search Unsplash for inspiration..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-20 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent w-64"
+                  onFocus={() => {
+                    if (unsplashSearchResults.length > 0) {
+                      setShowSearchResults(true);
+                    }
+                  }}
+                  className="pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent w-64"
                 />
-                <button
-                  onClick={() => setShowUnsplashModal(true)}
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1 bg-primary-500 text-white text-xs rounded hover:bg-primary-600 transition-colors"
-                  title="Search Unsplash"
-                >
-                  Unsplash
-                </button>
+                {(searchTerm || isSearching) && (
+                  <button
+                    onClick={() => {
+                      setSearchTerm('');
+                      setShowSearchResults(false);
+                      setUnsplashSearchResults([]);
+                    }}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+                
+                {/* Search Results Dropdown */}
+                {showSearchResults && unsplashSearchResults.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
+                    <div className="p-3 border-b border-gray-100">
+                      <h4 className="text-sm font-medium text-gray-800 mb-2">Unsplash Results</h4>
+                      <div className="grid grid-cols-3 gap-2">
+                        {unsplashSearchResults.slice(0, 9).map((image, index) => (
+                          <div
+                            key={index}
+                            className="cursor-pointer group relative"
+                            onClick={() => handleAddImageFromSearch(image)}
+                          >
+                            <img
+                              src={image.thumbnail}
+                              alt={image.description}
+                              className="w-full h-20 object-cover rounded group-hover:opacity-80 transition-opacity"
+                            />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 rounded transition-colors flex items-center justify-center">
+                              <Plus className="h-5 w-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      {unsplashSearchResults.length > 9 && (
+                        <button
+                          onClick={() => setShowUnsplashModal(true)}
+                          className="w-full mt-3 py-2 px-4 text-sm text-primary-600 border border-primary-200 rounded hover:bg-primary-50 transition-colors"
+                        >
+                          View all {unsplashSearchResults.length} results
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
               
               <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-1">
