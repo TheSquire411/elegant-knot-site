@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../integrations/supabase/client';
 import { WeddingWebsite, WebsiteTheme } from '../types';
-import { useDeepseek } from './useDeepseek';
+import { useDeepseek } from './useGemini';
 import { getDefaultWebsiteData } from '../constants/websiteDefaults';
 
 export function useWebsiteManager() {

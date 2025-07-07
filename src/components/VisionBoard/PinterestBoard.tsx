@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Upload, Plus, Heart, Search, Image as ImageIcon, Sparkles, Scissors } from 'lucide-react';
 import { useFileUpload } from '../../hooks/useFileUpload';
-import { useDeepseek } from '../../hooks/useDeepseek';
+import { useDeepseek } from '../../hooks/useGemini';
 import PhotoUploadModal from './PhotoUploadModal';
 import ImageAnalyzer from './ImageAnalyzer';
 import BackgroundRemovalModal from './BackgroundRemovalModal';

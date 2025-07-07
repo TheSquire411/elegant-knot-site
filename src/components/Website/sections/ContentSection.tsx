@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Sparkles, Plus, Trash2 } from 'lucide-react';
-import { useDeepseek } from '../../../hooks/useDeepseek';
+import { useDeepseek } from '../../../hooks/useGemini';
 import StoryPersonalizationModal from '../StoryPersonalizationModal';
 
 interface ContentSectionProps {
