@@ -1,4 +1,5 @@
-import { Users, CreditCard, Activity, Globe } from 'lucide-react';
+import { Users, CreditCard, Activity, Globe, FileText } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useAdmin } from '../../hooks/useAdmin';
 import BackButton from '../common/BackButton';
 import AdminStatsCard from './AdminStatsCard';
@@ -127,6 +128,23 @@ export default function AdminDashboard() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+          <h3 className="text-lg font-semibold text-sage-800 mb-4">Quick Actions</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Link
+              to="/blog/admin"
+              className="flex items-center p-4 border border-sage-200 rounded-lg hover:bg-sage-50 transition-colors group"
+            >
+              <FileText className="h-8 w-8 text-primary-500 group-hover:text-primary-600 mr-3" />
+              <div>
+                <p className="font-medium text-sage-800">Manage Blog</p>
+                <p className="text-sm text-sage-600">Create and edit blog posts</p>
+              </div>
+            </Link>
           </div>
         </div>
 

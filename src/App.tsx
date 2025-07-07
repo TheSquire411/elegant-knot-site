@@ -26,6 +26,8 @@ import AdminDashboard from './components/Admin/AdminDashboard';
 import RSVPPage from './components/RSVP/RSVPPage';
 import BlogPage from './components/Blog/BlogPage';
 import BlogPost from './components/Blog/BlogPost';
+import BlogAdminDashboard from './components/Blog/BlogAdminDashboard';
+import BlogPostEditor from './components/Blog/BlogPostEditor';
 
 
 /**
@@ -98,6 +100,9 @@ function AppRoutes() {
         {/* Admin Routes */}
         <Route element={<AdminProtectedRoute />}>
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/blog/admin" element={<BlogAdminDashboard />} />
+          <Route path="/blog/admin/new" element={<BlogPostEditor mode="create" />} />
+          <Route path="/blog/admin/edit/:id" element={<BlogPostEditor mode="edit" />} />
         </Route>
 
         {/* Fallback Route */}
