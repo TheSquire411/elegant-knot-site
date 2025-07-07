@@ -9,19 +9,13 @@ interface ImageSearchProps {
 
 interface UnsplashImage {
   id: string;
-  urls: {
-    small: string;
-    regular: string;
-  };
-  alt_description: string;
+  url: string;
+  thumbnail: string;
   description: string;
-  user: {
-    name: string;
-    links: {
-      html: string;
-    };
-  };
-  tags: Array<{ title: string }>;
+  author: string;
+  authorProfile: string;
+  downloadUrl: string;
+  tags: string[];
   color: string;
   width: number;
   height: number;
@@ -73,7 +67,7 @@ const ImageSearch = ({ onAddImage }: ImageSearchProps) => {
   };
 
   const handleAddImage = (image: UnsplashImage) => {
-    onAddImage(image.urls.regular);
+    onAddImage(image.url);
   };
 
   return (
@@ -115,8 +109,8 @@ const ImageSearch = ({ onAddImage }: ImageSearchProps) => {
             <div key={image.id} className="relative group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-shadow aspect-square">
                 <img
-                  src={image.urls.small}
-                  alt={image.alt_description || 'Search result'}
+                  src={image.thumbnail}
+                  alt={image.description || 'Search result'}
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors" />
@@ -128,7 +122,7 @@ const ImageSearch = ({ onAddImage }: ImageSearchProps) => {
                   <Plus className="h-3 w-3" />
                 </button>
                 <div className="absolute bottom-2 left-2 bg-background/90 text-foreground text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                  {image.user.name}
+                  {image.author}
                 </div>
               </div>
             </div>
