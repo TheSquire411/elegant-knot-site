@@ -190,30 +190,32 @@ export function useWebsiteManager() {
     }
   };
 
-  const saveWebsite = async (updates?: Partial<WeddingWebsite>) => {
-    if (!website) return;
+  const saveWebsite = async (websiteToSave?: Partial<WeddingWebsite>) => {
+    // If no website data is passed, use the one from state.
+    // This makes the function flexible.
+    const dataToSave = websiteToSave || website;
+
+    if (!dataToSave || !dataToSave.id) {
+      console.error("saveWebsite was called but there was no website data to save.");
+      return;
+    }
 
     setSaving(true);
     try {
-      const updatedWebsite = updates ? { ...website, ...updates } : website;
-
+      // Use the 'dataToSave' object which is guaranteed to be up-to-date.
       const { error } = await supabase
         .from('wedding_websites')
         .update({
-          title: updatedWebsite.title,
-          content: updatedWebsite.content as any,
-          theme: updatedWebsite.theme as any,
-          settings: updatedWebsite.settings as any,
-          status: updatedWebsite.status
+          title: dataToSave.title,
+          content: dataToSave.content as any,
+          theme: dataToSave.theme as any,
+          settings: dataToSave.settings as any,
+          status: dataToSave.status
         })
-        .eq('id', website.id);
+        .eq('id', dataToSave.id);
 
       if (error) throw error;
 
-      if (updates) {
-        setWebsite(updatedWebsite);
-      }
-      
       setLastSaved(new Date());
     } catch (error) {
       console.error('Error saving website:', error);
