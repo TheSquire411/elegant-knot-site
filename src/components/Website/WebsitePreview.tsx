@@ -60,8 +60,12 @@ export default function WebsitePreview({ websiteData, previewMode, onPreviewMode
 
   console.log('🎨 Final safeTheme applied:', safeTheme);
 
+  // CRITICAL FIX: Use a stable key that only changes when the theme changes.
+  // Using JSON.stringify is a simple way to create a unique key from the theme object.
+  const themeKey = JSON.stringify(safeTheme);
+
   return (
-    <div key={`preview-${websiteData?.id}-${Date.now()}`} className="space-y-6">
+    <div key={`preview-${websiteData?.id}-${themeKey}`} className="space-y-6">
       <WebsitePreviewControls 
         previewMode={previewMode}
         onPreviewModeChange={onPreviewModeChange}
