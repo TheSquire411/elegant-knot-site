@@ -23,6 +23,7 @@ import RegistryPage from './components/Registry/RegistryPage';
 import UpgradePage from './components/UpgradePage';
 import AdminProtectedRoute from './components/common/AdminProtectedRoute';
 import AdminDashboard from './components/Admin/AdminDashboard';
+import RSVPPage from './components/RSVP/RSVPPage';
 
 
 /**
@@ -69,6 +70,7 @@ function AppRoutes() {
         <Route path="/forgot-password" element={<ForgotPasswordForm />} />
         <Route path="/reset-password" element={<ResetPasswordForm />} />
         <Route path="/upgrade" element={<UpgradePage />} />
+        <Route path="/rsvp/:token" element={<RSVPPage />} />
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>

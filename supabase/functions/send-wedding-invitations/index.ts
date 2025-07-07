@@ -92,7 +92,7 @@ serve(async (req) => {
           throw new Error(`Failed to create invitation: ${inviteError.message}`);
         }
 
-        const rsvpUrl = `${supabaseUrl}/rsvp/${invitation.rsvp_token}`;
+        const rsvpUrl = `https://rpcnysgxybcffnprttar.lovableproject.com/rsvp/${invitation.rsvp_token}`;
         
         const emailContent = `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
