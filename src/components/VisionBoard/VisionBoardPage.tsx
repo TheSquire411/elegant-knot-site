@@ -10,6 +10,7 @@ import VisionBoardCustomizer from './VisionBoardCustomizer';
 import VisionBoardGenerator from './VisionBoardGenerator';
 import PinterestBoard from './PinterestBoard';
 import GeneratedVisionBoard from './GeneratedVisionBoard';
+import ImageSearch from './ImageSearch';
 import { Image } from './SortableImage';
 
 export default function VisionBoardPage() {
@@ -90,6 +91,17 @@ export default function VisionBoardPage() {
     setInteractiveImages(allImages);
     setBoardData(generatedData);
     setActiveStep('interactive');
+  };
+
+  const addImageToBoard = (imageUrl: string) => {
+    const newImage: Image = {
+      id: `search-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      url: imageUrl,
+      type: 'search',
+      category: 'Inspiration'
+    };
+    
+    setInteractiveImages(prev => [...prev, newImage]);
   };
 
 
@@ -258,7 +270,7 @@ export default function VisionBoardPage() {
         )}
         
         {activeStep === 'interactive' && (
-          <div className="p-6">
+          <div className="p-6 space-y-6">
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
@@ -268,10 +280,14 @@ export default function VisionBoardPage() {
                 <GeneratedVisionBoard 
                   images={interactiveImages}
                   onDelete={deleteImageFromBoard}
-                  onAddImages={() => setActiveStep('pinterest')}
                 />
               </SortableContext>
             </DndContext>
+            
+            <div className="bg-card rounded-lg border border-border p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Search & Add Images</h3>
+              <ImageSearch onAddImage={addImageToBoard} />
+            </div>
           </div>
         )}
         
