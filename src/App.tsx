@@ -8,6 +8,8 @@ import NotificationCenter from './components/common/NotificationCenter';
 import LandingPage from './components/LandingPage';
 import SignupForm from './components/Auth/SignupForm';
 import LoginForm from './components/Auth/LoginForm';
+import ForgotPasswordForm from './components/Auth/ForgotPasswordForm';
+import ResetPasswordForm from './components/Auth/ResetPasswordForm';
 import StyleQuiz from './components/StyleQuiz';
 import Dashboard from './components/Dashboard/Dashboard';
 import PlanningPage from './components/Planning/PlanningPage';
@@ -64,6 +66,8 @@ function AppRoutes() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<SignupForm />} />
+        <Route path="/forgot-password" element={<ForgotPasswordForm />} />
+        <Route path="/reset-password" element={<ResetPasswordForm />} />
         <Route path="/upgrade" element={<UpgradePage />} />
 
         {/* Protected Routes */}
