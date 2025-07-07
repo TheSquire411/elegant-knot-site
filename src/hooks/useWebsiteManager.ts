@@ -3,6 +3,7 @@ import { supabase } from '../integrations/supabase/client';
 import { WeddingWebsite, WebsiteTheme } from '../types';
 import { useGemini } from './useGemini'; // Changed from useDeepseek
 import { getDefaultWebsiteData } from '../constants/websiteDefaults';
+import { errorHandler } from '../utils/errorHandling';
 
 export function useWebsiteManager() {
   const [website, setWebsite] = useState<WeddingWebsite | null>(null);
@@ -147,7 +148,11 @@ export function useWebsiteManager() {
         await createDefaultWebsite();
       }
     } catch (error) {
-      console.error('Error loading website:', error);
+      errorHandler.handle(error, {
+        context: 'Website Manager - Load Website',
+        showToUser: true,
+        severity: 'high'
+      });
     } finally {
       setLoading(false);
     }
@@ -186,7 +191,11 @@ export function useWebsiteManager() {
         settings: parseJsonField(data.settings, getDefaultWebsiteData().settings)
       });
     } catch (error) {
-      console.error('Error creating website:', error);
+      errorHandler.handle(error, {
+        context: 'Website Manager - Create Website',
+        showToUser: true,
+        severity: 'high'
+      });
     }
   };
 
@@ -218,7 +227,12 @@ export function useWebsiteManager() {
 
       setLastSaved(new Date());
     } catch (error) {
-      console.error('Error saving website:', error);
+      errorHandler.handle(error, {
+        context: 'Website Manager - Save Website',
+        showToUser: true,
+        severity: 'medium',
+        retry: () => saveWebsite(dataToSave)
+      });
     } finally {
       setSaving(false);
     }

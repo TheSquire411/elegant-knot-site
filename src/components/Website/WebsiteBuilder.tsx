@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Palette, Image, Calendar, Save, Edit3 } from 'lucide-react';
+import { Palette, Image, Calendar, Save, Edit3, Check, Loader2 } from 'lucide-react';
+import { useApp } from '../../context/AppContext';
 import ThemeSection from './sections/ThemeSection';
 import ContentSection from './sections/ContentSection';
 import PhotosSection from './sections/PhotosSection';
@@ -9,10 +10,13 @@ interface WebsiteBuilderProps {
   websiteData: any;
   onUpdate: (updates: any) => void;
   isGenerating: boolean;
+  isSaving?: boolean;
 }
 
-export default function WebsiteBuilder({ websiteData, onUpdate, isGenerating }: WebsiteBuilderProps) {
+export default function WebsiteBuilder({ websiteData, onUpdate, isGenerating, isSaving = false }: WebsiteBuilderProps) {
   const [activeSection, setActiveSection] = useState<'theme' | 'content' | 'photos' | 'details'>('theme');
+  const [saveState, setSaveState] = useState<'idle' | 'success'>('idle');
+  const { addNotification } = useApp();
 
   return (
     <div className="space-y-8">
@@ -63,11 +67,37 @@ export default function WebsiteBuilder({ websiteData, onUpdate, isGenerating }: 
       {/* Save Button */}
       <div className="flex justify-end pt-6 border-t">
         <button
-          onClick={() => onUpdate({})}
-          className="flex items-center space-x-2 px-6 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
+          onClick={async () => {
+            try {
+              await onUpdate({});
+              setSaveState('success');
+              addNotification({
+                type: 'success',
+                title: 'Changes Saved',
+                message: 'Your website has been updated successfully'
+              });
+              setTimeout(() => setSaveState('idle'), 2000);
+            } catch (error) {
+              addNotification({
+                type: 'error',
+                title: 'Save Failed',
+                message: 'Unable to save changes. Please try again.'
+              });
+            }
+          }}
+          disabled={isSaving || isGenerating}
+          className="flex items-center space-x-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <Save className="h-4 w-4" />
-          <span>Save Changes</span>
+          {isSaving ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : saveState === 'success' ? (
+            <Check className="h-4 w-4" />
+          ) : (
+            <Save className="h-4 w-4" />
+          )}
+          <span>
+            {isSaving ? 'Saving...' : saveState === 'success' ? 'Saved!' : 'Save Changes'}
+          </span>
         </button>
       </div>
     </div>

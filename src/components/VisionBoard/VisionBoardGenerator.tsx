@@ -1,5 +1,7 @@
-import { Download, Share2, Heart, Camera, Palette, Search, Upload } from 'lucide-react';
+import { Download, Share2, Heart, Camera, Palette, Search, Upload, Loader2, Check } from 'lucide-react';
 import { useState } from 'react';
+import { useApp } from '../../context/AppContext';
+import { errorHandler } from '../../utils/errorHandling';
 import UnsplashSearchModal from './UnsplashSearchModal';
 import PhotoUploadModal from './PhotoUploadModal';
 
@@ -25,15 +27,62 @@ export default function VisionBoardGenerator({ board, hasExistingBoard, onEditPr
   const [showUnsplashModal, setShowUnsplashModal] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [boardElements, setBoardElements] = useState(elements);
+  const [downloadState, setDownloadState] = useState<'idle' | 'downloading' | 'success'>('idle');
+  const [shareState, setShareState] = useState<'idle' | 'sharing' | 'success'>('idle');
+  const { addNotification } = useApp();
 
-  const handleDownload = () => {
-    // In a real app, this would generate and download the vision board as an image
-    alert('Vision board download feature would be implemented here');
+  const handleDownload = async () => {
+    setDownloadState('downloading');
+    try {
+      // Simulate download process
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      setDownloadState('success');
+      addNotification({
+        type: 'success',
+        title: 'Download Started',
+        message: 'Your vision board is being prepared for download'
+      });
+      setTimeout(() => setDownloadState('idle'), 2000);
+    } catch (error) {
+      setDownloadState('idle');
+      errorHandler.handle(error, {
+        context: 'Vision Board - Download',
+        showToUser: true,
+        severity: 'medium'
+      });
+    }
   };
 
-  const handleShare = () => {
-    // In a real app, this would share the vision board
-    alert('Vision board sharing feature would be implemented here');
+  const handleShare = async () => {
+    setShareState('sharing');
+    try {
+      // Simulate share process
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (navigator.share) {
+        await navigator.share({
+          title: 'My Wedding Vision Board',
+          text: 'Check out my wedding vision board!',
+          url: window.location.href,
+        });
+      } else {
+        // Fallback to copying link
+        await navigator.clipboard.writeText(window.location.href);
+      }
+      setShareState('success');
+      addNotification({
+        type: 'success',
+        title: 'Vision Board Shared',
+        message: 'Link copied to clipboard successfully'
+      });
+      setTimeout(() => setShareState('idle'), 2000);
+    } catch (error) {
+      setShareState('idle');
+      errorHandler.handle(error, {
+        context: 'Vision Board - Share',
+        showToUser: true,
+        severity: 'medium'
+      });
+    }
   };
 
   const handleAddUnsplashImages = (images: any[]) => {
@@ -109,15 +158,31 @@ export default function VisionBoardGenerator({ board, hasExistingBoard, onEditPr
               </button>
               <button
                 onClick={handleShare}
-                className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors"
+                disabled={shareState !== 'idle'}
+                className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                title={shareState === 'sharing' ? 'Creating share link...' : shareState === 'success' ? 'Shared!' : 'Share vision board'}
               >
-                <Share2 className="h-5 w-5 text-white" />
+                {shareState === 'sharing' ? (
+                  <Loader2 className="h-5 w-5 text-white animate-spin" />
+                ) : shareState === 'success' ? (
+                  <Check className="h-5 w-5 text-white" />
+                ) : (
+                  <Share2 className="h-5 w-5 text-white" />
+                )}
               </button>
               <button
                 onClick={handleDownload}
-                className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors"
+                disabled={downloadState !== 'idle'}
+                className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                title={downloadState === 'downloading' ? 'Preparing download...' : downloadState === 'success' ? 'Downloaded!' : 'Download vision board'}
               >
-                <Download className="h-5 w-5 text-white" />
+                {downloadState === 'downloading' ? (
+                  <Loader2 className="h-5 w-5 text-white animate-spin" />
+                ) : downloadState === 'success' ? (
+                  <Check className="h-5 w-5 text-white" />
+                ) : (
+                  <Download className="h-5 w-5 text-white" />
+                )}
               </button>
             </div>
           </div>

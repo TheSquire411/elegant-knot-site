@@ -76,6 +76,7 @@ export default function WebsiteManager() {
           activeTab={activeTab}
           website={website}
           generating={generating}
+          saving={saving}
           previewMode={previewMode}
           onTemplateSelect={handleTemplateSelectAndSwitch}
           onWebsiteUpdate={handleWebsiteUpdate}

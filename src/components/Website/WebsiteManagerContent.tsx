@@ -9,6 +9,7 @@ interface WebsiteManagerContentProps {
   activeTab: ActiveTab;
   website: WeddingWebsite;
   generating: boolean;
+  saving?: boolean;
   previewMode: 'desktop' | 'mobile';
   onTemplateSelect: (template: any) => void;
   onWebsiteUpdate: (updates: Partial<WeddingWebsite>) => void;
@@ -19,6 +20,7 @@ export default function WebsiteManagerContent({
   activeTab,
   website,
   generating,
+  saving = false,
   previewMode,
   onTemplateSelect,
   onWebsiteUpdate,
@@ -51,7 +53,8 @@ export default function WebsiteManagerContent({
           <WebsiteBuilder
             websiteData={website}
             onUpdate={onWebsiteUpdate}
-            isGenerating={false}
+            isGenerating={generating}
+            isSaving={saving}
           />
         </div>
         <div className="lg:sticky lg:top-24">
