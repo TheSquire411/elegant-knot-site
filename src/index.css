@@ -6,60 +6,60 @@
 
 @layer base {
   :root {
-    /* Serene Blush & Muted Sage Palette */
-    --background: 40 33% 98%; /* Warm Off-White */
-    --foreground: 20 15% 25%; /* Dark Charcoal */
-    --muted: 40 20% 96%;
-    --muted-foreground: 20 10% 50%;
-    --border: 40 25% 90%;
-    --input: 40 25% 90%;
-    --ring: 345 76% 72%;
+    /* Updated Wedding Palette */
+    --background: 12 33% 98%; /* Off-White #FCF8F7 */
+    --foreground: 0 0% 23%; /* Charcoal #3A3A3A */
+    --muted: 12 25% 95%;
+    --muted-foreground: 0 0% 45%;
+    --border: 12 20% 90%;
+    --input: 12 20% 90%;
+    --ring: 345 34% 75%;
 
-    /* Primary - Dusty Rose */
-    --primary: 345 76% 72%;
-    --primary-foreground: 345 90% 98%;
-    --primary-50: 345 80% 98%;
-    --primary-100: 345 75% 95%;
-    --primary-200: 345 70% 90%;
-    --primary-300: 345 75% 85%;
-    --primary-400: 345 76% 80%;
-    --primary-500: 345 76% 72%;
-    --primary-600: 345 76% 65%;
-    --primary-700: 345 76% 58%;
-    --primary-800: 345 76% 50%;
-    --primary-900: 345 76% 42%;
+    /* Primary - Dusty Rose #D8A7B1 */
+    --primary: 345 34% 75%;
+    --primary-foreground: 345 50% 98%;
+    --primary-50: 345 40% 98%;
+    --primary-100: 345 38% 95%;
+    --primary-200: 345 36% 90%;
+    --primary-300: 345 35% 85%;
+    --primary-400: 345 34% 80%;
+    --primary-500: 345 34% 75%;
+    --primary-600: 345 34% 68%;
+    --primary-700: 345 34% 60%;
+    --primary-800: 345 34% 52%;
+    --primary-900: 345 34% 44%;
 
-    /* Secondary - Muted Sage */
-    --secondary: 150 20% 60%;
-    --secondary-foreground: 150 20% 98%;
-    --secondary-50: 150 25% 96%;
-    --secondary-100: 150 22% 92%;
-    --secondary-200: 150 20% 88%;
-    --secondary-300: 150 20% 80%;
-    --secondary-400: 150 20% 70%;
-    --secondary-500: 150 20% 60%;
-    --secondary-600: 150 20% 50%;
-    --secondary-700: 150 25% 40%;
-    --secondary-800: 150 30% 30%;
-    --secondary-900: 150 35% 20%;
+    /* Secondary - Soft Teal #B4D8D8 */
+    --secondary: 180 29% 78%;
+    --secondary-foreground: 180 30% 15%;
+    --secondary-50: 180 35% 98%;
+    --secondary-100: 180 32% 95%;
+    --secondary-200: 180 30% 90%;
+    --secondary-300: 180 29% 85%;
+    --secondary-400: 180 29% 80%;
+    --secondary-500: 180 29% 78%;
+    --secondary-600: 180 29% 70%;
+    --secondary-700: 180 29% 62%;
+    --secondary-800: 180 29% 54%;
+    --secondary-900: 180 29% 46%;
       
-    /* Accent - Warm Gold */
-    --accent: 40 90% 65%;
-    --accent-foreground: 40 90% 98%;
-    --accent-50: 40 95% 96%;
-    --accent-100: 40 92% 92%;
-    --accent-200: 40 90% 88%;
-    --accent-300: 40 90% 80%;
-    --accent-400: 40 90% 72%;
-    --accent-500: 40 90% 65%;
-    --accent-600: 40 90% 58%;
-    --accent-700: 40 90% 50%;
-    --accent-800: 40 85% 42%;
-    --accent-900: 40 80% 35%;
+    /* Accent - Gold #C0A080 */
+    --accent: 30 29% 63%;
+    --accent-foreground: 30 30% 15%;
+    --accent-50: 30 35% 98%;
+    --accent-100: 30 32% 95%;
+    --accent-200: 30 30% 90%;
+    --accent-300: 30 29% 85%;
+    --accent-400: 30 29% 75%;
+    --accent-500: 30 29% 63%;
+    --accent-600: 30 29% 55%;
+    --accent-700: 30 29% 47%;
+    --accent-800: 30 29% 39%;
+    --accent-900: 30 29% 31%;
 
     /* RGB values for glassmorphism effects */
-    --primary-rgb: 220, 149, 173;
-    --secondary-rgb: 129, 153, 140;
+    --primary-rgb: 216, 167, 177;
+    --secondary-rgb: 180, 216, 216;
 
     /* Design System Tokens */
     --radius: 12px;
