@@ -1,4 +1,5 @@
 
+import { sanitizeHtml } from '../../../../utils/security';
 
 interface OurStorySectionProps {
   story: {
@@ -39,9 +40,11 @@ export default function OurStorySection({ story, theme }: OurStorySectionProps) 
           <div 
             className="leading-relaxed"
             dangerouslySetInnerHTML={{ 
-              __html: story.content.includes('<') 
-                ? story.content 
-                : `<p>${story.content}</p>`
+              __html: sanitizeHtml(
+                story.content.includes('<') 
+                  ? story.content 
+                  : `<p>${story.content}</p>`
+              )
             }}
           />
         </div>
