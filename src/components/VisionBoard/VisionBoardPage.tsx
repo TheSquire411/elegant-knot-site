@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { arrayMove, SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
 import { supabase } from '../../integrations/supabase/client';
 import { useApp } from '../../context/AppContext';
 import { errorHandler } from '../../utils/errorHandling';
@@ -7,14 +9,25 @@ import BackButton from '../common/BackButton';
 import VisionBoardCustomizer from './VisionBoardCustomizer';
 import VisionBoardGenerator from './VisionBoardGenerator';
 import PinterestBoard from './PinterestBoard';
+import GeneratedVisionBoard from './GeneratedVisionBoard';
+import { Image } from './SortableImage';
 
 export default function VisionBoardPage() {
   const { state } = useApp();
   const navigate = useNavigate();
-  const [activeStep, setActiveStep] = useState<'customize' | 'generate' | 'pinterest'>('customize');
+  const [activeStep, setActiveStep] = useState<'customize' | 'generate' | 'pinterest' | 'interactive'>('customize');
   const [boardData, setBoardData] = useState<any>(null);
   const [hasExistingBoard, setHasExistingBoard] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [interactiveImages, setInteractiveImages] = useState<Image[]>([]);
+  
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  );
 
   useEffect(() => {
     loadExistingVisionBoard();
@@ -22,6 +35,77 @@ export default function VisionBoardPage() {
 
   const handleClose = () => {
     navigate('/dashboard');
+  };
+
+  const handleInitialGeneration = (generatedData: any) => {
+    // Extract all images from the generated board
+    const allImages: Image[] = [];
+    
+    // Add mood image
+    if (generatedData.elements?.moodImage) {
+      allImages.push({
+        id: `mood-${Date.now()}`,
+        url: generatedData.elements.moodImage,
+        type: 'mood',
+        category: 'Mood'
+      });
+    }
+    
+    // Add venue images
+    if (generatedData.elements?.venueImages) {
+      generatedData.elements.venueImages.forEach((url: string, index: number) => {
+        allImages.push({
+          id: `venue-${index}-${Date.now()}`,
+          url,
+          type: 'venue',
+          category: 'Venue'
+        });
+      });
+    }
+    
+    // Add decor elements
+    if (generatedData.elements?.decorElements) {
+      generatedData.elements.decorElements.forEach((url: string, index: number) => {
+        allImages.push({
+          id: `decor-${index}-${Date.now()}`,
+          url,
+          type: 'decor',
+          category: 'Decor'
+        });
+      });
+    }
+    
+    // Add user photos if any
+    if (generatedData.elements?.userPhotos) {
+      generatedData.elements.userPhotos.forEach((photo: any, index: number) => {
+        allImages.push({
+          id: `user-${index}-${Date.now()}`,
+          url: photo.url || photo.thumbnail,
+          type: 'user',
+          category: photo.category || 'Personal'
+        });
+      });
+    }
+    
+    setInteractiveImages(allImages);
+    setBoardData(generatedData);
+    setActiveStep('interactive');
+  };
+
+
+  const deleteImageFromBoard = (imageId: string) => {
+    setInteractiveImages(prev => prev.filter(img => img.id !== imageId));
+  };
+
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
+    if (active.id !== over?.id) {
+      setInteractiveImages((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
   };
 
   const loadExistingVisionBoard = async () => {
@@ -126,6 +210,16 @@ export default function VisionBoardPage() {
               >
                 <span className="font-medium">Generate Vision Board</span>
               </button>
+              <button
+                onClick={() => setActiveStep('interactive')}
+                className={`py-4 border-b-2 transition-colors ${
+                  activeStep === 'interactive'
+                    ? 'border-primary-500 text-primary-600'
+                    : 'border-transparent text-gray-600 hover:text-gray-800'
+                }`}
+              >
+                <span className="font-medium">Interactive Canvas</span>
+              </button>
             </div>
           </div>
         </div>
@@ -158,7 +252,26 @@ export default function VisionBoardPage() {
               board={boardData}
               hasExistingBoard={hasExistingBoard}
               onEditPreferences={() => setActiveStep('customize')}
+              onGenerateInteractive={handleInitialGeneration}
             />
+          </div>
+        )}
+        
+        {activeStep === 'interactive' && (
+          <div className="p-6">
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext items={interactiveImages} strategy={rectSortingStrategy}>
+                <GeneratedVisionBoard 
+                  images={interactiveImages}
+                  onDelete={deleteImageFromBoard}
+                  onAddImages={() => setActiveStep('pinterest')}
+                />
+              </SortableContext>
+            </DndContext>
           </div>
         )}
         

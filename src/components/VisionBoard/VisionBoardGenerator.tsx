@@ -20,9 +20,10 @@ interface VisionBoardProps {
   };
   hasExistingBoard?: boolean;
   onEditPreferences?: () => void;
+  onGenerateInteractive?: (data: any) => void;
 }
 
-export default function VisionBoardGenerator({ board, hasExistingBoard, onEditPreferences }: VisionBoardProps) {
+export default function VisionBoardGenerator({ board, hasExistingBoard, onEditPreferences, onGenerateInteractive }: VisionBoardProps) {
   const { elements, preferences } = board;
   const [showUnsplashModal, setShowUnsplashModal] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -140,6 +141,14 @@ export default function VisionBoardGenerator({ board, hasExistingBoard, onEditPr
                   className="px-4 py-2 bg-white/40 text-white rounded-lg hover:bg-white/50 transition-colors text-sm shadow-sm border border-white/20 drop-shadow-sm"
                 >
                   Edit Preferences
+                </button>
+              )}
+              {onGenerateInteractive && (
+                <button
+                  onClick={() => onGenerateInteractive({ preferences: board.preferences, elements: boardElements })}
+                  className="px-4 py-2 bg-white/40 text-white rounded-lg hover:bg-white/50 transition-colors text-sm shadow-sm border border-white/20 drop-shadow-sm"
+                >
+                  Make Interactive
                 </button>
               )}
               <button
