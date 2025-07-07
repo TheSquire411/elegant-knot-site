@@ -154,10 +154,7 @@ export default function Dashboard() {
                 duration: 0.6, 
                 ease: "easeOut" 
               }}
-              className={`
-                ${index === 0 ? 'md:col-span-2 lg:col-span-1' : ''}
-                ${index === dashboardItems.length - 1 && dashboardItems.length % 3 === 0 ? 'lg:col-start-2' : ''}
-              `}
+              className={index === 0 ? 'md:col-span-2 lg:col-span-1' : ''}
             >
               <DashboardCard
                 to={item.to}
