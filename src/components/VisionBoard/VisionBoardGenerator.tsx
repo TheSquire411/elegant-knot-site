@@ -137,51 +137,51 @@ export default function VisionBoardGenerator({ board, hasExistingBoard, onEditPr
               {hasExistingBoard && onEditPreferences && (
                 <button
                   onClick={onEditPreferences}
-                  className="px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors text-white text-sm"
+                  className="px-4 py-2 bg-white/40 text-white rounded-lg hover:bg-white/50 transition-colors text-sm shadow-sm border border-white/20 drop-shadow-sm"
                 >
                   Edit Preferences
                 </button>
               )}
               <button
                 onClick={() => setShowUnsplashModal(true)}
-                className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors"
+                className="p-2 bg-white/40 text-white rounded-lg hover:bg-white/50 transition-colors shadow-sm border border-white/20"
                 title="Search Unsplash"
               >
-                <Search className="h-5 w-5 text-white" />
+                <Search className="h-5 w-5 drop-shadow-sm" />
               </button>
               <button
                 onClick={() => setShowUploadModal(true)}
-                className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors"
+                className="p-2 bg-white/40 text-white rounded-lg hover:bg-white/50 transition-colors shadow-sm border border-white/20"
                 title="Upload Photos"
               >
-                <Upload className="h-5 w-5 text-white" />
+                <Upload className="h-5 w-5 drop-shadow-sm" />
               </button>
               <button
                 onClick={handleShare}
                 disabled={shareState !== 'idle'}
-                className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-2 bg-white/40 text-white rounded-lg hover:bg-white/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm border border-white/20"
                 title={shareState === 'sharing' ? 'Creating share link...' : shareState === 'success' ? 'Shared!' : 'Share vision board'}
               >
                 {shareState === 'sharing' ? (
-                  <Loader2 className="h-5 w-5 text-white animate-spin" />
+                  <Loader2 className="h-5 w-5 animate-spin drop-shadow-sm" />
                 ) : shareState === 'success' ? (
-                  <Check className="h-5 w-5 text-white" />
+                  <Check className="h-5 w-5 drop-shadow-sm" />
                 ) : (
-                  <Share2 className="h-5 w-5 text-white" />
+                  <Share2 className="h-5 w-5 drop-shadow-sm" />
                 )}
               </button>
               <button
                 onClick={handleDownload}
                 disabled={downloadState !== 'idle'}
-                className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-2 bg-white/40 text-white rounded-lg hover:bg-white/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm border border-white/20"
                 title={downloadState === 'downloading' ? 'Preparing download...' : downloadState === 'success' ? 'Downloaded!' : 'Download vision board'}
               >
                 {downloadState === 'downloading' ? (
-                  <Loader2 className="h-5 w-5 text-white animate-spin" />
+                  <Loader2 className="h-5 w-5 animate-spin drop-shadow-sm" />
                 ) : downloadState === 'success' ? (
-                  <Check className="h-5 w-5 text-white" />
+                  <Check className="h-5 w-5 drop-shadow-sm" />
                 ) : (
-                  <Download className="h-5 w-5 text-white" />
+                  <Download className="h-5 w-5 drop-shadow-sm" />
                 )}
               </button>
             </div>

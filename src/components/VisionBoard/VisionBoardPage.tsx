@@ -114,7 +114,7 @@ export default function VisionBoardPage() {
                     : 'border-transparent text-gray-600 hover:text-gray-800'
                 }`}
               >
-                <span className="font-medium">Pinterest Boards</span>
+                <span className="font-medium">Inspiration Boards</span>
               </button>
               <button
                 onClick={() => setActiveStep('generate')}

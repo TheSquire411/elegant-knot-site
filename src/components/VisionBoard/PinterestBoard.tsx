@@ -6,6 +6,7 @@ import PhotoUploadModal from './PhotoUploadModal';
 import ImageAnalyzer from './ImageAnalyzer';
 import BackgroundRemovalModal from './BackgroundRemovalModal';
 import AddUrlImageModal from './AddUrlImageModal';
+import UnsplashSearchModal from './UnsplashSearchModal';
 
 interface Board {
   id: string;
@@ -39,6 +40,7 @@ export default function PinterestBoard({ onNavigateBack }: PinterestBoardProps) 
   const [newBoardName, setNewBoardName] = useState('');
   const [showNewBoardInput, setShowNewBoardInput] = useState(false);
   const [showAddUrlModal, setShowAddUrlModal] = useState(false);
+  const [showUnsplashModal, setShowUnsplashModal] = useState(false);
 
   const { analyzeImage } = useGemini({
     onSuccess: (analysis) => {
@@ -135,6 +137,32 @@ export default function PinterestBoard({ onNavigateBack }: PinterestBoardProps) 
     ));
   };
 
+  const handleAddUnsplashImages = (images: any[]) => {
+    if (!selectedBoard) return;
+    
+    const newImages = images.map(img => ({
+      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+      url: img.url,
+      thumbnail: img.thumbnail,
+      filename: img.description || 'Unsplash image',
+      size: 0,
+      category: selectedBoard.category,
+      tags: img.tags,
+      isFavorite: false,
+      uploadDate: new Date(),
+      source: 'unsplash' as const,
+      author: img.author,
+      authorProfile: img.authorProfile
+    }));
+    
+    setBoards(prev => prev.map(board => 
+      board.id === selectedBoard.id 
+        ? { ...board, images: [...board.images, ...newImages] }
+        : board
+    ));
+    setShowUnsplashModal(false);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -159,8 +187,15 @@ export default function PinterestBoard({ onNavigateBack }: PinterestBoardProps) 
                   placeholder="Search inspiration..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent w-64"
+                  className="pl-10 pr-20 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent w-64"
                 />
+                <button
+                  onClick={() => setShowUnsplashModal(true)}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1 bg-primary-500 text-white text-xs rounded hover:bg-primary-600 transition-colors"
+                  title="Search Unsplash"
+                >
+                  Unsplash
+                </button>
               </div>
               
               <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-1">
@@ -448,6 +483,15 @@ export default function PinterestBoard({ onNavigateBack }: PinterestBoardProps) 
           onClose={() => setShowAddUrlModal(false)}
           onAddImage={handleAddUrlImage}
           category={selectedBoard.name}
+        />
+      )}
+
+      {/* Unsplash Search Modal */}
+      {showUnsplashModal && (
+        <UnsplashSearchModal
+          isOpen={showUnsplashModal}
+          onClose={() => setShowUnsplashModal(false)}
+          onAddImages={handleAddUnsplashImages}
         />
       )}
 
