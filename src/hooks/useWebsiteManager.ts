@@ -223,147 +223,117 @@ export function useWebsiteManager() {
   };
 
   const handleTemplateSelect = async (template: any) => {
-    console.log('=== Template Selection Started ===');
+    console.log('=== AI Template Selection Started ===');
     console.log('Template selected:', template);
-    console.log('Template ID:', template.id);
-    console.log('Template ID type:', typeof template.id);
     
     if (!website) {
       console.error('No website found, cannot select template');
       return;
     }
 
-    // Helper function to check if ID is a UUID format
-    const isUUID = (id: string) => {
-      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-      return uuidRegex.test(id);
-    };
-    
-    // Check if this is an AI-generated template (has UUID format ID)
-    const isAITemplate = template.id && typeof template.id === 'string' && isUUID(template.id);
-    console.log('Is AI Template:', isAITemplate);
+    // Since we only have AI templates now, we know this is an AI template
+    console.log('Fetching AI template data from database...');
+    try {
+      const { data: templateData, error } = await supabase
+        .from('website_templates')
+        .select('layout, colors, typography')
+        .eq('id', template.id)
+        .single();
 
-    // Start with basic template structure  
-    let templateTheme: WebsiteTheme = {
-      style: template.name,
-      colors: template.colors || ['#F8BBD9', '#D4AF37'],
-      fonts: {
-        heading: 'Playfair Display',
-        body: 'Montserrat'
-      },
-      // Initialize with default structured data
-      colorPalette: {
-        primary: template.colors?.[0] || '#F8BBD9',
-        secondary: template.colors?.[1] || '#D4AF37',
-        accent: template.colors?.[2] || template.colors?.[0] || '#F8BBD9',
-        background: '#FFFFFF',
-        text: '#374151'
-      },
-      typography: {
-        headingFont: 'Playfair Display',
-        bodyFont: 'Montserrat',
-        headingWeight: 700,
-        bodyWeight: 400
-      },
-      layout: {
-        headerStyle: 'classic',
-        spacing: 'normal',
-        imageLayout: 'standard'
+      if (error) {
+        console.error('Database error fetching template:', error);
+        throw error;
       }
-    };
 
-    // If this is an AI-generated template, fetch full design data from database
-    if (isAITemplate) {
-      console.log('Fetching AI template data from database...');
-      try {
-        const { data: templateData, error } = await supabase
-          .from('website_templates')
-          .select('layout, colors, typography')
-          .eq('id', template.id)
-          .single();
+      let templateTheme: WebsiteTheme;
 
-        if (error) {
-          console.error('Database error fetching template:', error);
-          throw error;
-        }
-
-        if (templateData) {
-          console.log('✅ Successfully fetched AI template data:', templateData);
-          
-          // Safely cast and validate the data
-          const layoutData = templateData.layout as any;
-          const colorsData = templateData.colors as any;
-          const typographyData = templateData.typography as any;
-          
-          console.log('Colors data:', colorsData);
-          console.log('Typography data:', typographyData);
-          console.log('Layout data:', layoutData);
-          
-          // Apply AI-generated design data
-          templateTheme.colorPalette = {
+      if (templateData) {
+        console.log('✅ Successfully fetched AI template data:', templateData);
+        
+        const layoutData = templateData.layout as any;
+        const colorsData = templateData.colors as any;
+        const typographyData = templateData.typography as any;
+        
+        // Apply AI-generated design data
+        templateTheme = {
+          style: template.name,
+          colors: [
+            colorsData?.primary || '#F8BBD9',
+            colorsData?.secondary || '#D4AF37',
+            colorsData?.accent || '#F8BBD9'
+          ],
+          fonts: {
+            heading: typographyData?.headingFont || 'Playfair Display',
+            body: typographyData?.bodyFont || 'Montserrat'
+          },
+          colorPalette: {
             primary: colorsData?.primary || '#F8BBD9',
             secondary: colorsData?.secondary || '#D4AF37',
             accent: colorsData?.accent || colorsData?.primary || '#F8BBD9',
             background: colorsData?.background || '#FFFFFF',
             text: colorsData?.text || '#374151'
-          };
-          
-          templateTheme.typography = {
+          },
+          typography: {
             headingFont: typographyData?.headingFont || 'Playfair Display',
             bodyFont: typographyData?.bodyFont || 'Montserrat',
             headingWeight: typographyData?.headingWeight || 700,
             bodyWeight: typographyData?.bodyWeight || 400
-          };
-          
-          templateTheme.layout = layoutData || {
+          },
+          layout: layoutData || {
             headerStyle: 'classic',
             spacing: 'normal',
             imageLayout: 'standard'
-          };
-          
-          // Update backward compatibility fields
-          templateTheme.fonts = {
-            heading: templateTheme.typography.headingFont || 'Playfair Display',
-            body: templateTheme.typography.bodyFont || 'Montserrat'
-          };
-          
-          templateTheme.colors = [
-            templateTheme.colorPalette.primary || '#F8BBD9',
-            templateTheme.colorPalette.secondary || '#D4AF37',
-            templateTheme.colorPalette.accent || '#F8BBD9'
-          ];
-        } else {
-          console.warn('No template data returned from database');
-        }
-      } catch (error) {
-        console.error('❌ Error fetching AI template data:', error);
-        // Continue with basic template data but show user feedback
-        console.log('Continuing with basic template structure...');
+          }
+        };
+      } else {
+        console.warn('No template data returned, using fallback');
+        templateTheme = {
+          style: template.name,
+          colors: template.colors || ['#F8BBD9', '#D4AF37'],
+          fonts: {
+            heading: 'Playfair Display',
+            body: 'Montserrat'
+          },
+          colorPalette: {
+            primary: template.colors?.[0] || '#F8BBD9',
+            secondary: template.colors?.[1] || '#D4AF37',
+            accent: template.colors?.[2] || '#F8BBD9',
+            background: '#FFFFFF',
+            text: '#374151'
+          },
+          typography: {
+            headingFont: 'Playfair Display',
+            bodyFont: 'Montserrat',
+            headingWeight: 700,
+            bodyWeight: 400
+          },
+          layout: {
+            headerStyle: 'classic',
+            spacing: 'normal',
+            imageLayout: 'standard'
+          }
+        };
       }
-    }
 
-    console.log('✅ Final theme to apply:', templateTheme);
+      console.log('✅ Final theme to apply:', templateTheme);
 
-    // Update theme immediately for instant preview - single state update
-    console.log('📝 Updating website theme...');
-    const updatedWebsite = { ...website, theme: templateTheme };
-    console.log('📝 Final website state:', updatedWebsite);
-    
-    // Single immediate state update
-    setWebsite(updatedWebsite);
-    
-    // Save to database immediately after state update
-    saveWebsite({ theme: templateTheme });
-    
-    // Generate AI content for the template (this happens in background)
-    if (isAITemplate || generateTemplateContent) {
-      console.log('🤖 Starting AI content generation for template:', template.name);
+      // Update theme immediately for instant preview
+      const updatedWebsite = { ...website, theme: templateTheme };
+      setWebsite(updatedWebsite);
+      
+      // Save to database immediately
+      saveWebsite({ theme: templateTheme });
+      
+      // Generate AI content for the template
+      console.log('🤖 Starting AI content generation...');
       setGenerating(true);
       generateTemplateContent(template);
+      
+    } catch (error) {
+      console.error('❌ Error fetching AI template data:', error);
     }
     
-    console.log('=== Template Selection Complete ===');
-
+    console.log('=== AI Template Selection Complete ===');
     return { shouldSwitchToBuilder: true };
   };
 
