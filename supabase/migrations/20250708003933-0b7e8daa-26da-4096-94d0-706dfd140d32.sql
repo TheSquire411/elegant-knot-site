@@ -36,7 +36,7 @@ BEGIN
   -- CRITICAL: Check if caller is admin before returning any data
   IF NOT EXISTS (
     SELECT 1 FROM public.profiles 
-    WHERE user_id = auth.uid() AND role = 'admin'
+    WHERE profiles.user_id = auth.uid() AND profiles.role = 'admin'
   ) THEN
     RAISE EXCEPTION 'Access denied: Admin role required';
   END IF;
