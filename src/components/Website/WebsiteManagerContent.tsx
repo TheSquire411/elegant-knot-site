@@ -105,36 +105,81 @@ export default function WebsiteManagerContent({
         <div className="bg-white rounded-2xl shadow-lg p-8">
           <h2 className="text-2xl font-bold text-sage-800 mb-6">Website Settings</h2>
           
-          <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-sage-700 mb-2">
-                Website Title
-              </label>
-              <input
-                type="text"
-                value={website.title}
-                onChange={(e) => onWebsiteUpdate({ title: e.target.value })}
-                className="w-full px-4 py-3 border border-sage-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              />
+          <div className="space-y-8">
+            {/* Publishing Status */}
+            <div className="bg-sage-50 rounded-lg p-6">
+              <h3 className="text-lg font-semibold text-sage-800 mb-4">Publishing Status</h3>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sage-700">Status:</span>
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    website.status === 'published' 
+                      ? 'bg-green-100 text-green-800'
+                      : website.status === 'draft'
+                      ? 'bg-yellow-100 text-yellow-800'
+                      : 'bg-gray-100 text-gray-800'
+                  }`}>
+                    {website.status.charAt(0).toUpperCase() + website.status.slice(1)}
+                  </span>
+                </div>
+                
+                {website.status === 'published' && website.slug && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sage-700">Public URL:</span>
+                    <a
+                      href={`/wedding/${website.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 underline"
+                    >
+                      {window.location.origin}/wedding/{website.slug}
+                    </a>
+                  </div>
+                )}
+                
+                {website.published_at && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sage-700">Published:</span>
+                    <span className="text-sage-600">
+                      {new Date(website.published_at).toLocaleString()}
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
 
+            {/* Basic Settings */}
             <div>
-              <label className="block text-sm font-medium text-sage-700 mb-2">
-                Website Status
-              </label>
-              <select
-                value={website.status}
-                onChange={(e) => onWebsiteUpdate({ status: e.target.value as 'draft' | 'published' | 'archived' })}
-                className="w-full px-4 py-3 border border-sage-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              >
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
-                <option value="archived">Archived</option>
-              </select>
+              <h3 className="text-lg font-semibold text-sage-800 mb-4">Basic Information</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-sage-700 mb-2">
+                    Website Title
+                  </label>
+                  <input
+                    type="text"
+                    value={website.title}
+                    onChange={(e) => onWebsiteUpdate({ title: e.target.value })}
+                    className="w-full px-4 py-3 border border-sage-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  />
+                </div>
+
+                {website.slug && (
+                  <div>
+                    <label className="block text-sm font-medium text-sage-700 mb-2">
+                      Website URL
+                    </label>
+                    <div className="text-sm text-sage-600 bg-sage-50 px-4 py-3 rounded-lg">
+                      {window.location.origin}/wedding/{website.slug}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
-            <div className="pt-6">
-              <h3 className="text-lg font-semibold text-sage-800 mb-4">Features</h3>
+            {/* Features */}
+            <div>
+              <h3 className="text-lg font-semibold text-sage-800 mb-4">Website Features</h3>
               <div className="space-y-3">
                 {Object.entries(website.settings.features || { rsvp: true, guestBook: true, photoSharing: true }).map(([feature, enabled]) => (
                   <label key={feature} className="flex items-center space-x-3">
@@ -157,6 +202,48 @@ export default function WebsiteManagerContent({
                     </span>
                   </label>
                 ))}
+              </div>
+            </div>
+
+            {/* SEO Settings */}
+            <div>
+              <h3 className="text-lg font-semibold text-sage-800 mb-4">SEO Settings</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-sage-700 mb-2">
+                    SEO Title
+                  </label>
+                  <input
+                    type="text"
+                    value={website.settings.seoTitle || ''}
+                    onChange={(e) => onWebsiteUpdate({
+                      settings: {
+                        ...website.settings,
+                        seoTitle: e.target.value
+                      }
+                    })}
+                    placeholder="Custom title for search engines"
+                    className="w-full px-4 py-3 border border-sage-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-sage-700 mb-2">
+                    SEO Description
+                  </label>
+                  <textarea
+                    value={website.settings.seoDescription || ''}
+                    onChange={(e) => onWebsiteUpdate({
+                      settings: {
+                        ...website.settings,
+                        seoDescription: e.target.value
+                      }
+                    })}
+                    placeholder="Brief description for search engines and social media"
+                    rows={3}
+                    className="w-full px-4 py-3 border border-sage-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  />
+                </div>
               </div>
             </div>
           </div>

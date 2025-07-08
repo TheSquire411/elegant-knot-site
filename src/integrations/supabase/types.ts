@@ -1071,6 +1071,10 @@ export type Database = {
         Args: { p_user_id: string; p_feature_type: string }
         Returns: boolean
       }
+      generate_website_slug: {
+        Args: { title_text: string; website_id?: string }
+        Returns: string
+      }
       get_current_usage: {
         Args: { p_user_id: string; p_feature_type: string }
         Returns: number
@@ -1082,6 +1086,10 @@ export type Database = {
       increment_usage: {
         Args: { p_user_id: string; p_feature_type: string }
         Returns: number
+      }
+      validate_website_for_publishing: {
+        Args: { website_id: string }
+        Returns: Json
       }
     }
     Enums: {

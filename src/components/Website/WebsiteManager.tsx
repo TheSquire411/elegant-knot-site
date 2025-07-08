@@ -64,6 +64,7 @@ export default function WebsiteManager() {
         lastSaved={lastSaved}
         saving={saving}
         onSave={() => saveWebsite()}
+        onWebsiteUpdate={handleWebsiteUpdate}
       />
 
       <WebsiteManagerTabs 

@@ -28,6 +28,7 @@ import BlogPage from './components/Blog/BlogPage';
 import BlogPost from './components/Blog/BlogPost';
 import BlogAdminDashboard from './components/Blog/BlogAdminDashboard';
 import BlogPostEditor from './components/Blog/BlogPostEditor';
+import PublicWeddingWebsite from './components/Website/PublicWeddingWebsite';
 
 
 /**
@@ -75,6 +76,9 @@ function AppRoutes() {
         <Route path="/reset-password" element={<ResetPasswordForm />} />
         <Route path="/upgrade" element={<UpgradePage />} />
         <Route path="/rsvp/:token" element={<RSVPPage />} />
+        
+        {/* Public Wedding Website Routes */}
+        <Route path="/wedding/:slug" element={<PublicWeddingWebsite />} />
         
         {/* Blog Routes */}
         <Route path="/blog" element={<BlogPage />} />
