@@ -1033,15 +1033,13 @@ export type Database = {
     }
     Functions: {
       admin_get_users: {
-        Args:
-          | { p_limit?: number; p_offset?: number; p_search?: string }
-          | {
-              p_search?: string
-              p_limit?: number
-              p_offset?: number
-              p_sort_by?: string
-              p_sort_order?: string
-            }
+        Args: {
+          p_search?: string
+          p_limit?: number
+          p_offset?: number
+          p_sort_by?: string
+          p_sort_order?: string
+        }
         Returns: {
           id: string
           user_id: string
@@ -1054,6 +1052,7 @@ export type Database = {
           created_at: string
           updated_at: string
           last_sign_in_at: string
+          total_count: number
         }[]
       }
       admin_update_user_role: {
