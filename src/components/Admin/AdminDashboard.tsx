@@ -4,7 +4,6 @@ import { useAdmin } from '../../hooks/useAdmin';
 import BackButton from '../common/BackButton';
 import AdminStatsCard from './AdminStatsCard';
 import AdminUserManagement from './AdminUserManagement';
-import ContactUsSection from './ContactUsSection';
 
 export default function AdminDashboard() {
   const { userStats, subscriptionStats, featureUsageStats, contentStats, loading, error } = useAdmin();
@@ -151,11 +150,6 @@ export default function AdminDashboard() {
 
         {/* User Management */}
         <AdminUserManagement />
-
-        {/* Contact Us Section */}
-        <div className="mt-8">
-          <ContactUsSection />
-        </div>
       </div>
     </div>
   );

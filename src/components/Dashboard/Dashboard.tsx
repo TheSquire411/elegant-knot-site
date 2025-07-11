@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import DashboardCard from '../common/DashboardCard';
 import PaymentVerification from './PaymentVerification';
 import AuthStatus from '../Auth/AuthStatus';
+import ContactUsSection from '../Admin/ContactUsSection';
 import { motion } from 'framer-motion';
 
 export default function Dashboard() {
@@ -209,7 +210,17 @@ export default function Dashboard() {
               </motion.div>
               <div className="text-muted-foreground">{stat.label}</div>
             </motion.div>
-          ))}
+           ))}
+        </motion.div>
+
+        {/* Contact Us Section */}
+        <motion.div 
+          className="mt-16"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 2.4, duration: 0.8, ease: "easeOut" }}
+        >
+          <ContactUsSection />
         </motion.div>
       </div>
     </div>
