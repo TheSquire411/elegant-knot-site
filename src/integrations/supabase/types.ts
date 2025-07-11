@@ -41,6 +41,42 @@ export type Database = {
         }
         Relationships: []
       }
+      auth_rate_limits: {
+        Row: {
+          attempt_count: number
+          blocked_until: string | null
+          created_at: string
+          first_attempt_at: string
+          id: string
+          identifier: string
+          last_attempt_at: string
+          limit_type: string
+          updated_at: string
+        }
+        Insert: {
+          attempt_count?: number
+          blocked_until?: string | null
+          created_at?: string
+          first_attempt_at?: string
+          id?: string
+          identifier: string
+          last_attempt_at?: string
+          limit_type: string
+          updated_at?: string
+        }
+        Update: {
+          attempt_count?: number
+          blocked_until?: string | null
+          created_at?: string
+          first_attempt_at?: string
+          id?: string
+          identifier?: string
+          last_attempt_at?: string
+          limit_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       blog_categories: {
         Row: {
           created_at: string
@@ -1069,6 +1105,19 @@ export type Database = {
       can_use_feature: {
         Args: { p_user_id: string; p_feature_type: string }
         Returns: boolean
+      }
+      check_auth_rate_limit: {
+        Args: {
+          p_identifier: string
+          p_limit_type: string
+          p_max_attempts: number
+          p_window_minutes: number
+        }
+        Returns: Json
+      }
+      cleanup_auth_rate_limits: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       generate_website_slug: {
         Args: { title_text: string; website_id?: string }

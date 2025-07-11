@@ -67,33 +67,54 @@ export default function SignupForm() {
     }
 
     try {
-      const redirectUrl = `${window.location.origin}/`;
-
-      const { data, error } = await supabase.auth.signUp({
-        email: sanitizedEmail,
-        password,
-        options: {
-          emailRedirectTo: redirectUrl,
-          data: {
-            full_name: sanitizedFullName,
-            username: sanitizedUsername
-          }
+      // Call the server-side auth signup function
+      const response = await supabase.functions.invoke('auth-signup', {
+        body: {
+          email: sanitizedEmail,
+          password,
+          fullName: sanitizedFullName,
+          username: sanitizedUsername
         }
       });
 
-      if (error) throw error;
-
-      if (data.user) {
-        if (data.user.email_confirmed_at) {
-          // User is automatically confirmed
-          window.location.href = '/quiz';
-        } else {
-          // User needs to confirm email
-          setMessage('Please check your email and click the confirmation link to complete your signup.');
-        }
+      if (response.error) {
+        throw new Error(response.error.message || 'Signup failed');
       }
+
+      const result = response.data;
+      
+      if (result.error) {
+        // Handle rate limiting and other server errors
+        if (result.blocked_until) {
+          const resetTime = new Date(result.blocked_until).toLocaleTimeString();
+          setError(`${result.error} You can try again at ${resetTime}.`);
+        } else {
+          setError(result.error);
+        }
+        return;
+      }
+
+      // Success - user created
+      setMessage('Account created successfully! You can now sign in.');
+      
+      // Clear form
+      setEmail('');
+      setPassword('');
+      setFullName('');
+      setUsername('');
+      
+      // Optional: Auto-redirect to login after a short delay
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 2000);
+
     } catch (error: any) {
-      if (error.message === 'User already registered') {
+      console.error('Signup error:', error);
+      
+      // Handle network or other errors
+      if (error.message.includes('rate limit') || error.message.includes('Too many')) {
+        setError(error.message);
+      } else if (error.message.includes('already registered') || error.message.includes('already exists')) {
         setError('An account with this email already exists. Please try logging in instead.');
       } else {
         setError('An error occurred during signup. Please try again.');
