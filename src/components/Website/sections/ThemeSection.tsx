@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import { WeddingWebsite } from '../../../types';
 
 interface ThemeSectionProps {
-  websiteData: any;
-  onUpdate: (updates: any) => void;
+  websiteData: WeddingWebsite;
+  onUpdate: (updates: Partial<WeddingWebsite>) => void;
 }
 
 export default function ThemeSection({ websiteData, onUpdate }: ThemeSectionProps) {
@@ -113,8 +114,13 @@ export default function ThemeSection({ websiteData, onUpdate }: ThemeSectionProp
         </div>
         {showCustomCSS && (
           <textarea
-            value={websiteData.customCSS || ''}
-            onChange={(e) => onUpdate({ customCSS: e.target.value })}
+            value={websiteData.settings?.customCSS || ''}
+            onChange={(e) => onUpdate({ 
+              settings: { 
+                ...websiteData.settings, 
+                customCSS: e.target.value 
+              } 
+            })}
             placeholder="/* Add your custom CSS here */"
             className="w-full h-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent font-mono text-sm"
           />

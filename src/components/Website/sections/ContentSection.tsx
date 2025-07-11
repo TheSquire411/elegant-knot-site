@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Sparkles, Plus, Trash2 } from 'lucide-react';
 import { useGemini } from '../../../hooks/useGemini';
+import { WeddingWebsite } from '../../../types';
 import StoryPersonalizationModal from '../StoryPersonalizationModal';
 
 interface ContentSectionProps {
-  websiteData: any;
-  onUpdate: (updates: any) => void;
+  websiteData: WeddingWebsite;
+  onUpdate: (updates: Partial<WeddingWebsite>) => void;
   isGenerating: boolean;
 }
 
@@ -23,12 +24,12 @@ export default function ContentSection({ websiteData, onUpdate, isGenerating }: 
     }
   });
 
-  const updateContent = (section: string, updates: any) => {
+  const updateContent = (section: keyof typeof websiteData.content, updates: any) => {
     onUpdate({
       content: {
         ...websiteData.content,
         [section]: {
-          ...websiteData.content[section],
+          ...(websiteData.content[section] as any),
           ...updates
         }
       }

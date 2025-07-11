@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Sparkles, Loader2 } from 'lucide-react';
 import { supabase } from '../../integrations/supabase/client';
+import { generateShortId } from '../../utils/uuid';
 
 interface VisionBoardCustomizerProps {
   onComplete?: (preferences: any) => void;
@@ -109,7 +110,7 @@ export default function VisionBoardCustomizer({ onComplete, onGenerate, onClose,
         };
 
         const boardData = {
-          id: crypto.randomUUID(),
+          id: generateShortId(),
           preferences,
           elements: mockElements
         };

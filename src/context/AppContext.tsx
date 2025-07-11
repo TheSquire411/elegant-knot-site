@@ -2,6 +2,7 @@ import React, { createContext, useContext, useReducer, ReactNode, useEffect } fr
 import { User as AuthUser, Session } from '@supabase/supabase-js';
 import { supabase } from '../integrations/supabase/client';
 import { GalleryImage } from '../types';
+import { generateShortId } from '../utils/uuid';
 
 interface Profile {
   id: string;
@@ -151,7 +152,7 @@ export function AppProvider({ children }: AppProviderProps) {
   const addNotification = (notification: Omit<Notification, 'id' | 'timestamp'>) => {
     const fullNotification: Notification = {
       ...notification,
-      id: crypto.randomUUID(),
+      id: generateShortId(),
       timestamp: new Date()
     };
     dispatch({ type: 'ADD_NOTIFICATION', payload: fullNotification });

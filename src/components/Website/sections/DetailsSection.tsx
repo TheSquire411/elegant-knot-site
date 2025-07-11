@@ -1,17 +1,18 @@
 import { Plus, Trash2 } from 'lucide-react';
+import { WeddingWebsite } from '../../../types';
 
 interface DetailsSectionProps {
-  websiteData: any;
-  onUpdate: (updates: any) => void;
+  websiteData: WeddingWebsite;
+  onUpdate: (updates: Partial<WeddingWebsite>) => void;
 }
 
 export default function DetailsSection({ websiteData, onUpdate }: DetailsSectionProps) {
-  const updateContent = (section: string, updates: any) => {
+  const updateContent = (section: keyof typeof websiteData.content, updates: any) => {
     onUpdate({
       content: {
         ...websiteData.content,
         [section]: {
-          ...websiteData.content[section],
+          ...(websiteData.content[section] as any),
           ...updates
         }
       }

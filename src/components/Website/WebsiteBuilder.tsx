@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { Palette, Image, Calendar, Save, Edit3, Check, Loader2 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { WeddingWebsite } from '../../types';
 import ThemeSection from './sections/ThemeSection';
 import ContentSection from './sections/ContentSection';
 import PhotosSection from './sections/PhotosSection';
 import DetailsSection from './sections/DetailsSection';
 
 interface WebsiteBuilderProps {
-  websiteData: any;
-  onUpdate: (updates: any) => void;
+  websiteData: WeddingWebsite;
+  onUpdate: (updates: Partial<WeddingWebsite>) => void;
   isGenerating: boolean;
   isSaving?: boolean;
 }

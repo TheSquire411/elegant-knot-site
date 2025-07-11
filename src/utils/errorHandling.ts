@@ -1,3 +1,5 @@
+import { generateShortId } from './uuid';
+
 // Simple toast replacement - using notifications system instead
 export interface ToastOptions {
   title: string;
@@ -61,7 +63,7 @@ class ErrorHandler {
     }
 
     const appError: AppError = {
-      id: crypto.randomUUID(),
+      id: generateShortId(),
       message: errorMessage,
       context,
       timestamp: new Date(),

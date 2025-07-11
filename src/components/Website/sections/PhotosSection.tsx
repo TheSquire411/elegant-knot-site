@@ -1,18 +1,19 @@
 import { Upload, Trash2 } from 'lucide-react';
 import { useFileUpload } from '../../../hooks/useFileUpload';
+import { WeddingWebsite } from '../../../types';
 
 interface PhotosSectionProps {
-  websiteData: any;
-  onUpdate: (updates: any) => void;
+  websiteData: WeddingWebsite;
+  onUpdate: (updates: Partial<WeddingWebsite>) => void;
 }
 
 export default function PhotosSection({ websiteData, onUpdate }: PhotosSectionProps) {
-  const updateContent = (section: string, updates: any) => {
+  const updateContent = (section: keyof typeof websiteData.content, updates: any) => {
     onUpdate({
       content: {
         ...websiteData.content,
         [section]: {
-          ...websiteData.content[section],
+          ...(websiteData.content[section] as any),
           ...updates
         }
       }
