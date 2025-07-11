@@ -4,7 +4,7 @@ import { useWebsiteManager } from '../../hooks/useWebsiteManager';
 import WebsiteManagerHeader from './WebsiteManagerHeader';
 import WebsiteManagerTabs, { ActiveTab } from './WebsiteManagerTabs';
 import WebsiteManagerContent from './WebsiteManagerContent';
-import ErrorBoundary from '../common/ErrorBoundary';
+import { ErrorBoundary } from '../common/ErrorBoundary';
 
 export default function WebsiteManager() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('templates');
