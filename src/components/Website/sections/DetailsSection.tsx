@@ -27,11 +27,11 @@ export default function DetailsSection({ websiteData, onUpdate }: DetailsSection
       rate: '$150/night'
     };
 
-    updateContent('accommodations', [...websiteData.content.accommodations, newAccommodation]);
+    updateContent('accommodations', [...(websiteData.content?.accommodations || []), newAccommodation]);
   };
 
   const removeAccommodation = (index: number) => {
-    const updated = websiteData.content.accommodations.filter((_: any, i: number) => i !== index);
+    const updated = (websiteData.content?.accommodations || []).filter((_: any, i: number) => i !== index);
     updateContent('accommodations', updated);
   };
 
@@ -45,17 +45,17 @@ export default function DetailsSection({ websiteData, onUpdate }: DetailsSection
             <div className="space-y-3">
               <input
                 type="time"
-                value={websiteData.content.schedule.ceremony.time}
+                value={websiteData.content?.schedule?.ceremony?.time || ''}
                 onChange={(e) => updateContent('schedule', {
-                  ceremony: { ...websiteData.content.schedule.ceremony, time: e.target.value }
+                  ceremony: { ...websiteData.content?.schedule?.ceremony, time: e.target.value }
                 })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
               <input
                 type="text"
-                value={websiteData.content.schedule.ceremony.location}
+                value={websiteData.content?.schedule?.ceremony?.location || ''}
                 onChange={(e) => updateContent('schedule', {
-                  ceremony: { ...websiteData.content.schedule.ceremony, location: e.target.value }
+                  ceremony: { ...websiteData.content?.schedule?.ceremony, location: e.target.value }
                 })}
                 placeholder="Ceremony location"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -68,17 +68,17 @@ export default function DetailsSection({ websiteData, onUpdate }: DetailsSection
             <div className="space-y-3">
               <input
                 type="time"
-                value={websiteData.content.schedule.reception.time}
+                value={websiteData.content?.schedule?.reception?.time || ''}
                 onChange={(e) => updateContent('schedule', {
-                  reception: { ...websiteData.content.schedule.reception, time: e.target.value }
+                  reception: { ...websiteData.content?.schedule?.reception, time: e.target.value }
                 })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
               <input
                 type="text"
-                value={websiteData.content.schedule.reception.location}
+                value={websiteData.content?.schedule?.reception?.location || ''}
                 onChange={(e) => updateContent('schedule', {
-                  reception: { ...websiteData.content.schedule.reception, location: e.target.value }
+                  reception: { ...websiteData.content?.schedule?.reception, location: e.target.value }
                 })}
                 placeholder="Reception location"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -91,14 +91,14 @@ export default function DetailsSection({ websiteData, onUpdate }: DetailsSection
       <div>
         <h3 className="text-lg font-semibold text-gray-800 mb-4">Accommodations</h3>
         <div className="space-y-4">
-          {websiteData.content.accommodations.map((accommodation: any, index: number) => (
+          {(websiteData.content?.accommodations || []).map((accommodation: any, index: number) => (
             <div key={index} className="p-4 bg-gray-50 rounded-lg">
               <div className="grid md:grid-cols-2 gap-4 mb-3">
                 <input
                   type="text"
                   value={accommodation.name}
                   onChange={(e) => {
-                    const updated = [...websiteData.content.accommodations];
+                    const updated = [...(websiteData.content?.accommodations || [])];
                     updated[index] = { ...accommodation, name: e.target.value };
                     updateContent('accommodations', updated);
                   }}
@@ -109,7 +109,7 @@ export default function DetailsSection({ websiteData, onUpdate }: DetailsSection
                   type="text"
                   value={accommodation.rate}
                   onChange={(e) => {
-                    const updated = [...websiteData.content.accommodations];
+                    const updated = [...(websiteData.content?.accommodations || [])];
                     updated[index] = { ...accommodation, rate: e.target.value };
                     updateContent('accommodations', updated);
                   }}
@@ -122,7 +122,7 @@ export default function DetailsSection({ websiteData, onUpdate }: DetailsSection
                   type="text"
                   value={accommodation.address}
                   onChange={(e) => {
-                    const updated = [...websiteData.content.accommodations];
+                    const updated = [...(websiteData.content?.accommodations || [])];
                     updated[index] = { ...accommodation, address: e.target.value };
                     updateContent('accommodations', updated);
                   }}
@@ -133,7 +133,7 @@ export default function DetailsSection({ websiteData, onUpdate }: DetailsSection
                   type="tel"
                   value={accommodation.phone}
                   onChange={(e) => {
-                    const updated = [...websiteData.content.accommodations];
+                    const updated = [...(websiteData.content?.accommodations || [])];
                     updated[index] = { ...accommodation, phone: e.target.value };
                     updateContent('accommodations', updated);
                   }}
@@ -145,7 +145,7 @@ export default function DetailsSection({ websiteData, onUpdate }: DetailsSection
                     type="url"
                     value={accommodation.website}
                     onChange={(e) => {
-                      const updated = [...websiteData.content.accommodations];
+                      const updated = [...(websiteData.content?.accommodations || [])];
                       updated[index] = { ...accommodation, website: e.target.value };
                       updateContent('accommodations', updated);
                     }}
@@ -179,7 +179,7 @@ export default function DetailsSection({ websiteData, onUpdate }: DetailsSection
             <label className="block text-sm font-medium text-gray-700 mb-2">Nearest Airport</label>
             <input
               type="text"
-              value={websiteData.content.travel.airport}
+              value={websiteData.content?.travel?.airport || ''}
               onChange={(e) => updateContent('travel', { airport: e.target.value })}
               placeholder="Airport name and code"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -188,7 +188,7 @@ export default function DetailsSection({ websiteData, onUpdate }: DetailsSection
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Directions</label>
             <textarea
-              value={websiteData.content.travel.directions}
+              value={websiteData.content?.travel?.directions || ''}
               onChange={(e) => updateContent('travel', { directions: e.target.value })}
               placeholder="Driving directions and transportation options"
               className="w-full h-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -197,7 +197,7 @@ export default function DetailsSection({ websiteData, onUpdate }: DetailsSection
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Parking Information</label>
             <textarea
-              value={websiteData.content.travel.parking}
+              value={websiteData.content?.travel?.parking || ''}
               onChange={(e) => updateContent('travel', { parking: e.target.value })}
               placeholder="Parking availability and instructions"
               className="w-full h-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"

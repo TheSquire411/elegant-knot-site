@@ -30,7 +30,11 @@ export const getDefaultWebsiteData = (): Omit<WeddingWebsite, 'id' | 'user_id' |
       stores: []
     },
     accommodations: [],
-    travel: {}
+    travel: {
+      airport: '',
+      directions: '',
+      parking: ''
+    }
   },
   theme: {
     style: 'Classic & Elegant',

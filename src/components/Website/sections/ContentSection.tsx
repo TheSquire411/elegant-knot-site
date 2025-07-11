@@ -60,8 +60,8 @@ export default function ContentSection({ websiteData, onUpdate, isGenerating }: 
     };
 
     updateContent('registry', {
-      ...websiteData.content.registry,
-      stores: [...websiteData.content.registry.stores, newStore]
+      ...websiteData.content?.registry,
+      stores: [...(websiteData.content?.registry?.stores || []), newStore]
     });
   };
 
@@ -72,7 +72,7 @@ export default function ContentSection({ websiteData, onUpdate, isGenerating }: 
           <label className="block text-sm font-medium text-gray-700 mb-2">Couple Names</label>
           <input
             type="text"
-            value={websiteData.content.coupleNames}
+            value={websiteData.content?.coupleNames || ''}
             onChange={(e) => updateSimpleContent('coupleNames', e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           />
@@ -82,7 +82,7 @@ export default function ContentSection({ websiteData, onUpdate, isGenerating }: 
           <label className="block text-sm font-medium text-gray-700 mb-2">Wedding Date</label>
           <input
             type="date"
-            value={websiteData.content.weddingDate}
+            value={websiteData.content?.weddingDate || ''}
             onChange={(e) => updateSimpleContent('weddingDate', e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           />
@@ -94,7 +94,7 @@ export default function ContentSection({ websiteData, onUpdate, isGenerating }: 
           <h4 className="font-medium text-gray-700">Our Story</h4>
           <div className="flex items-center space-x-2">
             <select
-              value={websiteData.content.ourStory.style}
+              value={websiteData.content?.ourStory?.style || 'romantic'}
               onChange={(e) => updateContent('ourStory', { style: e.target.value })}
               className="px-3 py-1 border border-gray-300 rounded text-sm"
             >
@@ -113,7 +113,7 @@ export default function ContentSection({ websiteData, onUpdate, isGenerating }: 
           </div>
         </div>
         <textarea
-          value={websiteData.content.ourStory.content}
+          value={websiteData.content?.ourStory?.content || ''}
           onChange={(e) => updateContent('ourStory', { content: e.target.value })}
           placeholder="Tell your love story..."
           className="w-full h-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -127,7 +127,7 @@ export default function ContentSection({ websiteData, onUpdate, isGenerating }: 
             <label className="block text-sm font-medium text-gray-600 mb-2">Venue Name</label>
             <input
               type="text"
-              value={websiteData.content.venue.name}
+              value={websiteData.content?.venue?.name || ''}
               onChange={(e) => updateContent('venue', { name: e.target.value })}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
@@ -136,7 +136,7 @@ export default function ContentSection({ websiteData, onUpdate, isGenerating }: 
             <label className="block text-sm font-medium text-gray-600 mb-2">Address</label>
             <input
               type="text"
-              value={websiteData.content.venue.address}
+              value={websiteData.content?.venue?.address || ''}
               onChange={(e) => updateContent('venue', { address: e.target.value })}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
@@ -148,20 +148,20 @@ export default function ContentSection({ websiteData, onUpdate, isGenerating }: 
         <h4 className="font-medium text-gray-700 mb-4">Registry</h4>
         <div className="space-y-4">
           <textarea
-            value={websiteData.content.registry.message}
+            value={websiteData.content?.registry?.message || ''}
             onChange={(e) => updateContent('registry', { message: e.target.value })}
             placeholder="Registry message for your guests..."
             className="w-full h-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           />
           
           <div className="space-y-3">
-            {websiteData.content.registry.stores.map((store: any, index: number) => (
+            {(websiteData.content?.registry?.stores || []).map((store: any, index: number) => (
               <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
                 <input
                   type="text"
                   value={store.name}
                   onChange={(e) => {
-                    const updated = [...websiteData.content.registry.stores];
+                    const updated = [...(websiteData.content?.registry?.stores || [])];
                     updated[index] = { ...store, name: e.target.value };
                     updateContent('registry', { stores: updated });
                   }}
@@ -172,7 +172,7 @@ export default function ContentSection({ websiteData, onUpdate, isGenerating }: 
                   type="url"
                   value={store.url}
                   onChange={(e) => {
-                    const updated = [...websiteData.content.registry.stores];
+                    const updated = [...(websiteData.content?.registry?.stores || [])];
                     updated[index] = { ...store, url: e.target.value };
                     updateContent('registry', { stores: updated });
                   }}
@@ -181,7 +181,7 @@ export default function ContentSection({ websiteData, onUpdate, isGenerating }: 
                 />
                 <button
                   onClick={() => {
-                    const updated = websiteData.content.registry.stores.filter((_: any, i: number) => i !== index);
+                    const updated = (websiteData.content?.registry?.stores || []).filter((_: any, i: number) => i !== index);
                     updateContent('registry', { stores: updated });
                   }}
                   className="p-2 text-red-500 hover:text-red-700"

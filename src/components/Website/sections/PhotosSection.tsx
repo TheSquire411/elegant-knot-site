@@ -30,7 +30,7 @@ export default function PhotosSection({ websiteData, onUpdate }: PhotosSectionPr
     handleFileSelect 
   } = useFileUpload({
     onUploadComplete: (photos) => {
-      const existingPhotos = websiteData.content.ourStory.photos || [];
+      const existingPhotos = websiteData.content?.ourStory?.photos || [];
       const newPhotoUrls = photos.map(photo => photo.url);
       updateContent('ourStory', { 
         photos: [...existingPhotos, ...newPhotoUrls] 
@@ -100,7 +100,7 @@ export default function PhotosSection({ websiteData, onUpdate }: PhotosSectionPr
       <div>
         <h4 className="font-medium text-gray-700 mb-4">Our Story Photos</h4>
         <div className="grid grid-cols-3 gap-4">
-          {websiteData.content.ourStory.photos && websiteData.content.ourStory.photos.length > 0 ? (
+          {websiteData.content?.ourStory?.photos && websiteData.content.ourStory.photos.length > 0 ? (
             websiteData.content.ourStory.photos.map((photo: string, index: number) => (
               <div key={index} className="relative group">
                 <img
@@ -110,7 +110,7 @@ export default function PhotosSection({ websiteData, onUpdate }: PhotosSectionPr
                 />
                 <button
                   onClick={() => {
-                    const updated = websiteData.content.ourStory.photos.filter((_: string, i: number) => i !== index);
+                    const updated = (websiteData.content?.ourStory?.photos || []).filter((_: string, i: number) => i !== index);
                     updateContent('ourStory', { photos: updated });
                   }}
                   className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
