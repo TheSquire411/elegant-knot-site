@@ -101,11 +101,11 @@ function WebsitePreview({ websiteData, previewMode, onPreviewModeChange }: Websi
       </WebsitePreviewFrame>
 
       {/* Custom CSS Preview */}
-      {websiteData.customCSS && (
+      {websiteData?.settings?.customCSS && (
         <div className="mt-6">
           <h4 className="font-medium text-gray-700 mb-2">Applied Custom CSS</h4>
           <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto">
-            <code>{websiteData.customCSS}</code>
+            <code>{websiteData.settings.customCSS}</code>
           </pre>
         </div>
       )}

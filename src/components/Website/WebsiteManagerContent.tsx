@@ -181,7 +181,7 @@ export default function WebsiteManagerContent({
             <div>
               <h3 className="text-lg font-semibold text-sage-800 mb-4">Website Features</h3>
               <div className="space-y-3">
-                {Object.entries(website.settings.features || { rsvp: true, guestBook: true, photoSharing: true }).map(([feature, enabled]) => (
+                {Object.entries(website?.settings?.features || { rsvp: true, guestBook: true, photoSharing: true }).map(([feature, enabled]) => (
                   <label key={feature} className="flex items-center space-x-3">
                     <input
                       type="checkbox"
@@ -190,7 +190,7 @@ export default function WebsiteManagerContent({
                         settings: {
                           ...website.settings,
                           features: {
-                            ...(website.settings.features || { rsvp: true, guestBook: true, photoSharing: true }),
+                            ...(website?.settings?.features || { rsvp: true, guestBook: true, photoSharing: true }),
                             [feature]: e.target.checked
                           }
                         }
@@ -215,7 +215,7 @@ export default function WebsiteManagerContent({
                   </label>
                   <input
                     type="text"
-                    value={website.settings.seoTitle || ''}
+                    value={website?.settings?.seoTitle || ''}
                     onChange={(e) => onWebsiteUpdate({
                       settings: {
                         ...website.settings,
@@ -232,7 +232,7 @@ export default function WebsiteManagerContent({
                     SEO Description
                   </label>
                   <textarea
-                    value={website.settings.seoDescription || ''}
+                    value={website?.settings?.seoDescription || ''}
                     onChange={(e) => onWebsiteUpdate({
                       settings: {
                         ...website.settings,

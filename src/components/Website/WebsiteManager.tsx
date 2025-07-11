@@ -4,6 +4,7 @@ import { useWebsiteManager } from '../../hooks/useWebsiteManager';
 import WebsiteManagerHeader from './WebsiteManagerHeader';
 import WebsiteManagerTabs, { ActiveTab } from './WebsiteManagerTabs';
 import WebsiteManagerContent from './WebsiteManagerContent';
+import ErrorBoundary from '../common/ErrorBoundary';
 
 export default function WebsiteManager() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('templates');
@@ -73,16 +74,18 @@ export default function WebsiteManager() {
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <WebsiteManagerContent
-          activeTab={activeTab}
-          website={website}
-          generating={generating}
-          saving={saving}
-          previewMode={previewMode}
-          onTemplateSelect={handleTemplateSelectAndSwitch}
-          onWebsiteUpdate={handleWebsiteUpdate}
-          onPreviewModeChange={setPreviewMode}
-        />
+        <ErrorBoundary>
+          <WebsiteManagerContent
+            activeTab={activeTab}
+            website={website}
+            generating={generating}
+            saving={saving}
+            previewMode={previewMode}
+            onTemplateSelect={handleTemplateSelectAndSwitch}
+            onWebsiteUpdate={handleWebsiteUpdate}
+            onPreviewModeChange={setPreviewMode}
+          />
+        </ErrorBoundary>
       </div>
     </div>
   );

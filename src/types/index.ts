@@ -73,13 +73,13 @@ export interface WeddingWebsite {
   id: string;
   user_id: string;
   title: string;
-  slug?: string;
-  domain?: string;
+  slug?: string | null;
+  domain?: string | null;
   status: 'draft' | 'published' | 'archived';
   content: WebsiteContent;
   theme: WebsiteTheme;
   settings: WebsiteSettings;
-  published_at?: string;
+  published_at?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -98,17 +98,17 @@ export interface WebsiteSection {
 }
 
 export interface WebsiteContent {
-  coupleNames?: string;
-  weddingDate?: string;
+  coupleNames?: string | null;
+  weddingDate?: string | null;
   venue?: {
     name: string;
     address: string;
-  };
+  } | null;
   ourStory?: {
     content: string;
     style: 'romantic' | 'casual' | 'formal';
     photos: string[];
-  };
+  } | null;
   schedule?: {
     ceremony: {
       time: string;
@@ -118,30 +118,30 @@ export interface WebsiteContent {
       time: string;
       location: string;
     };
-  };
+  } | null;
   registry?: {
     message: string;
     stores: Array<{
       name: string;
       url: string;
     }>;
-  };
+  } | null;
   accommodations?: Array<{
     name: string;
     address: string;
     phone: string;
     website?: string;
     rate: string;
-  }>;
+  }> | null;
   travel?: {
     airport?: string;
     directions?: string;
     parking?: string;
-  };
+  } | null;
 }
 
 export interface WebsiteTheme {
-  style?: string;
+  style?: string | null;
   colors: string[];
   fonts: {
     heading: string;
@@ -153,33 +153,33 @@ export interface WebsiteTheme {
     sectionOrder?: string[];
     spacing?: string;
     imageLayout?: string;
-  };
+  } | null;
   colorPalette?: {
     primary?: string;
     secondary?: string;
     accent?: string;
     background?: string;
     text?: string;
-  };
+  } | null;
   typography?: {
     headingFont?: string;
     bodyFont?: string;
     headingWeight?: number;
     bodyWeight?: number;
-  };
+  } | null;
 }
 
 export interface WebsiteSettings {
-  customCSS?: string;
-  seoTitle?: string;
-  seoDescription?: string;
+  customCSS?: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
   analytics?: {
     googleAnalytics?: string;
     facebookPixel?: string;
-  };
+  } | null;
   features?: {
     rsvp: boolean;
     guestBook: boolean;
     photoSharing: boolean;
-  };
+  } | null;
 }
