@@ -84,7 +84,7 @@ export function useGuestPhotos() {
     await fetchEvents();
   };
 
-  const uploadPhoto = async ({ event_id, file, uploaded_by_name, uploaded_by_email }: UploadGuestPhotoData) => {
+  const uploadPhoto = async ({ event_id, file, uploaded_by_name, uploaded_by_email, message }: UploadGuestPhotoData) => {
     // Get event details for folder path
     const { data: event, error: eventError } = await supabase
       .from('guest_photo_events')
@@ -115,6 +115,7 @@ export function useGuestPhotos() {
         file_size: file.size,
         uploaded_by_name,
         uploaded_by_email,
+        message,
       })
       .select()
       .single();

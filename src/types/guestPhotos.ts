@@ -20,6 +20,7 @@ export interface GuestPhotoUpload {
   uploaded_by_name: string | null;
   uploaded_by_email: string | null;
   uploaded_at: string;
+  message: string | null;
 }
 
 export interface CreateGuestPhotoEventData {
@@ -33,4 +34,5 @@ export interface UploadGuestPhotoData {
   file: File;
   uploaded_by_name?: string;
   uploaded_by_email?: string;
+  message?: string;
 }

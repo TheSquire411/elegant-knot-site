@@ -419,6 +419,7 @@ export type Database = {
           file_path: string
           file_size: number | null
           id: string
+          message: string | null
           uploaded_at: string
           uploaded_by_email: string | null
           uploaded_by_name: string | null
@@ -430,6 +431,7 @@ export type Database = {
           file_path: string
           file_size?: number | null
           id?: string
+          message?: string | null
           uploaded_at?: string
           uploaded_by_email?: string | null
           uploaded_by_name?: string | null
@@ -441,6 +443,7 @@ export type Database = {
           file_path?: string
           file_size?: number | null
           id?: string
+          message?: string | null
           uploaded_at?: string
           uploaded_by_email?: string | null
           uploaded_by_name?: string | null

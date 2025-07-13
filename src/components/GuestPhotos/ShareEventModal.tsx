@@ -3,9 +3,10 @@ import Modal from '../common/Modal';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
-import { Copy, Share2 } from 'lucide-react';
+import { Copy, Share2, Download, QrCode } from 'lucide-react';
 import { useGuestPhotos } from '../../hooks/useGuestPhotos';
 import { useApp } from '../../context/AppContext';
+import { QRCodeSVG } from 'qrcode.react';
 
 interface ShareEventModalProps {
   eventId: string;
@@ -17,6 +18,7 @@ export function ShareEventModal({ eventId, isOpen, onClose }: ShareEventModalPro
   const { showNotification } = useApp();
   const { events } = useGuestPhotos();
   const [shareUrl, setShareUrl] = useState('');
+  const [showQRCode, setShowQRCode] = useState(false);
 
   const event = events.find((e: any) => e.id === eventId);
 
@@ -47,6 +49,30 @@ export function ShareEventModal({ eventId, isOpen, onClose }: ShareEventModalPro
       } catch (error) {
         console.error('Error sharing:', error);
       }
+    }
+  };
+
+  const downloadQRCode = () => {
+    const svg = document.getElementById('qr-code-svg') as unknown as SVGElement;
+    if (svg) {
+      const svgData = new XMLSerializer().serializeToString(svg);
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx?.drawImage(img, 0, 0);
+        const url = canvas.toDataURL('image/png');
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${event?.event_name || 'wedding'}-qr-code.png`;
+        a.click();
+        showNotification('QR Code downloaded!', 'success');
+      };
+      
+      img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
     }
   };
 
@@ -93,6 +119,38 @@ export function ShareEventModal({ eventId, isOpen, onClose }: ShareEventModalPro
               Copy Link
             </Button>
           </div>
+
+          <div className="flex space-x-2 mt-2">
+            <Button 
+              onClick={() => setShowQRCode(!showQRCode)} 
+              variant="outline" 
+              className="flex-1"
+            >
+              <QrCode className="w-4 h-4 mr-2" />
+              {showQRCode ? 'Hide' : 'Show'} QR Code
+            </Button>
+          </div>
+
+          {showQRCode && (
+            <div className="mt-4 text-center space-y-4">
+              <div className="flex justify-center">
+                <QRCodeSVG 
+                  id="qr-code-svg"
+                  value={shareUrl} 
+                  size={200}
+                  level="M"
+                  includeMargin
+                />
+              </div>
+              <div className="text-sm text-muted-foreground">
+                Guests can scan this QR code to upload photos
+              </div>
+              <Button onClick={downloadQRCode} size="sm" variant="outline">
+                <Download className="w-4 h-4 mr-2" />
+                Download QR Code
+              </Button>
+            </div>
+          )}
 
           <div className="text-center">
             <p className="text-sm text-muted-foreground">

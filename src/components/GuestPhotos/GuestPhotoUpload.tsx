@@ -4,7 +4,8 @@ import { Button } from '../ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '../ui/card';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
-import { Upload, Camera, Heart } from 'lucide-react';
+import { Upload, Camera, Heart, MessageSquare } from 'lucide-react';
+import { Textarea } from '../ui/textarea';
 import { supabase } from '../../integrations/supabase/client';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import type { GuestPhotoEvent } from '../../types/guestPhotos';
@@ -15,6 +16,7 @@ export function GuestPhotoUpload() {
   const [loading, setLoading] = useState(true);
   const [uploaderName, setUploaderName] = useState('');
   const [uploaderEmail, setUploaderEmail] = useState('');
+  const [message, setMessage] = useState('');
   const [uploadSuccess, setUploadSuccess] = useState<string[]>([]);
 
   const {
@@ -58,6 +60,7 @@ export function GuestPhotoUpload() {
               file_size: blob.size,
               uploaded_by_name: uploaderName || null,
               uploaded_by_email: uploaderEmail || null,
+              message: message || null,
             });
 
           if (dbError) throw dbError;
@@ -137,6 +140,7 @@ export function GuestPhotoUpload() {
               setUploadSuccess([]);
               setUploaderName('');
               setUploaderEmail('');
+              setMessage('');
             }}>
               Upload More Photos
             </Button>
@@ -189,6 +193,20 @@ export function GuestPhotoUpload() {
                   placeholder="Enter your email"
                 />
               </div>
+            </div>
+
+            <div>
+              <Label htmlFor="message">
+                <MessageSquare className="w-4 h-4 inline mr-1" />
+                Message (Optional)
+              </Label>
+              <Textarea
+                id="message"
+                value={message}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setMessage(e.target.value)}
+                placeholder="Share a memory or message with your photos..."
+                rows={3}
+              />
             </div>
 
             <div
