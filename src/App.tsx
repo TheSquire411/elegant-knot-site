@@ -29,6 +29,8 @@ import BlogPost from './components/Blog/BlogPost';
 import BlogAdminDashboard from './components/Blog/BlogAdminDashboard';
 import BlogPostEditor from './components/Blog/BlogPostEditor';
 import PublicWeddingWebsite from './components/Website/PublicWeddingWebsite';
+import { GuestPhotoManager } from './components/GuestPhotos/GuestPhotoManager';
+import { GuestPhotoUpload } from './components/GuestPhotos/GuestPhotoUpload';
 
 
 /**
@@ -80,6 +82,9 @@ function AppRoutes() {
         {/* Public Wedding Website Routes */}
         <Route path="/wedding/:slug" element={<PublicWeddingWebsite />} />
         
+        {/* Public Guest Photo Upload */}
+        <Route path="/photos/:shareCode" element={<GuestPhotoUpload />} />
+        
         {/* Blog Routes */}
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog/category/:category" element={<BlogPage />} />
@@ -98,6 +103,7 @@ function AppRoutes() {
           <Route path="/vision-board" element={<VisionBoardPage />} />
           <Route path="/website" element={<WebsitePage />} />
           <Route path="/registry" element={<RegistryPage />} />
+          <Route path="/guest-photos" element={<GuestPhotoManager />} />
           
         </Route>
 

@@ -1,4 +1,4 @@
-import { Calendar, DollarSign, MessageCircle, Palette, Globe, Gift } from 'lucide-react';
+import { Calendar, DollarSign, MessageCircle, Palette, Globe, Gift, Camera } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import DashboardCard from '../common/DashboardCard';
 import PaymentVerification from './PaymentVerification';
@@ -77,6 +77,14 @@ export default function Dashboard() {
       icon: <Gift className="h-8 w-8" />,
       variant: 'default' as const,
       delay: 500
+    },
+    {
+      to: '/guest-photos',
+      title: 'Guest Photos',
+      description: 'Collect and manage photos shared by your wedding guests',
+      icon: <Camera className="h-8 w-8" />,
+      variant: 'gradient' as const,
+      delay: 600
     }
   ];
 

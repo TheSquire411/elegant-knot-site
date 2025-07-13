@@ -375,6 +375,86 @@ export type Database = {
         }
         Relationships: []
       }
+      guest_photo_events: {
+        Row: {
+          created_at: string
+          description: string | null
+          event_date: string | null
+          event_name: string
+          id: string
+          is_active: boolean | null
+          share_code: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          event_date?: string | null
+          event_name: string
+          id?: string
+          is_active?: boolean | null
+          share_code?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          event_date?: string | null
+          event_name?: string
+          id?: string
+          is_active?: boolean | null
+          share_code?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      guest_photo_uploads: {
+        Row: {
+          content_type: string | null
+          event_id: string
+          file_name: string | null
+          file_path: string
+          file_size: number | null
+          id: string
+          uploaded_at: string
+          uploaded_by_email: string | null
+          uploaded_by_name: string | null
+        }
+        Insert: {
+          content_type?: string | null
+          event_id: string
+          file_name?: string | null
+          file_path: string
+          file_size?: number | null
+          id?: string
+          uploaded_at?: string
+          uploaded_by_email?: string | null
+          uploaded_by_name?: string | null
+        }
+        Update: {
+          content_type?: string | null
+          event_id?: string
+          file_name?: string | null
+          file_path?: string
+          file_size?: number | null
+          id?: string
+          uploaded_at?: string
+          uploaded_by_email?: string | null
+          uploaded_by_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guest_photo_uploads_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "guest_photo_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       guests: {
         Row: {
           created_at: string
