@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '../ui/button';
+import { Card, CardHeader, CardTitle, CardContent } from '../ui/card';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 import { Upload, Camera, Heart } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { useFileUpload } from '@/hooks/useFileUpload';
-import type { GuestPhotoEvent } from '@/types/guestPhotos';
+import { supabase } from '../../integrations/supabase/client';
+import { useFileUpload } from '../../hooks/useFileUpload';
+import type { GuestPhotoEvent } from '../../types/guestPhotos';
 
 export function GuestPhotoUpload() {
   const { shareCode } = useParams<{ shareCode: string }>();

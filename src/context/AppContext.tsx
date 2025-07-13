@@ -133,9 +133,12 @@ function appReducer(state: AppState, action: AppAction): AppState {
 
 interface AppContextType {
   state: AppState;
+  user: AuthUser | null;
+  profile: Profile | null;
   dispatch: React.Dispatch<AppAction>;
   signOut: () => Promise<void>;
   addNotification: (notification: Omit<Notification, 'id' | 'timestamp'>) => void;
+  showNotification: (message: string, type: 'success' | 'error' | 'warning' | 'info') => void;
   removeNotification: (id: string) => void;
   setOperationInProgress: (inProgress: boolean) => void;
 }
@@ -170,6 +173,14 @@ export function AppProvider({ children }: AppProviderProps) {
 
   const setOperationInProgress = (inProgress: boolean) => {
     dispatch({ type: 'SET_OPERATION_IN_PROGRESS', payload: inProgress });
+  };
+
+  const showNotification = (message: string, type: 'success' | 'error' | 'warning' | 'info') => {
+    addNotification({
+      type,
+      title: type.charAt(0).toUpperCase() + type.slice(1),
+      message
+    });
   };
 
   const signOut = async () => {
@@ -272,10 +283,13 @@ export function AppProvider({ children }: AppProviderProps) {
 
   return (
     <AppContext.Provider value={{ 
-      state, 
+      state,
+      user: state.user,
+      profile: state.profile,
       dispatch, 
       signOut, 
-      addNotification, 
+      addNotification,
+      showNotification,
       removeNotification, 
       setOperationInProgress 
     }}>

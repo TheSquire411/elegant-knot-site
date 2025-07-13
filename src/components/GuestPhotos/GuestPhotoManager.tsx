@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '../ui/button';
+import { Card, CardHeader, CardTitle, CardContent } from '../ui/card';
+import { Badge } from '../ui/badge';
 import { Plus, Calendar, Share2, Eye, Trash2 } from 'lucide-react';
-import { useGuestPhotos } from '@/hooks/useGuestPhotos';
+import { useGuestPhotos } from '../../hooks/useGuestPhotos';
 import { CreateEventModal } from './CreateEventModal';
 import { GuestPhotoGallery } from './GuestPhotoGallery';
 import { ShareEventModal } from './ShareEventModal';
-import { useApp } from '@/context/AppContext';
+import { useApp } from '../../context/AppContext';
 
 export function GuestPhotoManager() {
   const { showNotification } = useApp();

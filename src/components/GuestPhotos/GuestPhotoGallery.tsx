@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '../ui/button';
+import { Card, CardContent } from '../ui/card';
 import { ArrowLeft, Download, Trash2, Users } from 'lucide-react';
-import { useGuestPhotos } from '@/hooks/useGuestPhotos';
-import { useApp } from '@/context/AppContext';
+import { useGuestPhotos } from '../../hooks/useGuestPhotos';
+import { useApp } from '../../context/AppContext';
 
 interface GuestPhotoGalleryProps {
   eventId: string;

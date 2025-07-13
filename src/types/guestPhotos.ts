@@ -4,7 +4,7 @@ export interface GuestPhotoEvent {
   event_name: string;
   event_date: string | null;
   description: string | null;
-  is_active: boolean;
+  is_active: boolean | null;
   share_code: string;
   created_at: string;
   updated_at: string;

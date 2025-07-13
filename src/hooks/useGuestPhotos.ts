@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useApp } from '@/context/AppContext';
-import type { GuestPhotoEvent, GuestPhotoUpload, CreateGuestPhotoEventData, UploadGuestPhotoData } from '@/types/guestPhotos';
+import { supabase } from '../integrations/supabase/client';
+import { useApp } from '../context/AppContext';
+import type { GuestPhotoEvent, GuestPhotoUpload, CreateGuestPhotoEventData, UploadGuestPhotoData } from '../types/guestPhotos';
 
 export function useGuestPhotos() {
   const { user } = useApp();

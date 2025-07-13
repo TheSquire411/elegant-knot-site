@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import Modal from '@/components/common/Modal';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import Modal from '../common/Modal';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 import { Copy, Share2 } from 'lucide-react';
-import { useGuestPhotos } from '@/hooks/useGuestPhotos';
-import { useApp } from '@/context/AppContext';
+import { useGuestPhotos } from '../../hooks/useGuestPhotos';
+import { useApp } from '../../context/AppContext';
 
 interface ShareEventModalProps {
   eventId: string;
@@ -82,7 +82,7 @@ export function ShareEventModal({ eventId, isOpen, onClose }: ShareEventModalPro
           </div>
 
           <div className="flex space-x-2">
-            {typeof window !== 'undefined' && window.navigator && window.navigator.share ? (
+            {typeof window !== 'undefined' && 'share' in navigator ? (
               <Button onClick={shareViaWebShare} className="flex-1">
                 <Share2 className="w-4 h-4 mr-2" />
                 Share
