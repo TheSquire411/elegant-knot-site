@@ -142,7 +142,10 @@ export default function SeatingChart() {
               </button>
             </div>
             <button
-              onClick={() => setIsAddTableModalOpen(true)}
+              onClick={() => {
+                setEditingTable(null);
+                setIsAddTableModalOpen(true);
+              }}
               className="flex items-center space-x-2 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
             >
               <Plus className="h-4 w-4" />
@@ -165,7 +168,10 @@ export default function SeatingChart() {
                       <h4 className="text-lg font-medium text-gray-700 mb-2">No tables yet</h4>
                       <p className="text-gray-500 mb-4">Add your first table to start planning your seating arrangement</p>
                       <button
-                        onClick={() => setIsAddTableModalOpen(true)}
+                        onClick={() => {
+                          setEditingTable(null);
+                          setIsAddTableModalOpen(true);
+                        }}
                         className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
                       >
                         Add First Table

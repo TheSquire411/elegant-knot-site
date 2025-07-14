@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { SeatingTable } from '../../../types/guests';
 
@@ -11,13 +11,36 @@ interface AddTableModalProps {
 
 export default function AddTableModal({ isOpen, onClose, onSave, editingTable }: AddTableModalProps) {
   const [formData, setFormData] = useState({
-    name: editingTable?.name || '',
-    capacity: editingTable?.capacity || 8,
-    shape: editingTable?.shape || 'round' as 'round' | 'rectangular' | 'square',
-    notes: editingTable?.notes || '',
-    x_position: editingTable?.x_position || 0,
-    y_position: editingTable?.y_position || 0
+    name: '',
+    capacity: 8,
+    shape: 'round' as 'round' | 'rectangular' | 'square',
+    notes: '',
+    x_position: 0,
+    y_position: 0
   });
+
+  // Update form data when editingTable changes
+  useEffect(() => {
+    if (editingTable) {
+      setFormData({
+        name: editingTable.name || '',
+        capacity: editingTable.capacity || 8,
+        shape: editingTable.shape || 'round',
+        notes: editingTable.notes || '',
+        x_position: editingTable.x_position || 0,
+        y_position: editingTable.y_position || 0
+      });
+    } else {
+      setFormData({
+        name: '',
+        capacity: 8,
+        shape: 'round',
+        notes: '',
+        x_position: 0,
+        y_position: 0
+      });
+    }
+  }, [editingTable]);
 
   const handleInputChange = (field: keyof typeof formData, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
