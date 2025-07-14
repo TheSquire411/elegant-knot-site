@@ -10,9 +10,10 @@ import { useApp } from '../../context/AppContext';
 interface CreateEventModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onEventCreated?: (eventId: string) => void;
 }
 
-export function CreateEventModal({ isOpen, onClose }: CreateEventModalProps) {
+export function CreateEventModal({ isOpen, onClose, onEventCreated }: CreateEventModalProps) {
   const { showNotification } = useApp();
   const { createEvent } = useGuestPhotos();
   const [loading, setLoading] = useState(false);
@@ -32,15 +33,20 @@ export function CreateEventModal({ isOpen, onClose }: CreateEventModalProps) {
 
     setLoading(true);
     try {
-      await createEvent({
+      const newEvent = await createEvent({
         event_name: formData.event_name.trim(),
         event_date: formData.event_date || undefined,
         description: formData.description.trim() || undefined,
       });
       
       showNotification('Photo event created successfully!', 'success');
-      onClose();
       setFormData({ event_name: '', event_date: '', description: '' });
+      
+      if (onEventCreated && newEvent?.id) {
+        onEventCreated(newEvent.id);
+      } else {
+        onClose();
+      }
     } catch (error) {
       console.error('Error creating event:', error);
       showNotification('Failed to create event', 'error');

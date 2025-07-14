@@ -12,13 +12,14 @@ interface ShareEventModalProps {
   eventId: string;
   isOpen: boolean;
   onClose: () => void;
+  showQRCodeByDefault?: boolean;
 }
 
-export function ShareEventModal({ eventId, isOpen, onClose }: ShareEventModalProps) {
+export function ShareEventModal({ eventId, isOpen, onClose, showQRCodeByDefault }: ShareEventModalProps) {
   const { showNotification } = useApp();
   const { events } = useGuestPhotos();
   const [shareUrl, setShareUrl] = useState('');
-  const [showQRCode, setShowQRCode] = useState(false);
+  const [showQRCode, setShowQRCode] = useState(showQRCodeByDefault || false);
 
   const event = events.find((e: any) => e.id === eventId);
 
@@ -28,6 +29,12 @@ export function ShareEventModal({ eventId, isOpen, onClose }: ShareEventModalPro
       setShareUrl(url);
     }
   }, [event]);
+
+  useEffect(() => {
+    if (showQRCodeByDefault) {
+      setShowQRCode(true);
+    }
+  }, [showQRCodeByDefault]);
 
   const copyToClipboard = async () => {
     try {

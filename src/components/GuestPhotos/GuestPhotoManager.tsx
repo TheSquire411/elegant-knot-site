@@ -9,6 +9,7 @@ import { GuestPhotoGallery } from './GuestPhotoGallery';
 import { ShareEventModal } from './ShareEventModal';
 import { useApp } from '../../context/AppContext';
 import FeatureGate from '../Subscription/FeatureGate';
+import BackButton from '../common/BackButton';
 
 export function GuestPhotoManager() {
   const { showNotification } = useApp();
@@ -16,6 +17,7 @@ export function GuestPhotoManager() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
   const [showShareModal, setShowShareModal] = useState<string | null>(null);
+  const [newlyCreatedEventId, setNewlyCreatedEventId] = useState<string | null>(null);
 
   const handleDeleteEvent = async (eventId: string) => {
     if (!confirm('Are you sure you want to delete this event? All photos will be permanently removed.')) {
@@ -28,6 +30,12 @@ export function GuestPhotoManager() {
     } catch (error) {
       showNotification('Failed to delete event', 'error');
     }
+  };
+
+  const handleEventCreated = (eventId: string) => {
+    setShowCreateModal(false);
+    setNewlyCreatedEventId(eventId);
+    setShowShareModal(eventId);
   };
 
   if (selectedEvent) {
@@ -53,11 +61,14 @@ export function GuestPhotoManager() {
     >
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Guest Photo Collection</h1>
-            <p className="text-muted-foreground">
-              Create events and let your guests share their photos
-            </p>
+          <div className="flex items-center space-x-4">
+            <BackButton />
+            <div>
+              <h1 className="text-3xl font-bold">Guest Photo Collection</h1>
+              <p className="text-muted-foreground">
+                Create events and let your guests share their photos
+              </p>
+            </div>
           </div>
           <Button onClick={() => setShowCreateModal(true)}>
             <Plus className="w-4 h-4 mr-2" />
@@ -145,6 +156,7 @@ export function GuestPhotoManager() {
           <CreateEventModal 
             isOpen={showCreateModal}
             onClose={() => setShowCreateModal(false)}
+            onEventCreated={handleEventCreated}
           />
         )}
 
@@ -152,7 +164,11 @@ export function GuestPhotoManager() {
           <ShareEventModal
             eventId={showShareModal}
             isOpen={!!showShareModal}
-            onClose={() => setShowShareModal(null)}
+            onClose={() => {
+              setShowShareModal(null);
+              setNewlyCreatedEventId(null);
+            }}
+            showQRCodeByDefault={newlyCreatedEventId === showShareModal}
           />
         )}
       </div>
