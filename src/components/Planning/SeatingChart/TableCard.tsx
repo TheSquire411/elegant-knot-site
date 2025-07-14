@@ -20,6 +20,7 @@ interface TableCardProps {
   onDelete: (tableId: string) => void;
   onGroupAssigned: (guestGroupId: string, tableId: string) => void;
   isDraggable?: boolean;
+  gridIndex?: number;
 }
 
 const DRAG_TYPES = {
@@ -34,7 +35,8 @@ export default function TableCard({
   onEdit,
   onDelete,
   onGroupAssigned,
-  isDraggable = false
+  isDraggable = false,
+  gridIndex = 0
 }: TableCardProps) {
   // Drag functionality for moving table
   const [{ isDragging }, drag] = useDrag(() => ({
@@ -99,6 +101,34 @@ export default function TableCard({
     return '';
   };
 
+  const getPosition = () => {
+    if (!isDraggable) return { position: 'relative' as const, left: 'auto', top: 'auto' };
+    
+    // If table has been explicitly positioned (not at origin), use those coordinates
+    if (table.x_position !== 0 || table.y_position !== 0) {
+      return {
+        position: 'absolute' as const,
+        left: table.x_position,
+        top: table.y_position
+      };
+    }
+    
+    // Auto-position in a grid layout for tables at origin
+    const GRID_COLUMNS = 3;
+    const TABLE_SPACING = 180; // pixels
+    const START_X = 20;
+    const START_Y = 60;
+    
+    const row = Math.floor(gridIndex / GRID_COLUMNS);
+    const col = gridIndex % GRID_COLUMNS;
+    
+    return {
+      position: 'absolute' as const,
+      left: START_X + (col * TABLE_SPACING),
+      top: START_Y + (row * TABLE_SPACING)
+    };
+  };
+
   const attachRef = (el: HTMLDivElement | null) => {
     drag(el);
     drop(el);
@@ -115,11 +145,7 @@ export default function TableCard({
         ${getDropStyle()}
         flex flex-col items-center justify-center p-2
       `}
-      style={{
-        position: isDraggable ? 'absolute' : 'relative',
-        left: isDraggable ? table.x_position : 'auto',
-        top: isDraggable ? table.y_position : 'auto'
-      }}
+      style={getPosition()}
     >
       {/* Table Header */}
       <div className="text-center mb-1">

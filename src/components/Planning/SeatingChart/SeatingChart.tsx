@@ -180,7 +180,7 @@ export default function SeatingChart() {
                   </div>
                 ) : (
                   <div className="relative">
-                    {seatingTables.map(table => {
+                    {seatingTables.map((table, index) => {
                       const assignments = getTableAssignments(table.id);
                       const assignedGroupsForTable = assignments.map(assignment => 
                         allGuestGroups.find(group => group.id === assignment.guest_group_id)
@@ -198,6 +198,7 @@ export default function SeatingChart() {
                           onDelete={deleteSeatingTable}
                           onGroupAssigned={handleAssignGroup}
                           isDraggable={true}
+                          gridIndex={index}
                         />
                       );
                     })}
